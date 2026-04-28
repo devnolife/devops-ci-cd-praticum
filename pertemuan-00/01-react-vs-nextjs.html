@@ -561,6 +561,144 @@ footer {
     </div>
   </section>
 
+  <!-- ── 3B. INSTALASI NEXT.JS ── -->
+  <section class="section-card reveal">
+    <h2>🚀 Instalasi Next.js (JavaScript)</h2>
+    <p>Sebelum mulai coding, kita harus install Next.js dulu. <strong>Penting:</strong> kita akan pakai <strong>JavaScript</strong>, bukan TypeScript. Perhatikan pilihan-pilihan di bawah ini.</p>
+
+    <h3>Langkah 1 — Pastikan Node.js Terinstall</h3>
+    <p>Cek apakah Node.js sudah terinstall di komputer kamu:</p>
+    <div class="code-block">
+      <div class="filename">Terminal / Command Prompt</div>
+      <pre><span class="cmt"># Cek versi Node.js (harus v18 atau lebih baru)</span>
+node --version
+<span class="cmt"># Output contoh: v20.11.0 ✅</span>
+
+<span class="cmt"># Cek npm juga</span>
+npm --version
+<span class="cmt"># Output contoh: 10.2.4 ✅</span></pre>
+    </div>
+
+    <div class="callout warning">
+      <strong>⚠️ Belum punya Node.js?</strong>
+      Download dari <a href="https://nodejs.org" style="color:var(--amber);font-weight:600">nodejs.org</a> — pilih versi <strong>LTS</strong> (Long Term Support). Install seperti biasa, lalu restart terminal.
+    </div>
+
+    <h3>Langkah 2 — Buat Proyek Next.js Baru</h3>
+    <p>Jalankan perintah ini di terminal:</p>
+    <div class="code-block">
+      <div class="filename">Terminal — buat proyek baru</div>
+      <pre>npx create-next-app@latest nama-proyek-kamu</pre>
+    </div>
+
+    <p style="margin-top:16px">Setelah dijalankan, akan muncul <strong>pertanyaan interaktif</strong>. Jawab seperti ini untuk menggunakan <strong>JavaScript</strong> (bukan TypeScript):</p>
+
+    <div class="code-block" style="border-left: 4px solid var(--emerald);">
+      <div class="filename">🎯 Pilihan yang BENAR untuk JavaScript</div>
+      <pre><span class="cmt">✔ Would you like to use TypeScript?</span> … <span class="str">No</span>    <span class="cmt">← PILIH NO ❗</span>
+<span class="cmt">✔ Would you like to use ESLint?</span> … <span class="str">Yes</span>       <span class="cmt">← Yes (bantu cek error)</span>
+<span class="cmt">✔ Would you like to use Tailwind CSS?</span> … <span class="str">No</span> <span class="cmt">← No (kita pakai CSS biasa)</span>
+<span class="cmt">✔ Would you like your code inside a `src/` directory?</span> … <span class="str">No</span>  <span class="cmt">← No (langsung di app/)</span>
+<span class="cmt">✔ Would you like to use App Router? (recommended)</span> … <span class="str">Yes</span>  <span class="cmt">← YES ❗ (wajib!)</span>
+<span class="cmt">✔ Would you like to use Turbopack for next dev?</span> … <span class="str">Yes</span>   <span class="cmt">← Yes (dev lebih cepat)</span>
+<span class="cmt">✔ Would you like to customize the import alias?</span> … <span class="str">No</span>   <span class="cmt">← No (default saja)</span></pre>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Kenapa pilih JavaScript, bukan TypeScript?</strong>
+      <ul style="margin-top:6px; padding-left:18px; font-size:.9rem">
+        <li><strong>Lebih mudah dipahami</strong> — tidak ada tipe data tambahan yang membingungkan</li>
+        <li><strong>Fokus ke konsep</strong> — kita belajar Next.js, bukan TypeScript</li>
+        <li><strong>File extension .js</strong> — bukan .ts atau .tsx</li>
+        <li>TypeScript bisa dipelajari nanti setelah paham Next.js</li>
+      </ul>
+    </div>
+
+    <h3>Langkah 3 — Masuk ke Folder dan Jalankan</h3>
+    <div class="code-block">
+      <div class="filename">Terminal — jalankan proyek</div>
+      <pre><span class="cmt"># Masuk ke folder proyek</span>
+cd nama-proyek-kamu
+
+<span class="cmt"># Jalankan development server</span>
+npm run dev
+
+<span class="cmt"># Output:</span>
+<span class="cmt">#   ▲ Next.js 15.x.x</span>
+<span class="cmt">#   - Local:   http://localhost:3000    ← BUKA INI DI BROWSER!</span>
+<span class="cmt">#   ✓ Ready in 2.3s</span></pre>
+    </div>
+
+    <p style="margin-top:12px">Buka <code>http://localhost:3000</code> di browser — kamu akan melihat halaman default Next.js! 🎉</p>
+
+    <h3>Langkah 4 — Struktur Folder yang Dihasilkan</h3>
+    <p>Setelah install, folder proyek kamu akan terlihat seperti ini:</p>
+    <div class="code-block">
+      <div class="filename">Struktur folder proyek Next.js (JavaScript)</div>
+      <pre>nama-proyek-kamu/
+├── app/
+│   ├── favicon.ico          <span class="cmt">← ikon tab browser</span>
+│   ├── globals.css           <span class="cmt">← CSS global</span>
+│   ├── layout.<span class="str">js</span>             <span class="cmt">← ✅ .js bukan .tsx!</span>
+│   ├── page.<span class="str">js</span>               <span class="cmt">← ✅ halaman utama</span>
+│   └── page.module.css       <span class="cmt">← CSS khusus halaman</span>
+├── public/
+│   ├── next.svg              <span class="cmt">← gambar statis</span>
+│   └── vercel.svg
+├── .eslintrc.json            <span class="cmt">← konfigurasi ESLint</span>
+├── .gitignore
+├── jsconfig.json             <span class="cmt">← ✅ jsconfig (bukan tsconfig!)</span>
+├── next.config.<span class="str">mjs</span>           <span class="cmt">← konfigurasi Next.js</span>
+├── package.json              <span class="cmt">← daftar dependencies</span>
+└── README.md</pre>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Perhatikan!</strong>
+      Semua file menggunakan extension <strong>.js</strong> (JavaScript), bukan <strong>.tsx</strong> (TypeScript). Ini karena kita pilih <strong>"No"</strong> untuk TypeScript saat instalasi. File konfigurasi juga <code>jsconfig.json</code> bukan <code>tsconfig.json</code>.
+    </div>
+
+    <h3>Langkah 5 — Edit Halaman Pertama</h3>
+    <p>Buka <code>app/page.js</code>, hapus semua isinya, lalu ganti dengan kode sederhana ini:</p>
+    <div class="code-block">
+      <div class="filename">app/page.js — Halaman pertama kamu!</div>
+      <pre><span class="cmt">// Ini adalah halaman utama — yang tampil di localhost:3000/</span>
+
+<span class="kw">export default function</span> <span class="fn">Home</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;main&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>🎓 Halo Mahasiswa!<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Ini adalah proyek Next.js pertama saya.<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Menggunakan <span class="tag">&lt;strong&gt;</span>JavaScript<span class="tag">&lt;/strong&gt;</span>, bukan TypeScript.<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/main&gt;</span>
+  );
+}</pre>
+    </div>
+
+    <p>Simpan file → browser otomatis refresh → kamu akan melihat teks baru! 🎉</p>
+
+    <h3>Perintah-Perintah Penting</h3>
+    <div class="code-block">
+      <div class="filename">Perintah yang sering dipakai</div>
+      <pre><span class="cmt"># 1. Jalankan development server (untuk ngoding)</span>
+npm run dev
+
+<span class="cmt"># 2. Build untuk production (untuk deploy)</span>
+npm run build
+
+<span class="cmt"># 3. Jalankan hasil build (untuk testing production)</span>
+npm start
+
+<span class="cmt"># 4. Cek kualitas kode</span>
+npm run lint</pre>
+    </div>
+
+    <div class="callout danger" style="border-left-color:var(--rose); background:var(--rose-dim);">
+      <strong>🚫 Jangan Salah Pilih!</strong>
+      <p style="font-size:.9rem; margin-top:4px">Kalau kamu tidak sengaja pilih <strong>TypeScript = Yes</strong>, file-file akan berekstensi <code>.tsx</code> dan kamu harus paham tipe data TypeScript. Kalau sudah terlanjur, hapus folder dan jalankan <code>npx create-next-app@latest</code> lagi dengan pilihan yang benar.</p>
+    </div>
+  </section>
+
   <!-- ── 4. CONTOH KODE ── -->
   <section class="section-card reveal">
     <h2>💻 Contoh Kode</h2>
