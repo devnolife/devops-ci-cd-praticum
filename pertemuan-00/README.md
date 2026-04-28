@@ -1,5 +1,7 @@
 # Pertemuan 0: Fullstack Next.js — Fondasi Sebelum CI/CD
 
+> 📖 **Buka juga [visual-guide.html](./visual-guide.html) di browser** untuk melihat ilustrasi visual interaktif dari semua konsep di bawah ini.
+
 ## 🎯 Tujuan Pembelajaran
 
 Setelah menyelesaikan pertemuan ini, mahasiswa mampu:

@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan 00 — Visual Guide: Fullstack Next.js</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface-2: #1a2235;
+    --border: rgba(148,163,184,.15);
+    --text: #e8edf5;
+    --muted: #8b9ab8;
+    --cyan: #22d3ee;
+    --cyan-dim: rgba(34,211,238,.12);
+    --amber: #fbbf24;
+    --amber-dim: rgba(251,191,36,.1);
+    --rose: #fb7185;
+    --rose-dim: rgba(251,113,133,.1);
+    --violet: #a78bfa;
+    --violet-dim: rgba(167,139,250,.1);
+    --emerald: #34d399;
+    --emerald-dim: rgba(52,211,153,.1);
+    --sky: #38bdf8;
+    --sky-dim: rgba(56,189,248,.1);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ──────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 30% 20%, rgba(34,211,238,.08), transparent),
+      radial-gradient(ellipse 500px 500px at 70% 80%, rgba(167,139,250,.06), transparent),
+      radial-gradient(ellipse 400px 300px at 50% 50%, rgba(251,191,36,.04), transparent);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: .82rem;
+    color: var(--muted);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    backdrop-filter: blur(8px);
+    animation: fadeUp .8s ease both;
+  }
+
+  .hero-badge span { color: var(--cyan); }
+
+  .hero h1 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 400;
+    line-height: .95;
+    letter-spacing: -.04em;
+    max-width: 900px;
+    margin-bottom: 24px;
+    animation: fadeUp .8s .15s ease both;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    max-width: 560px;
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin-bottom: 40px;
+    animation: fadeUp .8s .3s ease both;
+  }
+
+  .hero-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    animation: fadeUp .8s .45s ease both;
+  }
+
+  .hero-nav a {
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: .88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .25s ease;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .hero-nav a:hover {
+    color: var(--text);
+    border-color: var(--cyan);
+    background: var(--cyan-dim);
+  }
+
+  /* ── SECTIONS ──────────────────────────── */
+  section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .section-label.cyan  { color: var(--cyan); }
+  .section-label.amber { color: var(--amber); }
+  .section-label.rose  { color: var(--rose); }
+  .section-label.violet { color: var(--violet); }
+  .section-label.emerald { color: var(--emerald); }
+  .section-label.sky { color: var(--sky); }
+
+  section h2 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 400;
+    letter-spacing: -.03em;
+    margin-bottom: 12px;
+  }
+
+  section > p.desc {
+    color: var(--muted);
+    max-width: 640px;
+    margin-bottom: 40px;
+    font-size: 1.05rem;
+  }
+
+  /* ── DIAGRAM CARDS ─────────────────────── */
+  .diagram-card {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--surface);
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+
+  .diagram-card .card-header {
+    padding: 20px 28px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card-header .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot.r { background: #fb7185; }
+  .dot.y { background: #fbbf24; }
+  .dot.g { background: #34d399; }
+
+  .card-header h3 {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: .04em;
+    margin-left: 8px;
+  }
+
+  .diagram-body {
+    padding: 36px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+  }
+
+  /* ── SVG DIAGRAMS ──────────────────────── */
+  svg text {
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+
+  svg .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── COMPARISON GRID ───────────────────── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 700px) {
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+
+  .compare-card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .compare-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .compare-card.react::before { background: var(--cyan); }
+  .compare-card.nextjs::before { background: var(--violet); }
+  .compare-card.flex::before { background: var(--amber); }
+  .compare-card.grid::before { background: var(--emerald); }
+
+  .compare-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+  }
+
+  .compare-card .subtitle {
+    font-size: .85rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  /* ── VISUAL BOXES ──────────────────────── */
+  .box-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .box {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: .9rem;
+  }
+
+  .grid-demo {
+    display: grid;
+    grid-template-columns: repeat(3, 56px);
+    gap: 8px;
+  }
+
+  .box.cyan   { background: var(--cyan-dim);   color: var(--cyan);   border: 1px solid rgba(34,211,238,.25); }
+  .box.amber  { background: var(--amber-dim);  color: var(--amber);  border: 1px solid rgba(251,191,36,.25); }
+  .box.rose   { background: var(--rose-dim);   color: var(--rose);   border: 1px solid rgba(251,113,133,.25); }
+  .box.violet { background: var(--violet-dim); color: var(--violet); border: 1px solid rgba(167,139,250,.25); }
+  .box.emerald{ background: var(--emerald-dim);color: var(--emerald);border: 1px solid rgba(52,211,153,.25); }
+  .box.sky    { background: var(--sky-dim);    color: var(--sky);    border: 1px solid rgba(56,189,248,.25); }
+
+  /* ── CONCEPT CARDS ─────────────────────── */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .concept-card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    padding: 28px;
+    transition: border-color .3s, transform .3s;
+  }
+
+  .concept-card:hover {
+    border-color: rgba(148,163,184,.3);
+    transform: translateY(-2px);
+  }
+
+  .concept-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+  }
+
+  .concept-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+
+  .concept-card p {
+    font-size: .9rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .concept-card code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .82rem;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: rgba(255,255,255,.06);
+    color: var(--cyan);
+  }
+
+  /* ── CODE BLOCK ────────────────────────── */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .code-block .filename {
+    padding: 10px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,.02);
+  }
+
+  .code-block pre {
+    padding: 18px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .84rem;
+    line-height: 1.7;
+    color: #c9d1d9;
+  }
+
+  .code-block .kw { color: #ff7b72; }
+  .code-block .fn { color: #d2a8ff; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .cmt { color: #6e7681; font-style: italic; }
+  .code-block .tag { color: #7ee787; }
+  .code-block .attr { color: #79c0ff; }
+
+  /* ── FLOW DIAGRAM ──────────────────────── */
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .flow-step {
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: .88rem;
+    white-space: nowrap;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: transform .2s;
+  }
+
+  .flow-step:hover { transform: scale(1.05); }
+
+  .flow-arrow {
+    font-size: 1.4rem;
+    color: var(--muted);
+    padding: 0 6px;
+  }
+
+  .flow-step.highlight {
+    border-color: var(--cyan);
+    background: var(--cyan-dim);
+    color: var(--cyan);
+  }
+
+  /* ── FOOTER ────────────────────────────── */
+  footer {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--muted);
+    font-size: .85rem;
+    border-top: 1px solid var(--border);
+  }
+
+  footer a {
+    color: var(--cyan);
+    text-decoration: none;
+  }
+
+  /* ── ANIMATIONS ────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── DIVIDER ───────────────────────────── */
+  .divider {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .divider hr {
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── RESPONSIVE ────────────────────────── */
+  @media (max-width: 600px) {
+    .flow-row { gap: 4px; }
+    .flow-step { padding: 10px 14px; font-size: .78rem; }
+    .flow-arrow { font-size: 1rem; padding: 0 2px; }
+    .diagram-body { padding: 20px 12px; }
+    .diagram-body svg { width: 100%; height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<header class="hero">
+  <div class="hero-badge">Pertemuan <span>00</span> — Visual Guide</div>
+  <h1>Fullstack <em>Next.js</em></h1>
+  <p>Panduan visual interaktif untuk memahami konsep-konsep dasar Next.js, React, CSS, dan API Routes sebelum masuk ke Docker &amp; CI/CD.</p>
+  <nav class="hero-nav">
+    <a href="#react-vs-nextjs">React vs Next.js</a>
+    <a href="#app-router">App Router</a>
+    <a href="#layout">Layout & Children</a>
+    <a href="#jsx">JSX & Props</a>
+    <a href="#css">CSS Concepts</a>
+    <a href="#api">API Routes</a>
+    <a href="#env">Env Variables</a>
+    <a href="#build">Build Flow</a>
+  </nav>
+</header>
+
+<!-- ═══════════════════ 1. REACT vs NEXT.JS ═══════════════════ -->
+<section id="react-vs-nextjs">
+  <p class="section-label cyan">● Konsep 01</p>
+  <h2>React vs Next.js</h2>
+  <p class="desc">React adalah library UI. Next.js adalah framework fullstack yang membungkus React dengan routing, API, dan build tools.</p>
+
+  <div class="compare-grid reveal">
+    <div class="compare-card react">
+      <h3 style="color:var(--cyan)">⚛️ React</h3>
+      <p class="subtitle">Library untuk membangun UI</p>
+      <div class="code-block">
+        <div class="filename">Hanya UI — tanpa routing, tanpa API</div>
+        <pre><span class="cmt">// Butuh install react-router</span>
+<span class="cmt">// Butuh setup Webpack sendiri</span>
+<span class="cmt">// Tidak ada API backend</span>
+<span class="cmt">// Tidak ada SSR built-in</span>
+
+<span class="kw">import</span> { BrowserRouter } <span class="kw">from</span> <span class="str">'react-router-dom'</span>
+<span class="cmt">// ^ harus install manual</span></pre>
+      </div>
+    </div>
+    <div class="compare-card nextjs">
+      <h3 style="color:var(--violet)">▲ Next.js</h3>
+      <p class="subtitle">Framework fullstack = React + segalanya</p>
+      <div class="code-block">
+        <div class="filename">Routing otomatis + API + Build</div>
+        <pre><span class="cmt">// ✅ Routing dari folder</span>
+<span class="cmt">// ✅ API route built-in</span>
+<span class="cmt">// ✅ SSR & SSG built-in</span>
+<span class="cmt">// ✅ next build → production</span>
+
+<span class="cmt">// Buat file → jadi halaman!</span>
+app/about/page.js → <span class="str">/about</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════════════ 2. APP ROUTER ═══════════════════ -->
+<section id="app-router">
+  <p class="section-label amber">● Konsep 02</p>
+  <h2>App Router — Routing dari Folder</h2>
+  <p class="desc">Tidak perlu konfigurasi routing. Cukup buat folder dan file page.js — Next.js otomatis tahu URL-nya.</p>
+
+  <div class="diagram-card reveal">
+    <div class="card-header">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <h3>Struktur Folder → URL</h3>
+    </div>
+    <div class="diagram-body">
+      <svg width="700" height="340" viewBox="0 0 700 340">
+        <!-- Folder tree -->
+        <text x="40" y="30" fill="#8b9ab8" font-size="13" class="mono">app/</text>
+
+        <line x1="50" y1="40" x2="50" y2="80" stroke="#334155" stroke-width="1.5"/>
+        <line x1="50" y1="80" x2="75" y2="80" stroke="#334155" stroke-width="1.5"/>
+        <rect x="80" y="65" width="130" height="30" rx="8" fill="rgba(34,211,238,.12)" stroke="rgba(34,211,238,.3)" stroke-width="1"/>
+        <text x="145" y="85" fill="#22d3ee" font-size="13" text-anchor="middle" class="mono">page.js</text>
+
+        <line x1="50" y1="80" x2="50" y2="140" stroke="#334155" stroke-width="1.5"/>
+        <line x1="50" y1="140" x2="75" y2="140" stroke="#334155" stroke-width="1.5"/>
+        <text x="80" y="145" fill="#8b9ab8" font-size="13" class="mono">about/</text>
+
+        <line x1="110" y1="155" x2="110" y2="195" stroke="#334155" stroke-width="1.5"/>
+        <line x1="110" y1="195" x2="135" y2="195" stroke="#334155" stroke-width="1.5"/>
+        <rect x="140" y="180" width="130" height="30" rx="8" fill="rgba(167,139,250,.12)" stroke="rgba(167,139,250,.3)" stroke-width="1"/>
+        <text x="205" y="200" fill="#a78bfa" font-size="13" text-anchor="middle" class="mono">page.js</text>
+
+        <line x1="50" y1="140" x2="50" y2="250" stroke="#334155" stroke-width="1.5"/>
+        <line x1="50" y1="250" x2="75" y2="250" stroke="#334155" stroke-width="1.5"/>
+        <text x="80" y="255" fill="#8b9ab8" font-size="13" class="mono">api/health/</text>
+
+        <line x1="160" y1="265" x2="160" y2="305" stroke="#334155" stroke-width="1.5"/>
+        <line x1="160" y1="305" x2="185" y2="305" stroke="#334155" stroke-width="1.5"/>
+        <rect x="190" y="290" width="130" height="30" rx="8" fill="rgba(251,191,36,.12)" stroke="rgba(251,191,36,.3)" stroke-width="1"/>
+        <text x="255" y="310" fill="#fbbf24" font-size="13" text-anchor="middle" class="mono">route.js</text>
+
+        <!-- Arrows -->
+        <line x1="230" y1="80" x2="390" y2="80" stroke="#334155" stroke-width="1" stroke-dasharray="6,4"/>
+        <polygon points="390,76 400,80 390,84" fill="#334155"/>
+
+        <line x1="290" y1="195" x2="390" y2="195" stroke="#334155" stroke-width="1" stroke-dasharray="6,4"/>
+        <polygon points="390,191 400,195 390,199" fill="#334155"/>
+
+        <line x1="340" y1="305" x2="390" y2="305" stroke="#334155" stroke-width="1" stroke-dasharray="6,4"/>
+        <polygon points="390,301 400,305 390,309" fill="#334155"/>
+
+        <!-- URLs -->
+        <rect x="405" y="62" width="260" height="36" rx="10" fill="rgba(34,211,238,.08)" stroke="rgba(34,211,238,.2)" stroke-width="1"/>
+        <text x="535" y="85" fill="#22d3ee" font-size="14" text-anchor="middle" font-weight="600" class="mono">localhost:3000/</text>
+
+        <rect x="405" y="177" width="260" height="36" rx="10" fill="rgba(167,139,250,.08)" stroke="rgba(167,139,250,.2)" stroke-width="1"/>
+        <text x="535" y="200" fill="#a78bfa" font-size="14" text-anchor="middle" font-weight="600" class="mono">localhost:3000/about</text>
+
+        <rect x="405" y="287" width="260" height="36" rx="10" fill="rgba(251,191,36,.08)" stroke="rgba(251,191,36,.2)" stroke-width="1"/>
+        <text x="535" y="310" fill="#fbbf24" font-size="14" text-anchor="middle" font-weight="600" class="mono">localhost:3000/api/health</text>
+
+        <!-- Labels -->
+        <text x="420" y="55" fill="#6e7681" font-size="11">page.js = halaman HTML</text>
+        <text x="420" y="170" fill="#6e7681" font-size="11">folder = path URL</text>
+        <text x="420" y="280" fill="#6e7681" font-size="11">route.js = API endpoint (JSON)</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════════════ 3. LAYOUT & CHILDREN ═══════════════════ -->
+<section id="layout">
+  <p class="section-label rose">● Konsep 03</p>
+  <h2>Layout — Bungkus Semua Halaman</h2>
+  <p class="desc">layout.js membungkus semua halaman. {children} berisi halaman yang sedang aktif.</p>
+
+  <div class="diagram-card reveal">
+    <div class="card-header">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <h3>layout.js + {children}</h3>
+    </div>
+    <div class="diagram-body">
+      <svg width="600" height="320" viewBox="0 0 600 320">
+        <!-- Outer: layout.js -->
+        <rect x="30" y="20" width="540" height="280" rx="16" fill="none" stroke="rgba(251,113,133,.4)" stroke-width="2" stroke-dasharray="8,4"/>
+        <text x="50" y="50" fill="#fb7185" font-size="14" font-weight="700">layout.js</text>
+
+        <!-- html tag -->
+        <rect x="60" y="65" width="480" height="220" rx="12" fill="rgba(251,113,133,.05)" stroke="rgba(251,113,133,.15)" stroke-width="1"/>
+        <text x="80" y="90" fill="#6e7681" font-size="12" class="mono">&lt;html lang="id"&gt;</text>
+
+        <!-- body tag -->
+        <rect x="90" y="100" width="420" height="170" rx="10" fill="rgba(251,113,133,.04)" stroke="rgba(251,113,133,.1)" stroke-width="1"/>
+        <text x="110" y="125" fill="#6e7681" font-size="12" class="mono">&lt;body&gt;</text>
+
+        <!-- {children} - page aktif -->
+        <rect x="120" y="138" width="360" height="110" rx="10" fill="rgba(34,211,238,.08)" stroke="rgba(34,211,238,.3)" stroke-width="2"/>
+        <text x="300" y="175" fill="#22d3ee" font-size="16" text-anchor="middle" font-weight="700">{children}</text>
+        <text x="300" y="200" fill="#8b9ab8" font-size="12" text-anchor="middle">= halaman yang sedang dibuka</text>
+        <text x="300" y="222" fill="#6e7681" font-size="11" text-anchor="middle">Buka "/" → children = page.js</text>
+        <text x="300" y="238" fill="#6e7681" font-size="11" text-anchor="middle">Buka "/about" → children = about/page.js</text>
+
+        <!-- CSS import note -->
+        <rect x="320" y="28" width="240" height="30" rx="8" fill="rgba(251,191,36,.1)" stroke="rgba(251,191,36,.2)" stroke-width="1"/>
+        <text x="340" y="48" fill="#fbbf24" font-size="12" class="mono">import "./globals.css"</text>
+        <text x="320" y="72" fill="#6e7681" font-size="10">↑ CSS di-import di sini = berlaku global</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════════════ 4. JSX & PROPS ═══════════════════ -->
+<section id="jsx">
+  <p class="section-label violet">● Konsep 04</p>
+  <h2>Component, Props & JSX</h2>
+  <p class="desc">Component adalah fungsi yang mengembalikan UI. Props adalah data yang dikirim dari parent ke child.</p>
+
+  <div class="diagram-card reveal">
+    <div class="card-header">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <h3>Component Tree — Data mengalir ke bawah via Props</h3>
+    </div>
+    <div class="diagram-body">
+      <svg width="660" height="360" viewBox="0 0 660 360">
+        <!-- page.js (root) -->
+        <rect x="220" y="15" width="220" height="50" rx="12" fill="rgba(167,139,250,.12)" stroke="rgba(167,139,250,.4)" stroke-width="2"/>
+        <text x="330" y="45" fill="#a78bfa" font-size="15" text-anchor="middle" font-weight="700" class="mono">page.js</text>
+        <text x="330" y="85" fill="#6e7681" font-size="11" text-anchor="middle">import data dari lib/ + component dari components/</text>
+
+        <!-- Arrow down left -->
+        <line x1="270" y1="65" x2="140" y2="130" stroke="#334155" stroke-width="1.5"/>
+        <polygon points="137,126 143,134 148,125" fill="#334155"/>
+
+        <!-- Arrow down center -->
+        <line x1="330" y1="65" x2="330" y2="130" stroke="#334155" stroke-width="1.5"/>
+        <polygon points="326,128 330,138 334,128" fill="#334155"/>
+
+        <!-- Arrow down right -->
+        <line x1="390" y1="65" x2="520" y2="130" stroke="#334155" stroke-width="1.5"/>
+        <polygon points="517,126 523,134 526,124" fill="#334155"/>
+
+        <!-- MetricCard -->
+        <rect x="50" y="130" width="190" height="50" rx="12" fill="rgba(34,211,238,.1)" stroke="rgba(34,211,238,.3)" stroke-width="1.5"/>
+        <text x="145" y="160" fill="#22d3ee" font-size="13" text-anchor="middle" font-weight="600" class="mono">MetricCard</text>
+
+        <!-- .map() loop -->
+        <rect x="240" y="130" width="180" height="50" rx="12" fill="rgba(251,191,36,.1)" stroke="rgba(251,191,36,.3)" stroke-width="1.5"/>
+        <text x="330" y="160" fill="#fbbf24" font-size="13" text-anchor="middle" font-weight="600">.map() loop</text>
+
+        <!-- DeploymentStep -->
+        <rect x="440" y="130" width="190" height="50" rx="12" fill="rgba(52,211,153,.1)" stroke="rgba(52,211,153,.3)" stroke-width="1.5"/>
+        <text x="535" y="160" fill="#34d399" font-size="13" text-anchor="middle" font-weight="600" class="mono">DeploymentStep</text>
+
+        <!-- Props detail: MetricCard -->
+        <rect x="30" y="210" width="230" height="100" rx="10" fill="rgba(34,211,238,.05)" stroke="rgba(34,211,238,.15)" stroke-width="1"/>
+        <text x="50" y="237" fill="#8b9ab8" font-size="12" font-weight="600">Props yang diterima:</text>
+        <text x="50" y="260" fill="#22d3ee" font-size="12" class="mono">{ value, label }</text>
+        <text x="50" y="282" fill="#6e7681" font-size="11">Contoh: value="UI" label="Halaman"</text>
+        <line x1="145" y1="180" x2="145" y2="210" stroke="rgba(34,211,238,.3)" stroke-width="1" stroke-dasharray="4,3"/>
+
+        <!-- Props detail: DeploymentStep -->
+        <rect x="410" y="210" width="240" height="100" rx="10" fill="rgba(52,211,153,.05)" stroke="rgba(52,211,153,.15)" stroke-width="1"/>
+        <text x="430" y="237" fill="#8b9ab8" font-size="12" font-weight="600">Props yang diterima:</text>
+        <text x="430" y="260" fill="#34d399" font-size="12" class="mono">{ step }</text>
+        <text x="430" y="282" fill="#6e7681" font-size="11">step = { number, title, command }</text>
+        <line x1="535" y1="180" x2="535" y2="210" stroke="rgba(52,211,153,.3)" stroke-width="1" stroke-dasharray="4,3"/>
+
+        <!-- Key concept -->
+        <rect x="170" y="330" width="320" height="28" rx="8" fill="rgba(167,139,250,.08)" stroke="rgba(167,139,250,.2)" stroke-width="1"/>
+        <text x="330" y="349" fill="#a78bfa" font-size="12" text-anchor="middle" font-weight="600">Data mengalir SATU ARAH: Parent → Child via Props</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- JSX vs HTML -->
+  <div class="compare-grid reveal" style="margin-top:24px">
+    <div class="compare-card" style="border-top: 3px solid var(--rose);">
+      <h3 style="color:var(--rose)">HTML Biasa</h3>
+      <p class="subtitle">Yang sudah kamu tahu</p>
+      <div class="code-block">
+        <pre><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"hero"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;h1&gt;</span>Judul<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;p&gt;</span>Teks statis<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/div&gt;</span></pre>
+      </div>
+    </div>
+    <div class="compare-card" style="border-top: 3px solid var(--cyan);">
+      <h3 style="color:var(--cyan)">JSX (di Next.js)</h3>
+      <p class="subtitle">HTML + JavaScript = dinamis!</p>
+      <div class="code-block">
+        <pre><span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="str">"hero"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;h1&gt;</span>{title}<span class="tag">&lt;/h1&gt;</span>        <span class="cmt">// variabel</span>
+  <span class="tag">&lt;p&gt;</span>{message}<span class="tag">&lt;/p&gt;</span>      <span class="cmt">// dari env</span>
+  <span class="tag">&lt;MetricCard</span> <span class="attr">value</span>=<span class="str">"UI"</span> <span class="tag">/&gt;</span> <span class="cmt">// component</span>
+<span class="tag">&lt;/div&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════════════ 5. CSS CONCEPTS ═══════════════════ -->
+<section id="css">
+  <p class="section-label amber">● Konsep 05</p>
+  <h2>CSS — Variables, Flexbox, Grid, Responsive</h2>
+  <p class="desc">4 konsep CSS utama yang dipakai di aplikasi ini.</p>
+
+  <div class="concept-grid reveal">
+    <!-- CSS Variables -->
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--amber-dim);color:var(--amber)">🎨</div>
+      <h3>CSS Variables</h3>
+      <p>Definisi warna di <code>:root</code>, pakai di mana saja dengan <code>var(--nama)</code>. Ubah di satu tempat → berubah di mana-mana.</p>
+      <div class="code-block" style="margin-top:12px">
+        <pre><span class="cmt">/* Definisi */</span>
+:root { <span class="attr">--brand</span>: <span class="str">#38bdf8</span>; }
+
+<span class="cmt">/* Pakai */</span>
+.hero { <span class="attr">color</span>: <span class="fn">var</span>(<span class="attr">--brand</span>); }</pre>
+      </div>
+    </div>
+
+    <!-- Flexbox -->
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--cyan-dim);color:var(--cyan)">↔️</div>
+      <h3>Flexbox — Layout 1D</h3>
+      <p>Menyusun item dalam <strong>satu baris</strong> (horizontal) atau satu kolom (vertikal).</p>
+      <div style="margin-top:16px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="box cyan">A</div>
+          <div class="box cyan">B</div>
+          <div class="box cyan">C</div>
+          <div class="box cyan">D</div>
+        </div>
+        <p style="font-size:.78rem;color:var(--muted);margin-top:8px"><code>display: flex; gap: 8px;</code></p>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--emerald-dim);color:var(--emerald)">⊞</div>
+      <h3>CSS Grid — Layout 2D</h3>
+      <p>Menyusun item dalam <strong>baris DAN kolom</strong> sekaligus. Cocok untuk kartu, dashboard.</p>
+      <div style="margin-top:16px">
+        <div class="grid-demo">
+          <div class="box emerald">A</div>
+          <div class="box emerald">B</div>
+          <div class="box emerald">C</div>
+          <div class="box emerald">D</div>
+          <div class="box emerald">E</div>
+          <div class="box emerald">F</div>
+        </div>
+        <p style="font-size:.78rem;color:var(--muted);margin-top:8px"><code>display: grid; grid-template-columns: repeat(3, 1fr);</code></p>
+      </div>
+    </div>
+
+    <!-- Responsive -->
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--rose-dim);color:var(--rose)">📱</div>
+      <h3>Responsive — @media</h3>
+      <p>Aturan CSS yang hanya aktif di ukuran layar tertentu. Desktop → 3 kolom, mobile → 1 kolom.</p>
+      <div class="code-block" style="margin-top:12px">
+        <pre><span class="cmt">/* Desktop */</span>
+.metrics { <span class="attr">grid-template-columns</span>:
+  <span class="fn">repeat</span>(<span class="str">3</span>, <span class="str">1fr</span>); }
+
+<span class="cmt">/* Mobile (≤900px) */</span>
+<span class="kw">@media</span> (max-width: 900px) {
+  .metrics { <span class="attr">grid-template-columns</span>: <span class="str">1fr</span>; }
+}</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════════════ 6. API ROUTES ═══════════════════ -->
+<section id="api">
+  <p class="section-label emerald">● Konsep 06</p>
+  <h2>API Routes — Backend di dalam Next.js</h2>
+  <p class="desc">Satu project, dua fungsi: halaman HTML (frontend) dan endpoint JSON (backend).</p>
+
+  <div class="diagram-card reveal">
+    <div class="card-header">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <h3>Fullstack Architecture</h3>
+    </div>
+    <div class="diagram-body">
+      <svg width="660" height="240" viewBox="0 0 660 240">
+        <!-- Browser -->
+        <rect x="30" y="40" width="200" height="160" rx="14" fill="rgba(34,211,238,.06)" stroke="rgba(34,211,238,.3)" stroke-width="1.5"/>
+        <text x="130" y="30" fill="#22d3ee" font-size="13" text-anchor="middle" font-weight="700">🌐 BROWSER</text>
+        <text x="130" y="75" fill="#e8edf5" font-size="13" text-anchor="middle" font-weight="600">page.js</text>
+        <text x="130" y="100" fill="#8b9ab8" font-size="11" text-anchor="middle">Halaman HTML/JSX</text>
+        <text x="130" y="125" fill="#8b9ab8" font-size="11" text-anchor="middle">Yang user lihat</text>
+        <rect x="65" y="145" width="130" height="35" rx="8" fill="rgba(34,211,238,.12)" stroke="rgba(34,211,238,.2)" stroke-width="1"/>
+        <text x="130" y="167" fill="#22d3ee" font-size="12" text-anchor="middle" class="mono">localhost:3000/</text>
+
+        <!-- Arrow -->
+        <line x1="230" y1="100" x2="290" y2="100" stroke="#fbbf24" stroke-width="2"/>
+        <polygon points="288,95 300,100 288,105" fill="#fbbf24"/>
+        <text x="260" y="90" fill="#fbbf24" font-size="10" text-anchor="middle">fetch()</text>
+        <line x1="290" y1="140" x2="230" y2="140" stroke="#34d399" stroke-width="2"/>
+        <polygon points="232,135 220,140 232,145" fill="#34d399"/>
+        <text x="260" y="155" fill="#34d399" font-size="10" text-anchor="middle">JSON</text>
+
+        <!-- Server -->
+        <rect x="300" y="40" width="330" height="160" rx="14" fill="rgba(251,191,36,.04)" stroke="rgba(251,191,36,.2)" stroke-width="1.5"/>
+        <text x="465" y="30" fill="#fbbf24" font-size="13" text-anchor="middle" font-weight="700">⚡ SERVER (Node.js)</text>
+
+        <!-- API Health -->
+        <rect x="320" y="60" width="290" height="55" rx="10" fill="rgba(34,211,238,.06)" stroke="rgba(34,211,238,.15)" stroke-width="1"/>
+        <text x="340" y="82" fill="#22d3ee" font-size="12" class="mono" font-weight="600">GET /api/health</text>
+        <text x="340" y="102" fill="#6e7681" font-size="11">→ { status: "ok", uptime, timestamp }</text>
+
+        <!-- API Deployments -->
+        <rect x="320" y="125" width="290" height="55" rx="10" fill="rgba(167,139,250,.06)" stroke="rgba(167,139,250,.15)" stroke-width="1"/>
+        <text x="340" y="147" fill="#a78bfa" font-size="12" class="mono" font-weight="600">GET /api/deployments</text>
+        <text x="340" y="167" fill="#6e7681" font-size="11">→ { steps: [...], checks: [...] }</text>
+
+        <!-- Label -->
+        <text x="465" y="225" fill="#6e7681" font-size="11" text-anchor="middle">route.js = handler HTTP (GET, POST, PUT, DELETE)</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════════════ 7. ENV VARIABLES ═══════════════════ -->
+<section id="env">
+  <p class="section-label sky">● Konsep 07</p>
+  <h2>Environment Variable</h2>
+  <p class="desc">Konfigurasi yang bisa diubah TANPA mengubah kode. Satu kode, banyak environment.</p>
+
+  <div class="diagram-card reveal">
+    <div class="card-header">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <h3>Satu kode, tiga environment berbeda</h3>
+    </div>
+    <div class="diagram-body" style="flex-direction:column;gap:20px">
+      <svg width="660" height="220" viewBox="0 0 660 220">
+        <!-- Code box -->
+        <rect x="200" y="10" width="260" height="50" rx="12" fill="rgba(167,139,250,.1)" stroke="rgba(167,139,250,.3)" stroke-width="1.5"/>
+        <text x="330" y="40" fill="#a78bfa" font-size="13" text-anchor="middle" class="mono" font-weight="600">process.env.APP_MESSAGE</text>
+
+        <!-- Arrows -->
+        <line x1="240" y1="60" x2="110" y2="100" stroke="#334155" stroke-width="1.5"/>
+        <line x1="330" y1="60" x2="330" y2="100" stroke="#334155" stroke-width="1.5"/>
+        <line x1="420" y1="60" x2="550" y2="100" stroke="#334155" stroke-width="1.5"/>
+
+        <!-- Dev -->
+        <rect x="20" y="100" width="190" height="105" rx="12" fill="rgba(34,211,238,.06)" stroke="rgba(34,211,238,.25)" stroke-width="1.5"/>
+        <text x="115" y="125" fill="#22d3ee" font-size="13" text-anchor="middle" font-weight="700">💻 Development</text>
+        <text x="115" y="150" fill="#8b9ab8" font-size="11" text-anchor="middle">.env.local</text>
+        <rect x="40" y="162" width="150" height="28" rx="6" fill="rgba(34,211,238,.08)"/>
+        <text x="115" y="181" fill="#22d3ee" font-size="11" text-anchor="middle" class="mono">"Halo Dev!"</text>
+
+        <!-- Docker -->
+        <rect x="235" y="100" width="190" height="105" rx="12" fill="rgba(251,191,36,.06)" stroke="rgba(251,191,36,.25)" stroke-width="1.5"/>
+        <text x="330" y="125" fill="#fbbf24" font-size="13" text-anchor="middle" font-weight="700">🐳 Docker</text>
+        <text x="330" y="150" fill="#8b9ab8" font-size="11" text-anchor="middle">docker run -e</text>
+        <rect x="255" y="162" width="150" height="28" rx="6" fill="rgba(251,191,36,.08)"/>
+        <text x="330" y="181" fill="#fbbf24" font-size="11" text-anchor="middle" class="mono">"Halo Container!"</text>
+
+        <!-- Production -->
+        <rect x="450" y="100" width="190" height="105" rx="12" fill="rgba(52,211,153,.06)" stroke="rgba(52,211,153,.25)" stroke-width="1.5"/>
+        <text x="545" y="125" fill="#34d399" font-size="13" text-anchor="middle" font-weight="700">🚀 Production</text>
+        <text x="545" y="150" fill="#8b9ab8" font-size="11" text-anchor="middle">Kubernetes ConfigMap</text>
+        <rect x="470" y="162" width="150" height="28" rx="6" fill="rgba(52,211,153,.08)"/>
+        <text x="545" y="181" fill="#34d399" font-size="11" text-anchor="middle" class="mono">"Selamat Datang"</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Public vs Private -->
+  <div class="compare-grid reveal" style="margin-top:24px">
+    <div class="compare-card" style="border-top:3px solid var(--emerald)">
+      <h3 style="color:var(--emerald)">✅ NEXT_PUBLIC_*</h3>
+      <p class="subtitle">Dibaca di browser + server</p>
+      <div class="code-block">
+        <pre><span class="cmt">// Aman untuk data non-sensitif</span>
+<span class="attr">NEXT_PUBLIC_APP_MESSAGE</span>=<span class="str">"Halo!"</span>
+<span class="attr">NEXT_PUBLIC_DOCKER_IMAGE</span>=<span class="str">"app:v1"</span></pre>
+      </div>
+    </div>
+    <div class="compare-card" style="border-top:3px solid var(--rose)">
+      <h3 style="color:var(--rose)">🔒 Tanpa Prefix</h3>
+      <p class="subtitle">HANYA dibaca di server</p>
+      <div class="code-block">
+        <pre><span class="cmt">// Untuk secret & konfigurasi server</span>
+<span class="attr">APP_ENV</span>=<span class="str">production</span>
+<span class="attr">APP_VERSION</span>=<span class="str">1.0.0</span>
+<span class="attr">DATABASE_URL</span>=<span class="str">postgres://...</span>  <span class="cmt">// aman!</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════════════ 8. BUILD & DOCKER FLOW ═══════════════════ -->
+<section id="build">
+  <p class="section-label rose">● Konsep 08</p>
+  <h2>Build → Docker — Alur Lengkap</h2>
+  <p class="desc">Dari kode sampai container berjalan di production.</p>
+
+  <div class="flow-row reveal" style="margin-bottom:32px">
+    <div class="flow-step" style="border-color:var(--cyan);color:var(--cyan)">npm install</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step" style="border-color:var(--amber);color:var(--amber)">npm test</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step" style="border-color:var(--violet);color:var(--violet)">npm run build</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step" style="border-color:var(--emerald);color:var(--emerald)">docker build</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step highlight">docker run 🚀</div>
+  </div>
+
+  <!-- Docker multi-stage -->
+  <div class="diagram-card reveal">
+    <div class="card-header">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <h3>Dockerfile — 4 Stage Multi-Stage Build</h3>
+    </div>
+    <div class="diagram-body">
+      <svg width="660" height="300" viewBox="0 0 660 300">
+        <!-- Stage 1: base -->
+        <rect x="20" y="20" width="140" height="90" rx="12" fill="rgba(56,189,248,.08)" stroke="rgba(56,189,248,.3)" stroke-width="1.5"/>
+        <text x="90" y="48" fill="#38bdf8" font-size="14" text-anchor="middle" font-weight="700">1. BASE</text>
+        <text x="90" y="70" fill="#8b9ab8" font-size="10" text-anchor="middle">node:20-alpine</text>
+        <text x="90" y="88" fill="#6e7681" font-size="10" text-anchor="middle">Image dasar (~50MB)</text>
+
+        <!-- Arrow -->
+        <line x1="160" y1="65" x2="180" y2="65" stroke="#334155" stroke-width="1.5"/>
+        <polygon points="178,60 188,65 178,70" fill="#334155"/>
+
+        <!-- Stage 2: deps -->
+        <rect x="190" y="20" width="140" height="90" rx="12" fill="rgba(251,191,36,.08)" stroke="rgba(251,191,36,.3)" stroke-width="1.5"/>
+        <text x="260" y="48" fill="#fbbf24" font-size="14" text-anchor="middle" font-weight="700">2. DEPS</text>
+        <text x="260" y="70" fill="#8b9ab8" font-size="10" text-anchor="middle" class="mono">npm ci</text>
+        <text x="260" y="88" fill="#6e7681" font-size="10" text-anchor="middle">Install dependencies</text>
+
+        <!-- Arrow -->
+        <line x1="330" y1="65" x2="350" y2="65" stroke="#334155" stroke-width="1.5"/>
+        <polygon points="348,60 358,65 348,70" fill="#334155"/>
+
+        <!-- Stage 3: builder -->
+        <rect x="360" y="20" width="140" height="90" rx="12" fill="rgba(167,139,250,.08)" stroke="rgba(167,139,250,.3)" stroke-width="1.5"/>
+        <text x="430" y="48" fill="#a78bfa" font-size="14" text-anchor="middle" font-weight="700">3. BUILDER</text>
+        <text x="430" y="70" fill="#8b9ab8" font-size="10" text-anchor="middle" class="mono">test + build</text>
+        <text x="430" y="88" fill="#6e7681" font-size="10" text-anchor="middle">Test gagal? STOP ❌</text>
+
+        <!-- Arrow -->
+        <line x1="500" y1="65" x2="520" y2="65" stroke="#334155" stroke-width="1.5"/>
+        <polygon points="518,60 528,65 518,70" fill="#334155"/>
+
+        <!-- Stage 4: runner -->
+        <rect x="530" y="20" width="120" height="90" rx="12" fill="rgba(52,211,153,.12)" stroke="rgba(52,211,153,.4)" stroke-width="2"/>
+        <text x="590" y="48" fill="#34d399" font-size="14" text-anchor="middle" font-weight="700">4. RUNNER</text>
+        <text x="590" y="70" fill="#8b9ab8" font-size="10" text-anchor="middle">server.js only</text>
+        <text x="590" y="88" fill="#34d399" font-size="10" text-anchor="middle">IMAGE FINAL ✅</text>
+
+        <!-- What's included -->
+        <rect x="30" y="140" width="600" height="140" rx="14" fill="rgba(52,211,153,.04)" stroke="rgba(52,211,153,.12)" stroke-width="1"/>
+        <text x="330" y="168" fill="#34d399" font-size="13" text-anchor="middle" font-weight="700">📦 Yang MASUK ke image final (stage RUNNER):</text>
+
+        <rect x="60" y="185" width="165" height="36" rx="8" fill="rgba(52,211,153,.08)"/>
+        <text x="142" y="208" fill="#34d399" font-size="12" text-anchor="middle" class="mono">.next/standalone/</text>
+
+        <rect x="245" y="185" width="140" height="36" rx="8" fill="rgba(52,211,153,.08)"/>
+        <text x="315" y="208" fill="#34d399" font-size="12" text-anchor="middle" class="mono">.next/static/</text>
+
+        <rect x="405" y="185" width="100" height="36" rx="8" fill="rgba(52,211,153,.08)"/>
+        <text x="455" y="208" fill="#34d399" font-size="12" text-anchor="middle" class="mono">public/</text>
+
+        <text x="330" y="255" fill="#6e7681" font-size="11" text-anchor="middle">❌ node_modules, source code, devDependencies → TIDAK masuk → image kecil!</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- ═══════════════════ SUMMARY ═══════════════════ -->
+<section>
+  <p class="section-label violet">● Ringkasan</p>
+  <h2>Semua Konsep dalam Satu Pandangan</h2>
+  <p class="desc">12 konsep yang dipelajari di Pertemuan 00.</p>
+
+  <div class="concept-grid reveal">
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--rose-dim);color:var(--rose)">📄</div>
+      <h3>Layout</h3>
+      <p><code>app/layout.js</code> — bungkus global, import CSS, {children}</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--cyan-dim);color:var(--cyan)">🏠</div>
+      <h3>Halaman</h3>
+      <p><code>app/page.js</code> — routing otomatis dari folder</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--amber-dim);color:var(--amber)">🎨</div>
+      <h3>CSS Variables</h3>
+      <p>Definisi warna di <code>:root</code>, pakai <code>var()</code></p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--cyan-dim);color:var(--cyan)">↔️</div>
+      <h3>Flexbox</h3>
+      <p>Layout 1D — <code>display: flex</code></p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--emerald-dim);color:var(--emerald)">⊞</div>
+      <h3>CSS Grid</h3>
+      <p>Layout 2D — <code>display: grid</code></p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--rose-dim);color:var(--rose)">📱</div>
+      <h3>Responsive</h3>
+      <p><code>@media (max-width: 900px)</code></p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--violet-dim);color:var(--violet)">🧩</div>
+      <h3>Component</h3>
+      <p>Fungsi JS → return JSX → UI reusable</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--sky-dim);color:var(--sky)">📬</div>
+      <h3>Props</h3>
+      <p>Data: Parent → Child via parameter</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--amber-dim);color:var(--amber)">📊</div>
+      <h3>Data Layer</h3>
+      <p><code>lib/*.js</code> — pisahkan data dari UI</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--emerald-dim);color:var(--emerald)">⚡</div>
+      <h3>API Route</h3>
+      <p><code>app/api/*/route.js</code> — backend JSON</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--sky-dim);color:var(--sky)">🔐</div>
+      <h3>Env Variable</h3>
+      <p><code>process.env.*</code> — config tanpa ubah kode</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon" style="background:var(--violet-dim);color:var(--violet)">✅</div>
+      <h3>Test & Build</h3>
+      <p><code>npm test</code> → <code>npm run build</code> → standalone</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Pertemuan 00 — Fullstack Next.js Visual Guide</p>
+  <p style="margin-top:6px">Cloud Native Practicum & DevOps CI/CD • <a href="https://github.com/devnolife">devnolife</a> • Universitas Muhammadiyah Makassar</p>
+</footer>
+
+<script>
+  // Scroll reveal animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
