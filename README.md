@@ -128,6 +128,7 @@ Mata kuliah ini mengajarkan mahasiswa untuk membangun **alur kerja otomatis** un
 
 | Pertemuan | Topik | Deliverables | Status |
 |:---------:|-------|--------------|:------:|
+| **00** | [Fullstack Next.js — Fondasi Sebelum CI/CD](./pertemuan-00/) | Pahami Next.js: component, CSS, API, test | 🟢 |
 | **01** | [DevOps Culture & Principles](./pertemuan-01/) | Setup development environment | 🟢 |
 | **02** | [Git Advanced: Branching Strategies](./pertemuan-02/) | Implement GitFlow workflow | 🟢 |
 | **03** | [Code Review & Pull Request Best Practices](./pertemuan-03/) | Collaborative coding exercise | 🟢 |
