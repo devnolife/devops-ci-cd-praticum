@@ -1001,6 +1001,62 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.section-card').forEach(card => observer.observe(card));
 });
 </script>
+<script>
+window.QUIZ_CONFIG = {
+  pageId: '08-build-docker',
+  pageTitle: '08. Build & Docker',
+  questions: [
+    {
+      type: 'mc',
+      question: 'Perintah apa untuk mem-build aplikasi Next.js untuk production?',
+      options: ['npm run dev', 'npm run build', 'npm start', 'npm run deploy'],
+      correct: 1,
+      explanation: 'npm run build mengkompilasi dan mengoptimasi aplikasi Next.js untuk production. Hasilnya tersimpan di folder .next/'
+    },
+    {
+      type: 'mc',
+      question: 'Apa keuntungan output "standalone" di next.config.js?',
+      options: [
+        'Membuat aplikasi lebih cepat',
+        'Menghasilkan folder mandiri yang bisa di-deploy tanpa node_modules penuh',
+        'Menambahkan TypeScript secara otomatis',
+        'Mengaktifkan hot reload'
+      ],
+      correct: 1,
+      explanation: 'Output standalone menghasilkan folder .next/standalone yang berisi semua file yang dibutuhkan untuk menjalankan aplikasi, tanpa perlu seluruh node_modules. Ini sangat ideal untuk Docker karena image menjadi lebih kecil.'
+    },
+    {
+      type: 'mc',
+      question: 'Dockerfile multi-stage berguna untuk...',
+      options: [
+        'Menjalankan banyak aplikasi sekaligus',
+        'Memisahkan proses build dan runtime sehingga image lebih kecil',
+        'Membuat banyak container otomatis',
+        'Menghubungkan ke database'
+      ],
+      correct: 1,
+      explanation: 'Multi-stage build memisahkan stage build (install deps + compile) dari stage runtime. Stage akhir hanya berisi file yang dibutuhkan untuk jalan, sehingga image Docker jauh lebih kecil.'
+    },
+    {
+      type: 'mc',
+      question: 'File .dockerignore berfungsi untuk...',
+      options: [
+        'Menghapus Docker image lama',
+        'Mencegah file tertentu masuk ke Docker image (seperti node_modules, .git)',
+        'Mengatur port Docker',
+        'Membuat Docker Compose'
+      ],
+      correct: 1,
+      explanation: '.dockerignore mirip .gitignore — mencegah file yang tidak dibutuhkan (node_modules, .git, .env.local) ikut ter-copy ke dalam Docker image. Ini mempercepat build dan memperkecil image.'
+    },
+    {
+      type: 'short',
+      question: 'Sebutkan dan jelaskan 4 stage yang umum digunakan dalam Dockerfile multi-stage untuk Next.js!'
+    }
+  ]
+};
+</script>
+<script src="quiz-system.js"></script>
 
 </body>
 </html>

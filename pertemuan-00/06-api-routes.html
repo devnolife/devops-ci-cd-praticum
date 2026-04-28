@@ -1042,6 +1042,62 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
+<script>
+window.QUIZ_CONFIG = {
+  pageId: '06-api-routes',
+  pageTitle: '06. API Routes',
+  questions: [
+    {
+      type: 'mc',
+      question: 'Untuk membuat API endpoint di Next.js App Router, file apa yang harus dibuat?',
+      options: ['page.js', 'api.js', 'route.js', 'server.js'],
+      correct: 2,
+      explanation: 'Di App Router, API route dibuat dengan file route.js di dalam folder app/api/. Contoh: app/api/users/route.js menjadi endpoint /api/users.'
+    },
+    {
+      type: 'mc',
+      question: 'Method HTTP mana saja yang bisa di-export dari route.js?',
+      options: [
+        'Hanya GET',
+        'GET dan POST saja',
+        'GET, POST, PUT, PATCH, DELETE',
+        'Tidak bisa memilih method'
+      ],
+      correct: 2,
+      explanation: 'Next.js mendukung semua HTTP method utama: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS. Export fungsi dengan nama method yang diinginkan.'
+    },
+    {
+      type: 'mc',
+      question: 'Untuk membaca JSON body dari request POST, kita menggunakan...',
+      options: [
+        'request.body',
+        'request.json()',
+        'await request.json()',
+        'JSON.parse(request)'
+      ],
+      correct: 2,
+      explanation: 'Di Next.js App Router, body request dibaca dengan await request.json(). Perhatikan harus menggunakan await karena ini adalah operasi async.'
+    },
+    {
+      type: 'mc',
+      question: 'Apa response yang benar untuk mengembalikan JSON dari API route?',
+      options: [
+        'return { data: "hello" }',
+        'res.json({ data: "hello" })',
+        'return NextResponse.json({ data: "hello" })',
+        'console.log({ data: "hello" })'
+      ],
+      correct: 2,
+      explanation: 'Di App Router, gunakan NextResponse.json() untuk mengembalikan response JSON. Import NextResponse dari "next/server".'
+    },
+    {
+      type: 'short',
+      question: 'Tuliskan kode untuk API route GET /api/waktu yang mengembalikan JSON berisi tanggal dan waktu saat ini. Sertakan import yang diperlukan!'
+    }
+  ]
+};
+</script>
+<script src="quiz-system.js"></script>
 
 </body>
 </html>

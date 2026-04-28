@@ -1064,5 +1064,46 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 });
 </script>
+<script>
+window.QUIZ_CONFIG = {
+  pageId: '01-react-vs-nextjs',
+  pageTitle: '01. React vs Next.js',
+  questions: [
+    {
+      type: 'mc',
+      question: 'Next.js adalah...',
+      options: ['Library untuk membuat UI', 'Framework fullstack berbasis React', 'Bahasa pemrograman baru', 'Database untuk JavaScript'],
+      correct: 1,
+      explanation: 'Next.js adalah framework fullstack yang dibangun di atas React. React adalah library, Next.js menambahkan routing, API, SSR, dan fitur lainnya.'
+    },
+    {
+      type: 'mc',
+      question: 'Mana yang TIDAK perlu di-install manual di Next.js?',
+      options: ['axios (HTTP client)', 'react-router-dom', 'Webpack & Babel', 'Jawaban B dan C benar'],
+      correct: 3,
+      explanation: 'Next.js sudah memiliki routing built-in (tidak perlu react-router) dan build system sendiri (tidak perlu Webpack/Babel manual). Axios tetap bisa di-install jika dibutuhkan.'
+    },
+    {
+      type: 'mc',
+      question: 'Saat install Next.js, agar menggunakan JavaScript (bukan TypeScript), kita harus pilih...',
+      options: ['TypeScript = Yes', 'TypeScript = No', 'ESLint = No', 'App Router = No'],
+      correct: 1,
+      explanation: 'Pilih "No" untuk TypeScript agar file menggunakan extension .js bukan .tsx. Ini membuat kode lebih sederhana untuk pemula.'
+    },
+    {
+      type: 'mc',
+      question: 'Apakah komponen React bisa dipakai di Next.js?',
+      options: ['Tidak, harus ditulis ulang', 'Ya, tapi perlu modifikasi', 'Ya, 100% kompatibel tanpa perubahan', 'Hanya komponen class yang bisa'],
+      correct: 2,
+      explanation: 'Next.js menggunakan React di dalamnya. Setiap komponen React biasa bisa langsung dipakai di Next.js tanpa perubahan apapun.'
+    },
+    {
+      type: 'short',
+      question: 'Sebutkan minimal 3 fitur yang Next.js berikan di atas React biasa!'
+    }
+  ]
+};
+</script>
+<script src="quiz-system.js"></script>
 </body>
 </html>

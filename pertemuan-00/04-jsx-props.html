@@ -1294,6 +1294,67 @@ app/
     }
   });
 </script>
+<script>
+window.QUIZ_CONFIG = {
+  pageId: '04-jsx-props',
+  pageTitle: '04. JSX & Props',
+  questions: [
+    {
+      type: 'mc',
+      question: 'JSX adalah...',
+      options: [
+        'Bahasa pemrograman baru',
+        'Syntax extension yang memungkinkan menulis HTML di dalam JavaScript',
+        'Framework CSS',
+        'Database query language'
+      ],
+      correct: 1,
+      explanation: 'JSX (JavaScript XML) adalah syntax extension yang memungkinkan kita menulis kode mirip HTML di dalam file JavaScript. JSX dikompilasi menjadi fungsi React.createElement().'
+    },
+    {
+      type: 'mc',
+      question: 'Props di React digunakan untuk...',
+      options: [
+        'Menyimpan data di database',
+        'Mengirim data dari komponen parent ke child',
+        'Mengatur CSS global',
+        'Membuat routing'
+      ],
+      correct: 1,
+      explanation: 'Props (properties) adalah cara mengirim data dari komponen induk (parent) ke komponen anak (child). Props bersifat read-only — child tidak boleh mengubah props yang diterima.'
+    },
+    {
+      type: 'mc',
+      question: 'Mana syntax JSX yang BENAR?',
+      options: [
+        '<div class="box">Hello</div>',
+        '<div className="box">Hello</div>',
+        '<div Class="box">Hello</div>',
+        '<div classname="box">Hello</div>'
+      ],
+      correct: 1,
+      explanation: 'Di JSX, atribut HTML "class" ditulis sebagai "className" karena "class" adalah reserved word di JavaScript. Ini salah satu perbedaan JSX dengan HTML biasa.'
+    },
+    {
+      type: 'mc',
+      question: 'Untuk menampilkan variabel JavaScript di JSX, kita menggunakan...',
+      options: [
+        '${variabel}',
+        '{{variabel}}',
+        '{variabel}',
+        '<%=variabel%>'
+      ],
+      correct: 2,
+      explanation: 'Di JSX, kita menggunakan kurung kurawal tunggal {variabel} untuk menyisipkan ekspresi JavaScript. Ini disebut JSX expression.'
+    },
+    {
+      type: 'short',
+      question: 'Tulis sebuah komponen React bernama "KartuMahasiswa" yang menerima props: nama, nim, dan jurusan, lalu menampilkannya dalam sebuah div!'
+    }
+  ]
+};
+</script>
+<script src="quiz-system.js"></script>
 
 </body>
 </html>

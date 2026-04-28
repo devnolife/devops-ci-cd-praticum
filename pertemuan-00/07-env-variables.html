@@ -899,6 +899,57 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
+<script>
+window.QUIZ_CONFIG = {
+  pageId: '07-env-variables',
+  pageTitle: '07. Environment Variables',
+  questions: [
+    {
+      type: 'mc',
+      question: 'Agar environment variable bisa dibaca di browser (client-side), prefix apa yang harus digunakan?',
+      options: ['PUBLIC_', 'NEXT_PUBLIC_', 'CLIENT_', 'BROWSER_'],
+      correct: 1,
+      explanation: 'Di Next.js, hanya env var dengan prefix NEXT_PUBLIC_ yang bisa dibaca di browser. Tanpa prefix ini, env var hanya bisa diakses di server (API route, server component).'
+    },
+    {
+      type: 'mc',
+      question: 'File env mana yang TIDAK boleh di-commit ke Git?',
+      options: ['.env.example', '.env.local', '.env.production', 'Semua boleh di-commit'],
+      correct: 1,
+      explanation: '.env.local berisi secret lokal (API key, password) dan harus masuk .gitignore. File .env.example boleh di-commit sebagai template (tanpa nilai sebenarnya).'
+    },
+    {
+      type: 'mc',
+      question: 'Kenapa data sensitif (API key, password) TIDAK boleh menggunakan prefix NEXT_PUBLIC_?',
+      options: [
+        'Karena akan memperlambat aplikasi',
+        'Karena akan terexpose ke browser dan bisa dilihat siapa saja',
+        'Karena tidak didukung oleh Next.js',
+        'Karena hanya bisa dipakai di development'
+      ],
+      correct: 1,
+      explanation: 'NEXT_PUBLIC_ membuat env var ter-bundle ke JavaScript yang dikirim ke browser. Siapa saja bisa melihatnya di DevTools. Data sensitif harus disimpan di server-only env var.'
+    },
+    {
+      type: 'mc',
+      question: 'Setelah mengubah file .env.local, apa yang harus dilakukan?',
+      options: [
+        'Tidak perlu apa-apa, otomatis ter-update',
+        'Restart development server (npm run dev)',
+        'Build ulang (npm run build)',
+        'Clear browser cache'
+      ],
+      correct: 1,
+      explanation: 'File .env hanya dibaca saat server pertama kali start. Setelah mengubah .env.local, harus restart dev server agar perubahan terbaca.'
+    },
+    {
+      type: 'short',
+      question: 'Jelaskan perbedaan antara .env, .env.local, dan .env.production di Next.js. Kapan masing-masing digunakan?'
+    }
+  ]
+};
+</script>
+<script src="quiz-system.js"></script>
 
 </body>
 </html>

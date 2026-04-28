@@ -1183,6 +1183,67 @@
       }
     });
   </script>
+<script>
+window.QUIZ_CONFIG = {
+  pageId: '03-layout-children',
+  pageTitle: '03. Layout & Children',
+  questions: [
+    {
+      type: 'mc',
+      question: 'Apa fungsi utama file layout.js di Next.js?',
+      options: [
+        'Menampilkan halaman error',
+        'Membungkus halaman dengan elemen yang sama (navbar, footer, dll)',
+        'Mengatur API route',
+        'Menjalankan database query'
+      ],
+      correct: 1,
+      explanation: 'layout.js berfungsi sebagai wrapper/pembungkus yang membungkus semua halaman di dalam folder tersebut. Elemen seperti navbar dan footer cukup ditulis sekali di layout.'
+    },
+    {
+      type: 'mc',
+      question: 'Props {children} di layout.js berisi apa?',
+      options: [
+        'Data dari database',
+        'Konten halaman (page.js) yang sedang aktif',
+        'List semua file di folder',
+        'Environment variables'
+      ],
+      correct: 1,
+      explanation: '{children} adalah konten halaman yang sedang ditampilkan. Saat user buka /about, maka children berisi konten dari app/about/page.js.'
+    },
+    {
+      type: 'mc',
+      question: 'Apa yang terjadi jika tidak ada layout.js di folder app/?',
+      options: [
+        'Aplikasi error',
+        'Next.js membuat layout default otomatis',
+        'Halaman tidak bisa diakses',
+        'CSS tidak bisa digunakan'
+      ],
+      correct: 1,
+      explanation: 'Next.js akan membuat layout default secara otomatis jika tidak ditemukan layout.js di root app/. Tapi sebaiknya selalu buat sendiri untuk kontrol penuh.'
+    },
+    {
+      type: 'mc',
+      question: 'Di Next.js, nested layout berarti...',
+      options: [
+        'Layout yang error',
+        'Layout di dalam layout (layout bertingkat)',
+        'Layout yang hanya untuk mobile',
+        'Layout tanpa children'
+      ],
+      correct: 1,
+      explanation: 'Nested layout = layout bertingkat. Contoh: app/layout.js membungkus semua halaman, lalu app/dashboard/layout.js menambah sidebar khusus untuk halaman dashboard.'
+    },
+    {
+      type: 'short',
+      question: 'Jelaskan dengan kata-katamu sendiri: apa itu konsep "children" di React? Berikan analogi kehidupan sehari-hari!'
+    }
+  ]
+};
+</script>
+<script src="quiz-system.js"></script>
 
 </body>
 </html>

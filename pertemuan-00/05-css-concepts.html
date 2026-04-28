@@ -866,5 +866,56 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
+<script>
+window.QUIZ_CONFIG = {
+  pageId: '05-css-concepts',
+  pageTitle: '05. CSS di Next.js',
+  questions: [
+    {
+      type: 'mc',
+      question: 'File CSS Module di Next.js menggunakan extension apa?',
+      options: ['.css', '.module.css', '.styled.css', '.next.css'],
+      correct: 1,
+      explanation: 'CSS Module menggunakan extension .module.css (contoh: Button.module.css). Ini membuat class name otomatis unik sehingga tidak bentrok antar komponen.'
+    },
+    {
+      type: 'mc',
+      question: 'Di mana file globals.css harus di-import?',
+      options: ['Di setiap page.js', 'Di layout.js (root layout)', 'Di next.config.js', 'Tidak perlu import'],
+      correct: 1,
+      explanation: 'globals.css berisi style global yang berlaku di seluruh aplikasi. File ini di-import di app/layout.js agar berlaku di semua halaman.'
+    },
+    {
+      type: 'mc',
+      question: 'Apa keuntungan utama CSS Module dibanding CSS biasa?',
+      options: [
+        'Lebih cepat di browser',
+        'Class name otomatis unik (scoped), tidak bentrok antar komponen',
+        'Bisa menggunakan Sass',
+        'Tidak perlu menulis CSS'
+      ],
+      correct: 1,
+      explanation: 'CSS Module membuat class name unik secara otomatis. Jadi class .button di KomponenA tidak akan bentrok dengan class .button di KomponenB.'
+    },
+    {
+      type: 'mc',
+      question: 'Cara menggunakan CSS Module di komponen React:',
+      options: [
+        'import "./style.css"',
+        'import styles from "./style.module.css" lalu className={styles.namaClass}',
+        '<link href="style.css">',
+        'style={{ color: "red" }}'
+      ],
+      correct: 1,
+      explanation: 'CSS Module di-import sebagai object (import styles from ...) lalu digunakan sebagai className={styles.namaClass}. Ini berbeda dari import CSS biasa.'
+    },
+    {
+      type: 'short',
+      question: 'Jelaskan perbedaan antara globals.css, CSS Module (.module.css), dan inline style di Next.js. Kapan sebaiknya menggunakan masing-masing?'
+    }
+  ]
+};
+</script>
+<script src="quiz-system.js"></script>
 </body>
 </html>

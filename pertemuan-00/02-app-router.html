@@ -1154,5 +1154,44 @@ app/<span class="fn">blog</span>/page.js   <span class="cmt">→ /blog</span>
     reveals.forEach(function (el) { observer.observe(el); });
   });
 </script>
+<script>
+window.QUIZ_CONFIG = {
+  pageId: '02-app-router',
+  pageTitle: '02. App Router & Routing',
+  questions: [
+    {
+      type: 'mc',
+      question: 'Di App Router Next.js, file apa yang menjadi halaman (page)?',
+      options: ['index.js', 'page.js', 'route.js', 'app.js'],
+      correct: 1,
+      explanation: 'Di App Router, setiap folder di dalam app/ yang memiliki file page.js akan menjadi halaman yang bisa diakses. route.js digunakan untuk API route.'
+    },
+    {
+      type: 'mc',
+      question: 'Untuk membuat halaman /products/123 (dynamic route), folder apa yang harus dibuat?',
+      options: ['products/{id}/', 'products/:id/', 'products/[id]/', 'products/<id>/'],
+      correct: 2,
+      explanation: 'Next.js menggunakan tanda kurung siku [param] untuk dynamic route. Jadi folder products/[id]/ dengan page.js di dalamnya akan menangani /products/apapun.'
+    },
+    {
+      type: 'mc',
+      question: 'Apa perbedaan utama App Router dan Pages Router?',
+      options: [
+        'App Router lebih lambat',
+        'Pages Router lebih baru',
+        'App Router menggunakan folder app/ dan mendukung React Server Components',
+        'Tidak ada perbedaan'
+      ],
+      correct: 2,
+      explanation: 'App Router (folder app/) adalah yang terbaru dan mendukung React Server Components, layouts, dan fitur modern lainnya. Pages Router (folder pages/) adalah versi lama.'
+    },
+    {
+      type: 'short',
+      question: 'Jelaskan cara membuat 3 halaman (Home, About, Contact) di Next.js App Router. Sebutkan struktur folder dan file yang diperlukan!'
+    }
+  ]
+};
+</script>
+<script src="quiz-system.js"></script>
 </body>
 </html>
