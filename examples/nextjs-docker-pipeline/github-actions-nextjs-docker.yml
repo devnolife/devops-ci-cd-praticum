@@ -1,0 +1,62 @@
+name: Next.js Docker CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  APP_DIR: semester 5/cloud-native-practicum/examples/nextjs-docker-app
+  IMAGE_NAME: nextjs-docker-app
+
+jobs:
+  build-test-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ${{ env.APP_DIR }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ env.APP_DIR }}
+        run: npm ci
+
+      - name: Run tests
+        working-directory: ${{ env.APP_DIR }}
+        run: npm test
+
+      - name: Build Next.js
+        working-directory: ${{ env.APP_DIR }}
+        run: npm run build
+
+      - name: Build Docker image
+        working-directory: ${{ env.APP_DIR }}
+        run: docker build -t $IMAGE_NAME:${{ github.sha }} .
+
+      - name: Smoke test container
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          docker run -d --name nextjs-docker-app-ci -p 3000:3000 \
+            -e APP_ENV=ci \
+            -e APP_VERSION=${{ github.sha }} \
+            $IMAGE_NAME:${{ github.sha }}
+
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:3000/api/health; then
+              docker rm -f nextjs-docker-app-ci
+              exit 0
+            fi
+            sleep 2
+          done
+
+          docker logs nextjs-docker-app-ci
+          docker rm -f nextjs-docker-app-ci
+          exit 1

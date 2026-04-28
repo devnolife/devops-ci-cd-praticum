@@ -137,6 +137,28 @@ Mata kuliah ini mengajarkan mahasiswa untuk membangun **alur kerja otomatis** un
 | **07** | [GitLab CI/CD](./pertemuan-07/) | Build pipeline dengan GitLab CI | 🟢 |
 | **08** | [**UTS: Complete CI/CD Pipeline**](./pertemuan-08/) | End-to-end pipeline project | 🎯 |
 
+## 🧪 Contoh Pipeline: Next.js + Docker
+
+Gunakan contoh pipeline berikut untuk menghubungkan materi CI/CD dengan aplikasi nyata:
+
+```text
+examples\nextjs-docker-pipeline
+```
+
+Pipeline tersebut memakai aplikasi dari project Cloud Native:
+
+```text
+..\cloud-native-practicum\examples\nextjs-docker-app
+```
+
+Alur yang diautomasi:
+
+```text
+Checkout -> npm ci -> npm test -> npm run build -> docker build -> smoke test /api/health
+```
+
+Dengan ini mahasiswa bisa melihat hubungan langsung antara kode aplikasi, Docker image, dan pipeline delivery.
+
 ---
 
 ## 🚀 Quick Start
@@ -286,6 +308,8 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 📁 devops-cicd-practicum/
 ├── 📄 README.md
 ├── 📄 .gitignore
+├── 📁 examples/
+│   └── 📁 nextjs-docker-pipeline/    # Jenkinsfile & GitHub Actions untuk app Next.js
 ├── 📁 pertemuan-01/    # DevOps Culture & Principles
 ├── 📁 pertemuan-02/    # Git Advanced: Branching
 ├── 📁 pertemuan-03/    # Code Review & PR
