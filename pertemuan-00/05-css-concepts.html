@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Concepts — Pertemuan 00 · Bagian 05</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --border: rgba(100,116,139,.12);
+      --text: #1e293b;
+      --muted: #64748b;
+      --cyan: #0891b2;
+      --cyan-dim: rgba(6,182,212,.07);
+      --amber: #b45309;
+      --amber-dim: rgba(245,158,11,.07);
+      --rose: #be123c;
+      --rose-dim: rgba(244,63,94,.06);
+      --violet: #7c3aed;
+      --violet-dim: rgba(139,92,246,.06);
+      --emerald: #047857;
+      --emerald-dim: rgba(16,185,129,.06);
+      --sky: #0369a1;
+      --sky-dim: rgba(14,165,233,.06);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.07);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15.5px;
+    }
+    /* ── Top Nav ── */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(250,250,250,.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-nav a { text-decoration: none; font-size: .88rem; font-weight: 500; color: var(--muted); transition: color .2s; }
+    .top-nav a:hover { color: var(--amber); }
+    .nav-pages { display: flex; gap: 18px; }
+    /* ── Container ── */
+    .container { max-width: 820px; margin: 0 auto; padding: 0 20px 60px; }
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(245,158,11,.08) 0%, rgba(180,83,9,.05) 50%, rgba(245,158,11,.03) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 72px 24px 60px;
+      text-align: center;
+    }
+    .hero-shapes { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .hero .badge {
+      display: inline-block;
+      font-size: .76rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      background: var(--amber-dim);
+      border: 1px solid rgba(180,83,9,.15);
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .hero h1 em { font-style: italic; color: var(--amber); }
+    .hero .subtitle { font-size: 1.08rem; color: var(--muted); max-width: 520px; margin: 0 auto; }
+    @keyframes float-a { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(12px,-18px) rotate(8deg); } }
+    @keyframes float-b { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-10px,14px) rotate(-6deg); } }
+    @keyframes pulse-glow { 0%,100% { opacity: .35; } 50% { opacity: .7; } }
+    /* ── Section cards ── */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 36px 32px;
+      margin-top: 32px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .3s;
+    }
+    .section-card:hover { box-shadow: var(--shadow-md); }
+    .section-card h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .section-card h2 .accent { color: var(--amber); }
+    .section-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 22px 0 8px;
+      color: var(--text);
+    }
+    .section-card p { margin: 8px 0; color: var(--text); }
+    .section-card ul, .section-card ol { padding-left: 22px; margin: 8px 0; }
+    .section-card li { margin: 5px 0; }
+    .section-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 6px;
+    }
+    /* ── Code blocks ── */
+    .code-block {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .code-block .filename {
+      padding: 10px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,.02);
+    }
+    .code-block pre {
+      padding: 18px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .84rem;
+      line-height: 1.7;
+      color: #334155;
+      margin: 0;
+    }
+    .code-block .kw { color: #be123c; }
+    .code-block .fn { color: #7c3aed; }
+    .code-block .str { color: #047857; }
+    .code-block .cmt { color: #94a3b8; font-style: italic; }
+    .code-block .tag { color: #0891b2; }
+    .code-block .attr { color: #b45309; }
+    /* ── Callouts ── */
+    .callout { border-left: 4px solid; padding: 16px 20px; border-radius: 0 12px 12px 0; margin: 16px 0; font-size: .93rem; }
+    .callout.tip { border-color: var(--emerald); background: var(--emerald-dim); }
+    .callout.warning { border-color: var(--amber); background: var(--amber-dim); }
+    .callout.danger { border-color: var(--rose); background: var(--rose-dim); }
+    .callout strong { display: block; margin-bottom: 4px; }
+    /* ── Analogy card ── */
+    .analogy-card {
+      background: var(--amber-dim);
+      border: 1px solid rgba(180,83,9,.15);
+      border-radius: 16px;
+      padding: 28px 28px;
+      margin: 16px 0;
+    }
+    .analogy-card h3 { color: var(--amber); margin-top: 0; }
+    .analogy-item { margin: 12px 0; }
+    .analogy-item strong { color: var(--amber); }
+    /* ── Comparison table ── */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: .9rem;
+    }
+    .comparison-table th {
+      background: var(--amber-dim);
+      color: var(--amber);
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid rgba(180,83,9,.2);
+    }
+    .comparison-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .comparison-table tr:last-child td { border-bottom: none; }
+    .comparison-table tbody tr:hover { background: var(--amber-dim); }
+    /* ── Flex/Grid demos ── */
+    .demo-container { border: 2px dashed rgba(180,83,9,.25); border-radius: 12px; padding: 16px; margin: 16px 0; background: var(--amber-dim); }
+    .demo-container .label { font-size: .72rem; font-weight: 700; color: var(--amber); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+    .demo-box {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      font-weight: 700;
+      font-size: .85rem;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 8px 14px;
+      box-shadow: 0 2px 8px rgba(180,83,9,.18);
+    }
+    .demo-flex { display: flex; gap: 12px; flex-wrap: wrap; }
+    .demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    /* ── Mistake blocks ── */
+    .mistake-block { margin: 18px 0; }
+    .mistake-wrong { background: var(--rose-dim); border: 1px solid rgba(190,18,60,.15); border-radius: 12px; padding: 14px 18px; margin-bottom: 8px; }
+    .mistake-wrong::before { content: '✗ Salah'; display: block; font-size: .76rem; font-weight: 700; color: var(--rose); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .mistake-correct { background: var(--emerald-dim); border: 1px solid rgba(4,120,87,.15); border-radius: 12px; padding: 14px 18px; }
+    .mistake-correct::before { content: '✓ Benar'; display: block; font-size: .76rem; font-weight: 700; color: var(--emerald); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .mistake-wrong code, .mistake-correct code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .82rem;
+      background: rgba(0,0,0,.04);
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+    /* ── Exercise card ── */
+    .exercise-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin: 14px 0;
+      border-left: 4px solid var(--amber);
+    }
+    .exercise-card .ex-num { font-size: .72rem; font-weight: 700; color: var(--amber); text-transform: uppercase; letter-spacing: .08em; }
+    /* ── Summary checklist ── */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .95rem; }
+    .checklist li:last-child { border-bottom: none; }
+    /* ── Bottom Nav ── */
+    .bottom-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; }
+    .bottom-nav-card {
+      text-decoration: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      transition: all .25s;
+      box-shadow: var(--shadow-sm);
+    }
+    .bottom-nav-card:hover { box-shadow: var(--shadow-md); border-color: rgba(180,83,9,.25); }
+    .bn-label { display: block; font-size: .76rem; color: var(--muted); margin-bottom: 4px; }
+    .bn-title { display: block; font-weight: 600; color: var(--text); font-size: 1rem; }
+    .bottom-nav-card.next { text-align: right; }
+    /* ── SVG diagrams ── */
+    .svg-diagram { display: flex; justify-content: center; margin: 20px 0; }
+    .svg-diagram svg { max-width: 100%; height: auto; }
+    /* ── Scroll reveal ── */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .section-card { padding: 24px 18px; }
+      .hero { padding: 48px 18px 40px; }
+      .demo-grid { grid-template-columns: 1fr; }
+      .bottom-nav { grid-template-columns: 1fr; }
+      .comparison-table { font-size: .8rem; }
+      .comparison-table th, .comparison-table td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ TOP NAV ══════════════ -->
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">← Beranda</a>
+  <div class="nav-pages">
+    <a href="04-jsx-props.html" class="nav-prev">← Sebelumnya</a>
+    <a href="06-api-routes.html" class="nav-next">Selanjutnya →</a>
+  </div>
+</nav>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <div class="hero-shapes">
+    <svg width="100%" height="100%" style="position:absolute;inset:0;">
+      <!-- Floating circle -->
+      <circle cx="12%" cy="30%" r="38" fill="none" stroke="rgba(245,158,11,.18)" stroke-width="2" style="animation: float-a 6s ease-in-out infinite;">
+        <animate attributeName="r" values="38;44;38" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Floating hexagon -->
+      <polygon points="85,20 95,25 95,35 85,40 75,35 75,25" fill="rgba(180,83,9,.08)" stroke="rgba(180,83,9,.15)" stroke-width="1.5" transform="translate(60,80)" style="animation: float-b 5s ease-in-out infinite;">
+        <animateTransform attributeName="transform" type="rotate" values="0 90 110;15 90 110;0 90 110" dur="7s" repeatCount="indefinite"/>
+      </polygon>
+      <!-- Pulsing dot -->
+      <circle cx="78%" cy="65%" r="6" fill="rgba(245,158,11,.3)" style="animation: pulse-glow 3s ease-in-out infinite;"/>
+      <!-- Small floating circle -->
+      <circle cx="25%" cy="75%" r="18" fill="none" stroke="rgba(245,158,11,.12)" stroke-width="1.5" style="animation: float-b 7s ease-in-out infinite;"/>
+      <!-- Hexagon right -->
+      <polygon points="0,-20 17,-10 17,10 0,20 -17,10 -17,-10" fill="rgba(180,83,9,.06)" stroke="rgba(180,83,9,.12)" stroke-width="1" transform="translate(700, 50)" style="animation: float-a 8s ease-in-out infinite;">
+        <animateTransform attributeName="transform" type="rotate" values="0 700 50;-12 700 50;0 700 50" dur="6s" repeatCount="indefinite"/>
+      </polygon>
+    </svg>
+  </div>
+  <div style="position:relative;z-index:1;">
+    <span class="badge">PERTEMUAN 00 · BAGIAN 05</span>
+    <h1>CSS <em>Concepts</em></h1>
+    <p class="subtitle">Variables, Flexbox, Grid &amp; Responsive Design</p>
+  </div>
+</section>
+<div class="container">
+
+  <!-- ══════════════ 2. ANALOGI ══════════════ -->
+  <div class="section-card reveal">
+    <div class="section-label">Analogi Dunia Nyata</div>
+    <h2>🎯 Memahami CSS dengan <span class="accent">Analogi</span></h2>
+    <div class="analogy-card">
+      <div class="analogy-item">
+        <strong>CSS Variables = Cat Dinding 🎨</strong>
+        <p>Kamu pilih warna sekali di toko cat (<code>:root</code>), lalu pakai warna itu di semua ruangan (<code>var(--warna)</code>). Kalau bosan, cukup ganti di satu tempat — semua ruangan ikut berubah!</p>
+      </div>
+      <div class="analogy-item">
+        <strong>Flexbox = Rak Buku Horizontal 📚</strong>
+        <p>Buku-buku otomatis berderet rapi ke samping. Kalau raknya penuh, buku bisa turun ke baris berikutnya. Kamu cuma atur arah deretnya.</p>
+      </div>
+      <div class="analogy-item">
+        <strong>CSS Grid = Rak dengan Baris DAN Kolom 🗄️</strong>
+        <p>Bayangkan rak pajangan. Kamu bisa atur berapa baris, berapa kolom, dan setiap barang punya &ldquo;slot&rdquo; sendiri. Lebih terstruktur dari Flexbox.</p>
+      </div>
+      <div class="analogy-item">
+        <strong>Responsive Design = Furniture Lipat 🪑</strong>
+        <p>Seperti meja lipat yang menyesuaikan ukuran ruangan. Di ruangan besar, meja terbuka penuh. Di ruangan kecil, meja dilipat jadi lebih compact.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 3. SECTION 5A: CSS Variables ══════════════ -->
+  <div class="section-card reveal">
+    <div class="section-label">Bagian 5A</div>
+    <h2>📖 CSS <span class="accent">Variables</span></h2>
+    <p>CSS Variables (Custom Properties) memungkinkan kamu menyimpan nilai yang bisa dipakai ulang di mana saja dalam stylesheet. Definisikan sekali, pakai berkali-kali!</p>
+    <h3>Apa Itu CSS Variables?</h3>
+    <p>CSS Variables adalah properti khusus yang dimulai dengan <code>--</code>. Biasanya didefinisikan di <code>:root</code> agar bisa diakses secara global.</p>
+    <h3>Kenapa Pakai Variables?</h3>
+    <ul>
+      <li>Ubah satu nilai → berubah di mana-mana</li>
+      <li>Konsistensi warna, spacing, dan ukuran</li>
+      <li>Gampang bikin dark mode atau tema alternatif</li>
+    </ul>
+    <h3>Cara Menggunakan</h3>
+    <div class="code-block">
+      <div class="filename">styles.css — Definisi Variables</div>
+      <pre><span class="tag">:root</span> {
+  <span class="cmt">/* Warna utama */</span>
+  <span class="attr">--brand</span>: <span class="str">#0891b2</span>;
+  <span class="attr">--brand-light</span>: <span class="str">rgba(8, 145, 178, 0.08)</span>;
+  <span class="cmt">/* Spacing */</span>
+  <span class="attr">--gap-sm</span>: <span class="str">8px</span>;
+  <span class="attr">--gap-md</span>: <span class="str">16px</span>;
+  <span class="attr">--gap-lg</span>: <span class="str">32px</span>;
+  <span class="cmt">/* Shadow */</span>
+  <span class="attr">--shadow</span>: <span class="str">0 2px 12px rgba(0,0,0,.08)</span>;
+}</pre>
+    </div>
+    <div class="code-block">
+      <div class="filename">styles.css — Penggunaan Variables</div>
+      <pre><span class="tag">.card</span> {
+  <span class="attr">background</span>: <span class="fn">var</span>(<span class="attr">--brand-light</span>);
+  <span class="attr">border</span>: 1px solid <span class="fn">var</span>(<span class="attr">--brand</span>);
+  <span class="attr">padding</span>: <span class="fn">var</span>(<span class="attr">--gap-md</span>);
+  <span class="attr">box-shadow</span>: <span class="fn">var</span>(<span class="attr">--shadow</span>);
+}
+<span class="tag">.button</span> {
+  <span class="attr">background</span>: <span class="fn">var</span>(<span class="attr">--brand</span>);
+  <span class="attr">color</span>: <span class="str">white</span>;
+  <span class="attr">padding</span>: <span class="fn">var</span>(<span class="attr">--gap-sm</span>) <span class="fn">var</span>(<span class="attr">--gap-md</span>);
+}</pre>
+    </div>
+    <h3>Diagram: Alur CSS Variables</h3>
+    <div class="svg-diagram">
+      <svg viewBox="0 0 500 280" width="500" height="280" xmlns="http://www.w3.org/2000/svg">
+        <!-- Root box -->
+        <rect x="160" y="10" width="180" height="55" rx="12" fill="var(--amber-dim)" stroke="var(--amber)" stroke-width="2"/>
+        <text x="250" y="33" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--amber)" font-weight="600">:root</text>
+        <text x="250" y="52" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--muted)">--brand: #0891b2</text>
+        <!-- Lines from root to elements -->
+        <line x1="210" y1="65" x2="80" y2="140" stroke="var(--amber)" stroke-width="1.5" stroke-dasharray="6 3">
+          <animate attributeName="stroke-dashoffset" values="18;0" dur="2s" repeatCount="indefinite"/>
+        </line>
+        <line x1="250" y1="65" x2="250" y2="140" stroke="var(--amber)" stroke-width="1.5" stroke-dasharray="6 3">
+          <animate attributeName="stroke-dashoffset" values="18;0" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+        </line>
+        <line x1="290" y1="65" x2="420" y2="140" stroke="var(--amber)" stroke-width="1.5" stroke-dasharray="6 3">
+          <animate attributeName="stroke-dashoffset" values="18;0" dur="2s" repeatCount="indefinite" begin="0.6s"/>
+        </line>
+        <!-- Flowing dots -->
+        <circle r="4" fill="var(--amber)">
+          <animateMotion path="M210,65 L80,140" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="4" fill="var(--amber)">
+          <animateMotion path="M250,65 L250,140" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+        </circle>
+        <circle r="4" fill="var(--amber)">
+          <animateMotion path="M290,65 L420,140" dur="2s" repeatCount="indefinite" begin="0.6s"/>
+        </circle>
+        <!-- Element boxes -->
+        <rect x="20" y="140" width="120" height="50" rx="10" fill="white" stroke="var(--border)" stroke-width="1.5">
+          <animate attributeName="fill" values="white;var(--amber-dim);white" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <text x="80" y="161" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="var(--text)">.header</text>
+        <text x="80" y="178" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--muted)">var(--brand)</text>
+        <rect x="190" y="140" width="120" height="50" rx="10" fill="white" stroke="var(--border)" stroke-width="1.5">
+          <animate attributeName="fill" values="white;var(--amber-dim);white" dur="3s" repeatCount="indefinite" begin="0.3s"/>
+        </rect>
+        <text x="250" y="161" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="var(--text)">.button</text>
+        <text x="250" y="178" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--muted)">var(--brand)</text>
+        <rect x="360" y="140" width="120" height="50" rx="10" fill="white" stroke="var(--border)" stroke-width="1.5">
+          <animate attributeName="fill" values="white;var(--amber-dim);white" dur="3s" repeatCount="indefinite" begin="0.6s"/>
+        </rect>
+        <text x="420" y="161" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="var(--text)">.link</text>
+        <text x="420" y="178" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--muted)">var(--brand)</text>
+        <text x="250" y="230" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="var(--muted)">Ubah nilai di :root → semua elemen ikut berubah ✨</text>
+      </svg>
+    </div>
+    <div class="callout tip">
+      <strong>💡 Tips</strong>
+      Pakai naming convention yang jelas, misal <code>--color-brand</code>, <code>--spacing-md</code>. Ini memudahkan kamu dan tim kamu nanti!
+    </div>
+  </div>
+
+  <!-- ══════════════ 4. SECTION 5B: Flexbox ══════════════ -->
+  <div class="section-card reveal">
+    <div class="section-label">Bagian 5B</div>
+    <h2>⚙️ <span class="accent">Flexbox</span></h2>
+    <p>Flexbox adalah metode layout <strong>1-dimensi</strong> — kamu mengatur elemen dalam satu arah: baris (row) ATAU kolom (column). Cocok untuk navigasi, card row, dan centering.</p>
+    <h3>Properti Kunci</h3>
+    <ul>
+      <li><code>display: flex</code> — aktifkan flexbox di container</li>
+      <li><code>gap</code> — jarak antar item</li>
+      <li><code>justify-content</code> — atur posisi horizontal (center, space-between, dll.)</li>
+      <li><code>align-items</code> — atur posisi vertikal (center, stretch, dll.)</li>
+      <li><code>flex-wrap</code> — izinkan item pindah baris kalau penuh</li>
+    </ul>
+    <h3>Demo Langsung: Flexbox Row</h3>
+    <div class="demo-container">
+      <div class="label">display: flex · gap: 12px · flex-wrap: wrap</div>
+      <div class="demo-flex">
+        <div class="demo-box" style="flex:1;min-width:80px;">Item 1</div>
+        <div class="demo-box" style="flex:1;min-width:80px;">Item 2</div>
+        <div class="demo-box" style="flex:1;min-width:80px;">Item 3</div>
+        <div class="demo-box" style="flex:1;min-width:80px;">Item 4</div>
+      </div>
+    </div>
+    <h3>Animasi: Item Berderet</h3>
+    <div class="svg-diagram">
+      <svg viewBox="0 0 460 110" width="460" height="110" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="20" width="90" height="55" rx="10" fill="var(--amber)" opacity="0"><animate attributeName="opacity" values="0;.85" dur="0.6s" fill="freeze"/><animateTransform attributeName="transform" type="translate" values="-100,0;0,0" dur="1s" fill="freeze"/></rect>
+        <text x="45" y="54" text-anchor="middle" font-family="DM Sans" font-size="13" fill="white" font-weight="600">A</text>
+        <rect x="105" y="20" width="90" height="55" rx="10" fill="#d97706" opacity="0"><animate attributeName="opacity" values="0;.85" dur="0.6s" fill="freeze" begin="0.25s"/><animateTransform attributeName="transform" type="translate" values="-100,0;0,0" dur="1s" fill="freeze" begin="0.25s"/></rect>
+        <text x="150" y="54" text-anchor="middle" font-family="DM Sans" font-size="13" fill="white" font-weight="600">B</text>
+        <rect x="210" y="20" width="90" height="55" rx="10" fill="#b45309" opacity="0"><animate attributeName="opacity" values="0;.85" dur="0.6s" fill="freeze" begin="0.5s"/><animateTransform attributeName="transform" type="translate" values="-100,0;0,0" dur="1s" fill="freeze" begin="0.5s"/></rect>
+        <text x="255" y="54" text-anchor="middle" font-family="DM Sans" font-size="13" fill="white" font-weight="600">C</text>
+        <rect x="315" y="20" width="90" height="55" rx="10" fill="#92400e" opacity="0"><animate attributeName="opacity" values="0;.85" dur="0.6s" fill="freeze" begin="0.75s"/><animateTransform attributeName="transform" type="translate" values="-100,0;0,0" dur="1s" fill="freeze" begin="0.75s"/></rect>
+        <text x="360" y="54" text-anchor="middle" font-family="DM Sans" font-size="13" fill="white" font-weight="600">D</text>
+        <line x1="92" y1="85" x2="103" y2="85" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="97" y="100" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--muted)">gap</text>
+      </svg>
+    </div>
+    <h3>Contoh: Layout Navbar</h3>
+    <div class="code-block">
+      <div class="filename">navbar.css</div>
+      <pre><span class="tag">.navbar</span> {
+  <span class="attr">display</span>: <span class="fn">flex</span>;
+  <span class="attr">justify-content</span>: <span class="str">space-between</span>;
+  <span class="attr">align-items</span>: <span class="str">center</span>;
+  <span class="attr">padding</span>: <span class="str">12px 24px</span>;
+  <span class="attr">gap</span>: <span class="str">16px</span>;
+}
+<span class="tag">.navbar-links</span> {
+  <span class="attr">display</span>: <span class="fn">flex</span>;
+  <span class="attr">gap</span>: <span class="str">20px</span>;
+  <span class="attr">list-style</span>: <span class="str">none</span>;
+}</pre>
+    </div>
+    <div class="code-block">
+      <div class="filename">card-row.css</div>
+      <pre><span class="tag">.card-row</span> {
+  <span class="attr">display</span>: <span class="fn">flex</span>;
+  <span class="attr">gap</span>: <span class="str">16px</span>;
+  <span class="attr">flex-wrap</span>: <span class="str">wrap</span>;
+}
+<span class="tag">.card-row .card</span> {
+  <span class="attr">flex</span>: <span class="str">1 1 250px</span>; <span class="cmt">/* min 250px, bisa stretch */</span>
+}</pre>
+    </div>
+  </div>
+
+  <!-- ══════════════ 5. SECTION 5C: CSS Grid ══════════════ -->
+  <div class="section-card reveal">
+    <div class="section-label">Bagian 5C</div>
+    <h2>🔲 CSS <span class="accent">Grid</span></h2>
+    <p>CSS Grid adalah layout <strong>2-dimensi</strong> — kamu bisa mengatur baris DAN kolom sekaligus. Cocok untuk dashboard, gallery, dan layout kompleks.</p>
+    <h3>Properti Kunci</h3>
+    <ul>
+      <li><code>display: grid</code> — aktifkan grid di container</li>
+      <li><code>grid-template-columns</code> — tentukan jumlah dan ukuran kolom</li>
+      <li><code>gap</code> — jarak antar item</li>
+      <li><code>repeat()</code> — shorthand untuk kolom berulang</li>
+      <li><code>1fr</code> — fraction unit, membagi ruang secara proporsional</li>
+      <li><code>minmax()</code> — ukuran minimum dan maksimum</li>
+    </ul>
+    <h3>Demo Langsung: Grid 3 Kolom</h3>
+    <div class="demo-container">
+      <div class="label">grid-template-columns: repeat(3, 1fr) · gap: 12px</div>
+      <div class="demo-grid">
+        <div class="demo-box">1</div>
+        <div class="demo-box">2</div>
+        <div class="demo-box">3</div>
+        <div class="demo-box">4</div>
+        <div class="demo-box">5</div>
+        <div class="demo-box">6</div>
+      </div>
+    </div>
+    <h3>Animasi: Item Masuk ke Grid</h3>
+    <div class="svg-diagram">
+      <svg viewBox="0 0 400 200" width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+        <line x1="135" y1="5" x2="135" y2="195" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="270" y1="5" x2="270" y2="195" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="5" y1="100" x2="395" y2="100" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 3"/>
+        <rect x="10" y="12" width="115" height="78" rx="8" fill="var(--amber)" opacity="0"><animate attributeName="opacity" values="0;.85" dur="0.5s" fill="freeze" begin="0.2s"/></rect>
+        <text x="67" y="58" text-anchor="middle" font-family="DM Sans" font-size="13" fill="white" font-weight="600" opacity="0"><animate attributeName="opacity" values="0;1" dur="0.4s" fill="freeze" begin="0.4s"/>1</text>
+        <rect x="143" y="12" width="115" height="78" rx="8" fill="#d97706" opacity="0"><animate attributeName="opacity" values="0;.85" dur="0.5s" fill="freeze" begin="0.5s"/></rect>
+        <text x="200" y="58" text-anchor="middle" font-family="DM Sans" font-size="13" fill="white" font-weight="600" opacity="0"><animate attributeName="opacity" values="0;1" dur="0.4s" fill="freeze" begin="0.7s"/>2</text>
+        <rect x="275" y="12" width="115" height="78" rx="8" fill="#b45309" opacity="0"><animate attributeName="opacity" values="0;.85" dur="0.5s" fill="freeze" begin="0.8s"/></rect>
+        <text x="332" y="58" text-anchor="middle" font-family="DM Sans" font-size="13" fill="white" font-weight="600" opacity="0"><animate attributeName="opacity" values="0;1" dur="0.4s" fill="freeze" begin="1.0s"/>3</text>
+        <rect x="10" y="110" width="115" height="78" rx="8" fill="#92400e" opacity="0"><animate attributeName="opacity" values="0;.85" dur="0.5s" fill="freeze" begin="1.1s"/></rect>
+        <text x="67" y="156" text-anchor="middle" font-family="DM Sans" font-size="13" fill="white" font-weight="600" opacity="0"><animate attributeName="opacity" values="0;1" dur="0.4s" fill="freeze" begin="1.3s"/>4</text>
+        <rect x="143" y="110" width="115" height="78" rx="8" fill="#78350f" opacity="0"><animate attributeName="opacity" values="0;.85" dur="0.5s" fill="freeze" begin="1.4s"/></rect>
+        <text x="200" y="156" text-anchor="middle" font-family="DM Sans" font-size="13" fill="white" font-weight="600" opacity="0"><animate attributeName="opacity" values="0;1" dur="0.4s" fill="freeze" begin="1.6s"/>5</text>
+        <rect x="275" y="110" width="115" height="78" rx="8" fill="#451a03" opacity="0"><animate attributeName="opacity" values="0;.85" dur="0.5s" fill="freeze" begin="1.7s"/></rect>
+        <text x="332" y="156" text-anchor="middle" font-family="DM Sans" font-size="13" fill="white" font-weight="600" opacity="0"><animate attributeName="opacity" values="0;1" dur="0.4s" fill="freeze" begin="1.9s"/>6</text>
+      </svg>
+    </div>
+    <h3>Contoh: Dashboard Layout</h3>
+    <div class="code-block">
+      <div class="filename">dashboard.css</div>
+      <pre><span class="tag">.dashboard</span> {
+  <span class="attr">display</span>: <span class="fn">grid</span>;
+  <span class="attr">grid-template-columns</span>: <span class="fn">repeat</span>(<span class="str">3</span>, <span class="str">1fr</span>);
+  <span class="attr">gap</span>: <span class="str">20px</span>;
+  <span class="attr">padding</span>: <span class="str">20px</span>;
+}
+<span class="cmt">/* Responsive: 1 kolom di mobile */</span>
+<span class="kw">@media</span> (<span class="attr">max-width</span>: <span class="str">600px</span>) {
+  <span class="tag">.dashboard</span> {
+    <span class="attr">grid-template-columns</span>: <span class="str">1fr</span>;
+  }
+}</pre>
+    </div>
+    <div class="code-block">
+      <div class="filename">responsive-grid.css</div>
+      <pre><span class="cmt">/* Grid yang otomatis responsive */</span>
+<span class="tag">.auto-grid</span> {
+  <span class="attr">display</span>: <span class="fn">grid</span>;
+  <span class="attr">grid-template-columns</span>: <span class="fn">repeat</span>(
+    <span class="fn">auto-fill</span>, <span class="fn">minmax</span>(<span class="str">250px</span>, <span class="str">1fr</span>)
+  );
+  <span class="attr">gap</span>: <span class="str">16px</span>;
+}</pre>
+    </div>
+    <div class="callout tip">
+      <strong>💡 Pro Tip</strong>
+      Gunakan <code>auto-fill</code> dengan <code>minmax()</code> untuk grid yang responsive tanpa perlu media query! Ini trik favorit developer profesional.
+    </div>
+  </div>
+
+  <!-- ══════════════ 6. SECTION 5D: Responsive Design ══════════════ -->
+  <div class="section-card reveal">
+    <div class="section-label">Bagian 5D</div>
+    <h2>📱 Responsive <span class="accent">Design</span></h2>
+    <p>Responsive design artinya desain yang <strong>menyesuaikan diri</strong> dengan ukuran layar pengguna — dari monitor besar sampai HP kecil.</p>
+    <h3>Pendekatan Mobile-First</h3>
+    <p>Mulai desain dari layar kecil dulu (HP), lalu tambahkan styling untuk layar lebih besar. Ini lebih efisien karena HP biasanya punya resource terbatas.</p>
+    <h3>Breakpoint Umum</h3>
+    <div class="code-block">
+      <div class="filename">breakpoints.css</div>
+      <pre><span class="cmt">/* Base: mobile (default) */</span>
+<span class="tag">.container</span> {
+  <span class="attr">padding</span>: <span class="str">16px</span>;
+}
+<span class="cmt">/* Tablet: ≥ 600px */</span>
+<span class="kw">@media</span> (<span class="attr">min-width</span>: <span class="str">600px</span>) {
+  <span class="tag">.container</span> { <span class="attr">padding</span>: <span class="str">24px</span>; }
+}
+<span class="cmt">/* Laptop: ≥ 900px */</span>
+<span class="kw">@media</span> (<span class="attr">min-width</span>: <span class="str">900px</span>) {
+  <span class="tag">.container</span> { <span class="attr">max-width</span>: <span class="str">860px</span>; }
+}
+<span class="cmt">/* Desktop: ≥ 1200px */</span>
+<span class="kw">@media</span> (<span class="attr">min-width</span>: <span class="str">1200px</span>) {
+  <span class="tag">.container</span> { <span class="attr">max-width</span>: <span class="str">1100px</span>; }
+}</pre>
+    </div>
+    <h3>Contoh: Grid Responsif</h3>
+    <div class="code-block">
+      <div class="filename">responsive-cards.css</div>
+      <pre><span class="tag">.card-grid</span> {
+  <span class="attr">display</span>: <span class="fn">grid</span>;
+  <span class="attr">gap</span>: <span class="str">16px</span>;
+  <span class="attr">grid-template-columns</span>: <span class="str">1fr</span>; <span class="cmt">/* Mobile: 1 kolom */</span>
+}
+<span class="kw">@media</span> (<span class="attr">min-width</span>: <span class="str">600px</span>) {
+  <span class="tag">.card-grid</span> {
+    <span class="attr">grid-template-columns</span>: <span class="fn">repeat</span>(<span class="str">2</span>, <span class="str">1fr</span>); <span class="cmt">/* Tablet: 2 kolom */</span>
+  }
+}
+<span class="kw">@media</span> (<span class="attr">min-width</span>: <span class="str">900px</span>) {
+  <span class="tag">.card-grid</span> {
+    <span class="attr">grid-template-columns</span>: <span class="fn">repeat</span>(<span class="str">3</span>, <span class="str">1fr</span>); <span class="cmt">/* Desktop: 3 kolom */</span>
+  }
+}</pre>
+    </div>
+    <h3>Animasi: Layar Berubah Ukuran</h3>
+    <div class="svg-diagram">
+      <svg viewBox="0 0 520 180" width="520" height="180" xmlns="http://www.w3.org/2000/svg">
+        <!-- Monitor -->
+        <g>
+          <rect x="10" y="15" width="140" height="95" rx="8" fill="none" stroke="var(--amber)" stroke-width="2"/>
+          <rect x="55" y="110" width="50" height="6" rx="3" fill="var(--amber)" opacity=".4"/>
+          <text x="80" y="128" text-anchor="middle" font-family="DM Sans" font-size="9" fill="var(--muted)">Desktop</text>
+          <rect x="18" y="24" width="38" height="30" rx="4" fill="var(--amber)" opacity=".6"><animate attributeName="opacity" values=".3;.7;.3" dur="3s" repeatCount="indefinite"/></rect>
+          <rect x="60" y="24" width="38" height="30" rx="4" fill="#d97706" opacity=".6"><animate attributeName="opacity" values=".3;.7;.3" dur="3s" repeatCount="indefinite" begin="0.2s"/></rect>
+          <rect x="102" y="24" width="38" height="30" rx="4" fill="#92400e" opacity=".6"><animate attributeName="opacity" values=".3;.7;.3" dur="3s" repeatCount="indefinite" begin="0.4s"/></rect>
+          <rect x="18" y="58" width="38" height="30" rx="4" fill="#92400e" opacity=".4"/>
+          <rect x="60" y="58" width="38" height="30" rx="4" fill="var(--amber)" opacity=".4"/>
+          <rect x="102" y="58" width="38" height="30" rx="4" fill="#d97706" opacity=".4"/>
+        </g>
+        <text x="175" y="68" font-family="DM Sans" font-size="20" fill="var(--muted)">→</text>
+        <g>
+          <rect x="200" y="20" width="100" height="90" rx="8" fill="none" stroke="var(--amber)" stroke-width="2"/>
+          <text x="250" y="128" text-anchor="middle" font-family="DM Sans" font-size="9" fill="var(--muted)">Tablet</text>
+          <rect x="208" y="28" width="40" height="24" rx="4" fill="var(--amber)" opacity=".6"><animate attributeName="opacity" values=".3;.7;.3" dur="3s" repeatCount="indefinite"/></rect>
+          <rect x="252" y="28" width="40" height="24" rx="4" fill="#d97706" opacity=".6"><animate attributeName="opacity" values=".3;.7;.3" dur="3s" repeatCount="indefinite" begin="0.2s"/></rect>
+          <rect x="208" y="56" width="40" height="24" rx="4" fill="#92400e" opacity=".5"/>
+          <rect x="252" y="56" width="40" height="24" rx="4" fill="var(--amber)" opacity=".5"/>
+          <rect x="208" y="82" width="40" height="20" rx="4" fill="#d97706" opacity=".3"/>
+          <rect x="252" y="82" width="40" height="20" rx="4" fill="#92400e" opacity=".3"/>
+        </g>
+        <text x="320" y="68" font-family="DM Sans" font-size="20" fill="var(--muted)">→</text>
+        <g>
+          <rect x="355" y="15" width="60" height="105" rx="10" fill="none" stroke="var(--amber)" stroke-width="2"/>
+          <rect x="375" y="18" width="20" height="3" rx="1.5" fill="var(--amber)" opacity=".3"/>
+          <text x="385" y="138" text-anchor="middle" font-family="DM Sans" font-size="9" fill="var(--muted)">Mobile</text>
+          <rect x="362" y="26" width="46" height="18" rx="4" fill="var(--amber)" opacity=".6"><animate attributeName="opacity" values=".3;.7;.3" dur="3s" repeatCount="indefinite"/></rect>
+          <rect x="362" y="48" width="46" height="18" rx="4" fill="#d97706" opacity=".5"/>
+          <rect x="362" y="70" width="46" height="18" rx="4" fill="#92400e" opacity=".4"/>
+          <rect x="362" y="92" width="46" height="18" rx="4" fill="var(--amber)" opacity=".3"/>
+        </g>
+        <text x="260" y="170" text-anchor="middle" font-family="DM Sans" font-size="10" fill="var(--muted)">3 kolom → 2 kolom → 1 kolom</text>
+      </svg>
+    </div>
+    <div class="callout warning">
+      <strong>⚡ Penting</strong>
+      Selalu tambahkan <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code> di <code>&lt;head&gt;</code>. Tanpa ini, responsive design tidak akan bekerja di HP!
+    </div>
+  </div>
+
+  <!-- ══════════════ 7. PERBANDINGAN ══════════════ -->
+  <div class="section-card reveal">
+    <div class="section-label">Perbandingan</div>
+    <h2>⚖️ Flexbox vs <span class="accent">Grid</span></h2>
+    <p>Keduanya berguna! Tapi kapan pakai yang mana? Cek tabel perbandingan berikut.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Aspek</th>
+          <th>Flexbox</th>
+          <th>CSS Grid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Dimensi</strong></td>
+          <td>1D (baris ATAU kolom)</td>
+          <td>2D (baris DAN kolom)</td>
+        </tr>
+        <tr>
+          <td><strong>Cocok untuk</strong></td>
+          <td>Navbar, card row, centering</td>
+          <td>Dashboard, gallery, layout utama</td>
+        </tr>
+        <tr>
+          <td><strong>Kontrol</strong></td>
+          <td>Konten menentukan ukuran</td>
+          <td>Layout menentukan ukuran</td>
+        </tr>
+        <tr>
+          <td><strong>Wrap</strong></td>
+          <td><code>flex-wrap</code></td>
+          <td>Otomatis dengan <code>auto-fill</code></td>
+        </tr>
+        <tr>
+          <td><strong>Alignment</strong></td>
+          <td><code>justify-content</code>, <code>align-items</code></td>
+          <td><code>place-items</code>, <code>place-content</code></td>
+        </tr>
+        <tr>
+          <td><strong>Kapan pakai?</strong></td>
+          <td>Elemen berjajar satu arah</td>
+          <td>Layout kompleks dua arah</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout tip">
+      <strong>💡 Tips Praktis</strong>
+      Kamu bisa kombinasi keduanya! Gunakan Grid untuk layout halaman utama, lalu Flexbox untuk komponen kecil di dalamnya (misal navbar dalam grid area).
+    </div>
+  </div>
+
+  <!-- ══════════════ 8. KESALAHAN UMUM ══════════════ -->
+  <div class="section-card reveal">
+    <div class="section-label">Hindari Ini</div>
+    <h2>⚠️ Kesalahan <span class="accent">Umum</span></h2>
+    <p>Berikut 4 kesalahan yang sering dilakukan pemula. Jangan sampai kamu ikut-ikutan ya!</p>
+    <h3>1. Menggunakan <code>px</code> untuk Semua Ukuran</h3>
+    <div class="mistake-block">
+      <div class="mistake-wrong">
+        <code>font-size: 16px;</code><br>
+        <code>width: 960px;</code><br>
+        <code>padding: 20px;</code><br>
+        <span style="font-size:.85rem;color:var(--muted);">Semua pakai px — tidak fleksibel di layar berbeda.</span>
+      </div>
+      <div class="mistake-correct">
+        <code>font-size: 1rem;</code><br>
+        <code>width: 90%;</code> atau <code>max-width: 60rem;</code><br>
+        <code>padding: 1.25rem;</code><br>
+        <span style="font-size:.85rem;color:var(--muted);">Gunakan rem, %, dan vw untuk ukuran yang adaptif.</span>
+      </div>
+    </div>
+    <h3>2. Menggunakan Margin Bukan Gap</h3>
+    <div class="mistake-block">
+      <div class="mistake-wrong">
+        <code>.card { margin-right: 16px; }</code><br>
+        <code>.card:last-child { margin-right: 0; }</code><br>
+        <span style="font-size:.85rem;color:var(--muted);">Perlu reset margin di elemen terakhir. Ribet!</span>
+      </div>
+      <div class="mistake-correct">
+        <code>.card-container { display: flex; gap: 16px; }</code><br>
+        <span style="font-size:.85rem;color:var(--muted);">Gap otomatis hanya memberi jarak antar item. Simpel!</span>
+      </div>
+    </div>
+    <h3>3. Lupa Testing di Mobile</h3>
+    <div class="mistake-block">
+      <div class="mistake-wrong">
+        <code>grid-template-columns: repeat(4, 1fr);</code><br>
+        <span style="font-size:.85rem;color:var(--muted);">4 kolom di HP? Konten bakal terlalu kecil dan susah dibaca.</span>
+      </div>
+      <div class="mistake-correct">
+        <code>grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));</code><br>
+        <span style="font-size:.85rem;color:var(--muted);">Otomatis menyesuaikan kolom berdasarkan lebar layar.</span>
+      </div>
+    </div>
+    <h3>4. Layout Terlalu Kompleks</h3>
+    <div class="mistake-block">
+      <div class="mistake-wrong">
+        <code>div &gt; div &gt; div &gt; div &gt; div { ... }</code><br>
+        <span style="font-size:.85rem;color:var(--muted);">Nesting terlalu dalam. Susah di-debug dan di-maintain.</span>
+      </div>
+      <div class="mistake-correct">
+        <code>.layout { display: grid; }</code><br>
+        <code>.layout-item { ... }</code><br>
+        <span style="font-size:.85rem;color:var(--muted);">Keep it simple! Struktur datar lebih gampang dikelola.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 9. LATIHAN ══════════════ -->
+  <div class="section-card reveal">
+    <div class="section-label">Praktik</div>
+    <h2>✏️ <span class="accent">Latihan</span></h2>
+    <p>Coba kerjakan latihan berikut untuk mengasah skill CSS kamu. Tidak perlu pakai framework, cukup HTML dan CSS biasa.</p>
+    <div class="exercise-card">
+      <div class="ex-num">Latihan 1</div>
+      <h3>Buat CSS Variable System</h3>
+      <p>Buat file <code>variables.css</code> yang mendefinisikan variable untuk website personal kamu:</p>
+      <ul>
+        <li>Minimal 3 warna (brand, background, text)</li>
+        <li>3 ukuran spacing (sm, md, lg)</li>
+        <li>2 shadow (ringan dan kuat)</li>
+        <li>1 border-radius</li>
+      </ul>
+      <p>Lalu buat halaman sederhana yang <strong>menggunakan semua variable</strong> tersebut.</p>
+    </div>
+    <div class="exercise-card">
+      <div class="ex-num">Latihan 2</div>
+      <h3>Buat Navbar dengan Flexbox</h3>
+      <p>Buat navigasi bar yang memiliki:</p>
+      <ul>
+        <li>Logo di kiri, link navigasi di kanan</li>
+        <li>Gunakan <code>display: flex</code> dan <code>justify-content: space-between</code></li>
+        <li>Link navigasi juga pakai flexbox dengan <code>gap</code></li>
+        <li>Tambahkan hover effect pada setiap link</li>
+      </ul>
+    </div>
+    <div class="exercise-card">
+      <div class="ex-num">Latihan 3</div>
+      <h3>Responsive Card Grid</h3>
+      <p>Buat grid kartu profil yang:</p>
+      <ul>
+        <li>3 kolom di desktop (≥ 900px)</li>
+        <li>2 kolom di tablet (≥ 600px)</li>
+        <li>1 kolom di mobile (default)</li>
+        <li>Setiap kartu punya gambar, nama, dan deskripsi singkat</li>
+        <li>Gunakan <code>gap</code> dan CSS Variables untuk konsistensi</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════ 10. RINGKASAN ══════════════ -->
+  <div class="section-card reveal">
+    <div class="section-label">Rangkuman</div>
+    <h2>📋 <span class="accent">Ringkasan</span></h2>
+    <p>Berikut poin-poin penting yang sudah kamu pelajari hari ini:</p>
+    <ul class="checklist">
+      <li>✅ <strong>CSS Variables</strong> — Definisikan di <code>:root</code>, pakai dengan <code>var()</code>. Ubah satu tempat, berubah di mana-mana.</li>
+      <li>✅ <strong>Flexbox</strong> — Layout 1-dimensi. Gunakan <code>display: flex</code>, atur dengan <code>gap</code>, <code>justify-content</code>, dan <code>align-items</code>.</li>
+      <li>✅ <strong>CSS Grid</strong> — Layout 2-dimensi. Gunakan <code>repeat()</code> dan <code>1fr</code> untuk kolom fleksibel.</li>
+      <li>✅ <strong>Responsive Design</strong> — Pakai pendekatan mobile-first. Gunakan <code>@media</code> untuk breakpoint 600px, 900px, dan 1200px.</li>
+      <li>✅ <strong>Gap bukan Margin</strong> — Selalu gunakan <code>gap</code> untuk jarak antar elemen di flex dan grid container.</li>
+      <li>✅ <strong>rem bukan px</strong> — Gunakan unit relatif (rem, %, vw) untuk ukuran yang adaptif.</li>
+      <li>✅ <strong>auto-fill + minmax</strong> — Trik grid responsif tanpa media query.</li>
+    </ul>
+    <div class="callout warning">
+      <strong>🎯 Langkah Selanjutnya</strong>
+      Setelah memahami konsep CSS ini, kamu siap membangun UI yang responsif dan maintainable. Di bagian berikutnya, kita akan belajar tentang <strong>API Routes</strong> — cara berkomunikasi antara frontend dan backend!
+    </div>
+  </div>
+
+  <!-- ══════════════ BOTTOM NAV ══════════════ -->
+  <div class="bottom-nav reveal">
+    <a href="04-jsx-props.html" class="bottom-nav-card prev">
+      <span class="bn-label">← Sebelumnya</span>
+      <span class="bn-title">JSX & Props</span>
+    </a>
+    <a href="06-api-routes.html" class="bottom-nav-card next">
+      <span class="bn-label">Selanjutnya →</span>
+      <span class="bn-title">API Routes</span>
+    </a>
+  </div>
+</div>
+
+<!-- ══════════════ SCROLL REVEAL SCRIPT ══════════════ -->
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

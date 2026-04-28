@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Layout &amp; Children — Next.js Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --border: rgba(100,116,139,.12);
+      --text: #1e293b;
+      --muted: #64748b;
+      --cyan: #0891b2;
+      --cyan-dim: rgba(6,182,212,.07);
+      --amber: #b45309;
+      --amber-dim: rgba(245,158,11,.07);
+      --rose: #be123c;
+      --rose-dim: rgba(244,63,94,.06);
+      --violet: #7c3aed;
+      --violet-dim: rgba(139,92,246,.06);
+      --emerald: #047857;
+      --emerald-dim: rgba(16,185,129,.06);
+      --sky: #0369a1;
+      --sky-dim: rgba(14,165,233,.06);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.07);
+    }
+
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--rose); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Top Navigation ── */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 28px;
+      background: rgba(250,250,250,.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-home {
+      font-weight: 600;
+      font-size: .92rem;
+      color: var(--text);
+    }
+    .nav-pages { display: flex; gap: 18px; }
+    .nav-prev, .nav-next {
+      font-size: .88rem;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .nav-prev:hover, .nav-next:hover { color: var(--rose); text-decoration: none; }
+
+    /* ── Container ── */
+    .container { max-width: 820px; margin: 0 auto; padding: 0 24px 80px; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 72px 24px 56px;
+      overflow: hidden;
+      background: linear-gradient(160deg, rgba(244,63,94,.07) 0%, rgba(244,63,94,.02) 40%, transparent 70%);
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -80px;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(244,63,94,.09) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-shapes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-shapes svg {
+      position: absolute;
+      opacity: .12;
+    }
+    .hero-shapes .shape-1 { top: 18%; left: 8%; width: 60px; animation: floatShape 7s ease-in-out infinite; }
+    .hero-shapes .shape-2 { top: 60%; right: 10%; width: 48px; animation: floatShape 9s ease-in-out infinite 1s; }
+    .hero-shapes .shape-3 { bottom: 15%; left: 30%; width: 36px; animation: floatShape 6s ease-in-out infinite 2s; }
+    @keyframes floatShape {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-14px) rotate(8deg); }
+    }
+    .badge {
+      display: inline-block;
+      padding: 5px 16px;
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--rose);
+      background: var(--rose-dim);
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .hero h1 .accent {
+      background: linear-gradient(135deg, #f43f5e, #be123c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .subtitle {
+      font-size: 1.12rem;
+      color: var(--muted);
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    /* ── Section Cards ── */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 40px 36px;
+      margin: 28px 0;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .3s;
+    }
+    .section-card:hover { box-shadow: var(--shadow-md); }
+    .section-card h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      margin-bottom: 18px;
+      line-height: 1.3;
+    }
+    .section-card h3 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.28rem;
+      font-weight: 400;
+      margin: 28px 0 12px;
+      color: var(--text);
+    }
+    .section-card p { margin-bottom: 14px; color: #475569; }
+    .section-card ul, .section-card ol { margin: 10px 0 14px 20px; color: #475569; }
+    .section-card li { margin-bottom: 6px; }
+
+    /* ── Code Block ── */
+    .code-block {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .code-block .filename {
+      padding: 10px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,.02);
+    }
+    .code-block pre {
+      padding: 18px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .84rem;
+      line-height: 1.7;
+      color: #334155;
+      margin: 0;
+    }
+    .code-block .kw { color: #be123c; }
+    .code-block .fn { color: #7c3aed; }
+    .code-block .str { color: #047857; }
+    .code-block .cmt { color: #94a3b8; font-style: italic; }
+    .code-block .tag { color: #0891b2; }
+    .code-block .attr { color: #b45309; }
+
+    /* ── Callouts ── */
+    .callout { border-left: 4px solid; padding: 16px 20px; border-radius: 0 12px 12px 0; margin: 16px 0; }
+    .callout p { margin-bottom: 6px; }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout.tip { border-color: var(--emerald); background: var(--emerald-dim); }
+    .callout.warning { border-color: var(--amber); background: var(--amber-dim); }
+    .callout.danger { border-color: var(--rose); background: var(--rose-dim); }
+
+    /* ── Analogy Frame Visual ── */
+    .frame-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .frame-box {
+      width: 200px;
+      border: 6px solid var(--rose);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      background: var(--surface);
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .frame-box .frame-label {
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--rose);
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 600;
+      padding: 2px 12px;
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .frame-inner {
+      border: 2px dashed var(--muted);
+      border-radius: 8px;
+      padding: 20px 12px;
+      color: var(--muted);
+      font-size: .9rem;
+      font-style: italic;
+    }
+    .frame-arrow {
+      font-size: 2rem;
+      color: var(--rose);
+      animation: pulseArrow 2s ease-in-out infinite;
+    }
+    @keyframes pulseArrow {
+      0%, 100% { opacity: .4; transform: translateX(0); }
+      50% { opacity: 1; transform: translateX(6px); }
+    }
+
+    /* ── SVG Diagram Container ── */
+    .diagram-container {
+      display: flex;
+      justify-content: center;
+      margin: 28px 0;
+      overflow-x: auto;
+    }
+    .diagram-container svg { max-width: 100%; height: auto; }
+
+    /* ── Comparison Grid ── */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .comparison-col {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .comparison-col.bad .comp-header { background: var(--rose-dim); color: var(--rose); border-bottom: 2px solid var(--rose); }
+    .comparison-col.good .comp-header { background: var(--emerald-dim); color: var(--emerald); border-bottom: 2px solid var(--emerald); }
+    .comp-header {
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: .9rem;
+      text-align: center;
+    }
+    .comp-body { padding: 16px; }
+    .comp-body .code-block { margin: 8px 0; font-size: .78rem; }
+
+    /* ── Mistake Cards ── */
+    .mistake-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--rose);
+      border-radius: 0 12px 12px 0;
+      padding: 20px 24px;
+      margin: 14px 0;
+    }
+    .mistake-card h4 {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: .95rem;
+      margin-bottom: 8px;
+      color: var(--rose);
+    }
+    .mistake-card p { margin-bottom: 6px; color: #475569; font-size: .92rem; }
+
+    /* ── Exercise Cards ── */
+    .exercise-card {
+      background: var(--rose-dim);
+      border: 1px solid rgba(244,63,94,.15);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin: 14px 0;
+    }
+    .exercise-card h4 {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: .95rem;
+      margin-bottom: 8px;
+      color: var(--rose);
+    }
+    .exercise-card p { color: #475569; font-size: .92rem; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; margin: 16px 0; padding: 0; }
+    .checklist li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      color: #475569;
+      font-size: .95rem;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li .check { color: var(--emerald); margin-right: 8px; font-weight: 700; }
+
+    /* ── Bottom Navigation ── */
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 48px;
+    }
+    .bottom-nav-card {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 24px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      transition: box-shadow .3s, border-color .3s;
+      text-decoration: none;
+    }
+    .bottom-nav-card:hover { box-shadow: var(--shadow-md); border-color: var(--rose); text-decoration: none; }
+    .bottom-nav-card.prev { align-items: flex-start; }
+    .bottom-nav-card.next { align-items: flex-end; text-align: right; }
+    .bn-label { font-size: .8rem; color: var(--muted); margin-bottom: 4px; }
+    .bn-title { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.15rem; color: var(--text); }
+
+    /* ── Footer ── */
+    .site-footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .85rem;
+      line-height: 1.8;
+    }
+
+    /* ── Scroll Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Step List ── */
+    .step-list { counter-reset: step; list-style: none; margin: 16px 0; padding: 0; }
+    .step-list li {
+      counter-increment: step;
+      padding: 12px 0 12px 48px;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+      color: #475569;
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0; top: 12px;
+      width: 32px; height: 32px;
+      background: var(--rose-dim);
+      color: var(--rose);
+      font-weight: 700;
+      font-size: .85rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .section-card { padding: 28px 20px; }
+      .comparison-grid { grid-template-columns: 1fr; }
+      .bottom-nav { grid-template-columns: 1fr; }
+      .frame-visual { flex-direction: column; }
+      .frame-arrow { transform: rotate(90deg); }
+      .top-nav { padding: 10px 16px; }
+      .nav-pages { gap: 10px; }
+      .hero { padding: 56px 16px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════ Top Navigation ═══════ -->
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">← Beranda</a>
+    <div class="nav-pages">
+      <a href="02-app-router.html" class="nav-prev">← Sebelumnya</a>
+      <a href="04-jsx-props.html" class="nav-next">Selanjutnya →</a>
+    </div>
+  </nav>
+
+  <!-- ═══════ Hero ═══════ -->
+  <header class="hero">
+    <div class="hero-shapes">
+      <svg class="shape-1" viewBox="0 0 60 60" fill="none"><rect x="8" y="8" width="44" height="44" rx="12" stroke="#f43f5e" stroke-width="2"/></svg>
+      <svg class="shape-2" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" stroke="#f43f5e" stroke-width="2"/></svg>
+      <svg class="shape-3" viewBox="0 0 36 36" fill="none"><polygon points="18,4 32,28 4,28" stroke="#f43f5e" stroke-width="2" fill="none"/></svg>
+    </div>
+    <span class="badge">Konsep 03</span>
+    <h1>Layout &amp; <span class="accent">Children</span></h1>
+    <p class="subtitle">Bingkai yang membungkus setiap halaman</p>
+  </header>
+
+  <div class="container">
+
+    <!-- ═══════ 1. Analogi ═══════ -->
+    <section class="section-card reveal">
+      <h2>🎯 Analogi — Pigura &amp; Foto</h2>
+
+      <p>Bayangkan sebuah <strong>pigura foto</strong>. Bingkainya — warna kayu, ukiran, ukurannya — selalu sama. Tapi foto di dalamnya bisa kamu ganti kapan saja: foto liburan, foto wisuda, atau foto kucing kesayangan.</p>
+
+      <div class="frame-visual">
+        <div class="frame-box">
+          <span class="frame-label">layout.js</span>
+          <div style="font-size:.78rem;color:var(--muted);margin-bottom:8px;">🧭 Navbar</div>
+          <div class="frame-inner">
+            {children}<br/>
+            <span style="font-size:.78rem;">← foto / halaman aktif</span>
+          </div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:8px;">📎 Footer</div>
+        </div>
+        <div class="frame-arrow">→</div>
+        <div style="text-align:left;max-width:260px;">
+          <p style="margin-bottom:8px;"><strong>Bingkai</strong> = Layout (navbar, footer, background)</p>
+          <p style="margin-bottom:8px;"><strong>Foto</strong> = Halaman (<code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;background:var(--surface-2);padding:2px 6px;border-radius:4px;">page.js</code>)</p>
+          <p><strong>{children}</strong> = Lubang di pigura tempat foto dimasukkan</p>
+        </div>
+      </div>
+
+      <p>Analogi lain: pikirkan sebuah <strong>museum</strong>. Ketika kamu berjalan dari satu ruangan ke ruangan lain, bangunannya — dinding, lantai, pencahayaan — tetap sama. Yang berubah hanyalah karya seni di setiap ruangan.</p>
+
+      <div class="callout tip">
+        <p>💡 <strong>Layout = bangunan museum.</strong> Pages = karya seni di setiap ruangan. Kamu tidak perlu membangun ulang gedungnya setiap berpindah ruangan!</p>
+      </div>
+    </section>
+
+    <!-- ═══════ 2. Apa Itu Layout? ═══════ -->
+    <section class="section-card reveal">
+      <h2>📖 Apa Itu Layout?</h2>
+
+      <p>Dalam Next.js App Router, <strong>layout</strong> adalah file khusus yang membungkus (wrap) semua halaman di dalam folder yang sama. Kamu menulisnya sekali, dan efeknya berlaku untuk semua halaman di bawahnya.</p>
+
+      <ul>
+        <li><code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">layout.js</code> di folder <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">app/</code> disebut <strong>Root Layout</strong> — ini <strong>WAJIB</strong> ada di setiap project Next.js.</li>
+        <li>Root layout harus me-return tag <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">&lt;html&gt;</code> dan <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">&lt;body&gt;</code>.</li>
+        <li><code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">{children}</code> adalah prop khusus — isinya adalah halaman yang <em>sedang aktif</em> saat ini (placeholder).</li>
+        <li>CSS yang di-import di layout berlaku secara <strong>global</strong> untuk semua halaman yang dibungkusnya.</li>
+        <li><strong>Metadata</strong> (title, description) bisa didefinisikan langsung di layout menggunakan <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">export const metadata</code>.</li>
+      </ul>
+
+      <div class="callout warning">
+        <p>⚠️ Setiap project Next.js <strong>WAJIB</strong> punya minimal satu <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">app/layout.js</code>. Tanpa file ini, aplikasi kamu tidak akan berjalan!</p>
+      </div>
+    </section>
+
+    <!-- ═══════ 3. Bagaimana Cara Kerjanya? ═══════ -->
+    <section class="section-card reveal">
+      <h2>⚙️ Bagaimana Cara Kerjanya?</h2>
+
+      <h3>Diagram: Layout Membungkus Halaman</h3>
+      <p>Perhatikan diagram berikut. Navbar dan Footer tetap di tempat, sementara area <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">{children}</code> berganti konten setiap kamu navigasi ke halaman lain:</p>
+
+      <!-- ── ANIMATED SVG DIAGRAM #1 — Layout Wrapping ── -->
+      <div class="diagram-container">
+        <svg viewBox="0 0 520 380" width="520" height="380" xmlns="http://www.w3.org/2000/svg" style="font-family:'DM Sans',system-ui,sans-serif;">
+          <!-- Outer layout box -->
+          <rect x="30" y="20" width="460" height="340" rx="18" fill="#fff" stroke="#be123c" stroke-width="2.5" />
+          <text x="260" y="16" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="13" fill="#be123c" font-weight="600">layout.js</text>
+
+          <!-- Navbar -->
+          <rect x="50" y="44" width="420" height="42" rx="8" fill="#fce4ec" />
+          <text x="260" y="70" text-anchor="middle" font-size="14" fill="#be123c" font-weight="600">🧭 Navbar</text>
+
+          <!-- Children area (dashed) -->
+          <rect x="50" y="100" width="420" height="182" rx="10" fill="none" stroke="#be123c" stroke-width="1.5" stroke-dasharray="8 4" />
+          <text x="260" y="120" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#94a3b8">{children}</text>
+
+          <!-- Page 1: Beranda -->
+          <g>
+            <rect x="70" y="132" width="380" height="134" rx="8" fill="#fff5f5">
+              <animate attributeName="opacity" values="1;1;0;0;0;0;1" dur="9s" repeatCount="indefinite" />
+            </rect>
+            <text x="260" y="190" text-anchor="middle" font-size="22" fill="#be123c" font-weight="600">
+              <animate attributeName="opacity" values="1;1;0;0;0;0;1" dur="9s" repeatCount="indefinite" />
+              🏠 Beranda
+            </text>
+            <text x="260" y="218" text-anchor="middle" font-size="13" fill="#64748b">
+              <animate attributeName="opacity" values="1;1;0;0;0;0;1" dur="9s" repeatCount="indefinite" />
+              Selamat datang di website kami!
+            </text>
+            <text x="260" y="250" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#94a3b8">
+              <animate attributeName="opacity" values="1;1;0;0;0;0;1" dur="9s" repeatCount="indefinite" />
+              app/page.js
+            </text>
+          </g>
+
+          <!-- Page 2: Tentang -->
+          <g>
+            <rect x="70" y="132" width="380" height="134" rx="8" fill="#f0fdf4">
+              <animate attributeName="opacity" values="0;0;1;1;0;0;0" dur="9s" repeatCount="indefinite" />
+            </rect>
+            <text x="260" y="190" text-anchor="middle" font-size="22" fill="#047857" font-weight="600">
+              <animate attributeName="opacity" values="0;0;1;1;0;0;0" dur="9s" repeatCount="indefinite" />
+              📝 Tentang
+            </text>
+            <text x="260" y="218" text-anchor="middle" font-size="13" fill="#64748b">
+              <animate attributeName="opacity" values="0;0;1;1;0;0;0" dur="9s" repeatCount="indefinite" />
+              Kami adalah tim developer handal.
+            </text>
+            <text x="260" y="250" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#94a3b8">
+              <animate attributeName="opacity" values="0;0;1;1;0;0;0" dur="9s" repeatCount="indefinite" />
+              app/about/page.js
+            </text>
+          </g>
+
+          <!-- Page 3: Kontak -->
+          <g>
+            <rect x="70" y="132" width="380" height="134" rx="8" fill="#eff6ff">
+              <animate attributeName="opacity" values="0;0;0;0;1;1;0" dur="9s" repeatCount="indefinite" />
+            </rect>
+            <text x="260" y="190" text-anchor="middle" font-size="22" fill="#0369a1" font-weight="600">
+              <animate attributeName="opacity" values="0;0;0;0;1;1;0" dur="9s" repeatCount="indefinite" />
+              📞 Kontak
+            </text>
+            <text x="260" y="218" text-anchor="middle" font-size="13" fill="#64748b">
+              <animate attributeName="opacity" values="0;0;0;0;1;1;0" dur="9s" repeatCount="indefinite" />
+              Hubungi kami di sini.
+            </text>
+            <text x="260" y="250" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#94a3b8">
+              <animate attributeName="opacity" values="0;0;0;0;1;1;0" dur="9s" repeatCount="indefinite" />
+              app/contact/page.js
+            </text>
+          </g>
+
+          <!-- Footer -->
+          <rect x="50" y="298" width="420" height="42" rx="8" fill="#fce4ec" />
+          <text x="260" y="324" text-anchor="middle" font-size="14" fill="#be123c" font-weight="600">📎 Footer</text>
+        </svg>
+      </div>
+
+      <div class="callout tip">
+        <p>💡 Perhatikan animasi di atas! Navbar dan Footer <strong>tidak pernah berubah</strong>. Hanya area <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">{children}</code> yang berganti konten. Inilah kekuatan layout!</p>
+      </div>
+
+      <h3>Langkah Demi Langkah</h3>
+      <p>Begini cara Next.js memproses layout secara internal:</p>
+
+      <ol class="step-list">
+        <li>Next.js membaca file <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">layout.js</code> di folder <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">app/</code>.</li>
+        <li>Layout ini otomatis membungkus <strong>SEMUA</strong> halaman (<code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">page.js</code>) di folder tersebut dan subfolder-subfoldernya.</li>
+        <li>Ketika user berpindah halaman (navigasi), <strong>hanya</strong> bagian <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">{children}</code> yang di-render ulang.</li>
+        <li>Navbar dan footer <strong>TIDAK</strong> di-render ulang — ini membuat navigasi terasa sangat cepat! ⚡</li>
+        <li>Next.js secara otomatis memasukkan konten <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">page.js</code> sebagai <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">{children}</code> ke dalam layout.</li>
+      </ol>
+
+      <p>Secara konseptual, inilah yang dilakukan Next.js di belakang layar:</p>
+
+      <div class="code-block">
+        <div class="filename">Ilustrasi internal Next.js</div>
+<pre><span class="cmt">// Kamu menulis layout.js dan page.js terpisah.</span>
+<span class="cmt">// Next.js secara OTOMATIS menggabungkannya seperti ini:</span>
+
+<span class="tag">&lt;RootLayout&gt;</span>              <span class="cmt">&lt;!-- dari app/layout.js --&gt;</span>
+  <span class="tag">&lt;nav&gt;</span>Navbar<span class="tag">&lt;/nav&gt;</span>         <span class="cmt">&lt;!-- bagian tetap --&gt;</span>
+
+  <span class="tag">&lt;HomePage /&gt;</span>             <span class="cmt">&lt;!-- ini = {children} --&gt;</span>
+                             <span class="cmt">&lt;!-- dari app/page.js --&gt;</span>
+
+  <span class="tag">&lt;footer&gt;</span>Footer<span class="tag">&lt;/footer&gt;</span> <span class="cmt">&lt;!-- bagian tetap --&gt;</span>
+<span class="tag">&lt;/RootLayout&gt;</span></pre>
+      </div>
+
+      <h3>Diagram: Nested Layout (Layout Bersarang)</h3>
+      <p>Layout bisa <strong>bersarang</strong> (nested). Misalnya, kamu punya layout global untuk seluruh website, dan layout khusus untuk halaman dashboard yang punya sidebar.</p>
+
+      <!-- ── ANIMATED SVG DIAGRAM #2 — Nested Layouts ── -->
+      <div class="diagram-container">
+        <svg viewBox="0 0 540 440" width="540" height="440" xmlns="http://www.w3.org/2000/svg" style="font-family:'DM Sans',system-ui,sans-serif;">
+          <!-- Root Layout (outermost) -->
+          <rect x="20" y="20" width="500" height="400" rx="18" fill="#fff" stroke="#be123c" stroke-width="2.5" />
+          <text x="270" y="14" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#be123c" font-weight="600">app/layout.js (Root Layout)</text>
+
+          <!-- Navbar -->
+          <rect x="40" y="40" width="460" height="38" rx="7" fill="#fce4ec" />
+          <text x="270" y="64" text-anchor="middle" font-size="13" fill="#be123c" font-weight="600">🧭 Global Navbar</text>
+
+          <!-- Dashboard Layout (inner) -->
+          <rect x="40" y="92" width="460" height="278" rx="14" fill="#fafafa" stroke="#e11d48" stroke-width="1.5" stroke-dasharray="0" />
+          <text x="270" y="110" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#e11d48" font-weight="600">app/dashboard/layout.js (Dashboard Layout)</text>
+
+          <!-- Sidebar -->
+          <rect x="56" y="120" width="130" height="236" rx="8" fill="#ffe4e6" />
+          <text x="121" y="148" text-anchor="middle" font-size="12" fill="#be123c" font-weight="600">📂 Sidebar</text>
+          <text x="121" y="172" text-anchor="middle" font-size="11" fill="#64748b">Beranda</text>
+          <text x="121" y="192" text-anchor="middle" font-size="11" fill="#64748b">Nilai</text>
+          <text x="121" y="212" text-anchor="middle" font-size="11" fill="#64748b">Jadwal</text>
+          <text x="121" y="232" text-anchor="middle" font-size="11" fill="#64748b">Profil</text>
+
+          <!-- Children area (innermost) -->
+          <rect x="200" y="120" width="286" height="236" rx="10" fill="none" stroke="#e11d48" stroke-width="1.5" stroke-dasharray="7 3" />
+          <text x="343" y="140" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#94a3b8">{children}</text>
+
+          <!-- Dashboard Page 1: Nilai -->
+          <g>
+            <rect x="214" y="150" width="258" height="192" rx="8" fill="#fff0f3">
+              <animate attributeName="opacity" values="1;1;0;0;0;0;1" dur="8s" repeatCount="indefinite" />
+            </rect>
+            <text x="343" y="220" text-anchor="middle" font-size="18" fill="#be123c" font-weight="600">
+              <animate attributeName="opacity" values="1;1;0;0;0;0;1" dur="8s" repeatCount="indefinite" />
+              📊 Halaman Nilai
+            </text>
+            <text x="343" y="248" text-anchor="middle" font-size="12" fill="#64748b">
+              <animate attributeName="opacity" values="1;1;0;0;0;0;1" dur="8s" repeatCount="indefinite" />
+              Daftar nilai semester ini
+            </text>
+            <text x="343" y="310" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" fill="#94a3b8">
+              <animate attributeName="opacity" values="1;1;0;0;0;0;1" dur="8s" repeatCount="indefinite" />
+              app/dashboard/nilai/page.js
+            </text>
+          </g>
+
+          <!-- Dashboard Page 2: Jadwal -->
+          <g>
+            <rect x="214" y="150" width="258" height="192" rx="8" fill="#f0fdf4">
+              <animate attributeName="opacity" values="0;0;1;1;0;0;0" dur="8s" repeatCount="indefinite" />
+            </rect>
+            <text x="343" y="220" text-anchor="middle" font-size="18" fill="#047857" font-weight="600">
+              <animate attributeName="opacity" values="0;0;1;1;0;0;0" dur="8s" repeatCount="indefinite" />
+              📅 Halaman Jadwal
+            </text>
+            <text x="343" y="248" text-anchor="middle" font-size="12" fill="#64748b">
+              <animate attributeName="opacity" values="0;0;1;1;0;0;0" dur="8s" repeatCount="indefinite" />
+              Jadwal kuliah minggu ini
+            </text>
+            <text x="343" y="310" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" fill="#94a3b8">
+              <animate attributeName="opacity" values="0;0;1;1;0;0;0" dur="8s" repeatCount="indefinite" />
+              app/dashboard/jadwal/page.js
+            </text>
+          </g>
+
+          <!-- Dashboard Page 3: Profil -->
+          <g>
+            <rect x="214" y="150" width="258" height="192" rx="8" fill="#eff6ff">
+              <animate attributeName="opacity" values="0;0;0;0;1;1;0" dur="8s" repeatCount="indefinite" />
+            </rect>
+            <text x="343" y="220" text-anchor="middle" font-size="18" fill="#0369a1" font-weight="600">
+              <animate attributeName="opacity" values="0;0;0;0;1;1;0" dur="8s" repeatCount="indefinite" />
+              👤 Halaman Profil
+            </text>
+            <text x="343" y="248" text-anchor="middle" font-size="12" fill="#64748b">
+              <animate attributeName="opacity" values="0;0;0;0;1;1;0" dur="8s" repeatCount="indefinite" />
+              Informasi akun mahasiswa
+            </text>
+            <text x="343" y="310" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" fill="#94a3b8">
+              <animate attributeName="opacity" values="0;0;0;0;1;1;0" dur="8s" repeatCount="indefinite" />
+              app/dashboard/profil/page.js
+            </text>
+          </g>
+
+          <!-- Footer -->
+          <rect x="40" y="382" width="460" height="26" rx="6" fill="#fce4ec" />
+          <text x="270" y="400" text-anchor="middle" font-size="12" fill="#be123c" font-weight="600">📎 Global Footer</text>
+        </svg>
+      </div>
+
+      <h3>Nested Layout — Penjelasan</h3>
+
+      <ul>
+        <li><code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">app/layout.js</code> = <strong>Root Layout</strong> → Navbar global &amp; Footer global. Berlaku untuk seluruh website.</li>
+        <li><code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">app/dashboard/layout.js</code> = <strong>Dashboard Layout</strong> → Sidebar khusus untuk section dashboard. Hanya muncul di halaman <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">/dashboard/*</code>.</li>
+        <li>Cara mereka bersarang: <strong>Root</strong> membungkus <strong>Dashboard</strong>, yang membungkus <strong>Page</strong>.</li>
+        <li>Sidebar dashboard TIDAK muncul di halaman lain (misal /about atau /contact), karena ia hanya ada di dalam dashboard layout.</li>
+      </ul>
+
+      <div class="code-block">
+        <div class="filename">Struktur folder nested layout</div>
+<pre>app/
+├── layout.js          <span class="cmt">← Root layout (navbar + footer)</span>
+├── page.js            <span class="cmt">← Halaman utama (/)</span>
+├── about/
+│   └── page.js        <span class="cmt">← Halaman tentang (/about)</span>
+└── dashboard/
+    ├── layout.js      <span class="cmt">← Dashboard layout (sidebar)</span>
+    ├── page.js        <span class="cmt">← Dashboard home (/dashboard)</span>
+    ├── nilai/
+    │   └── page.js    <span class="cmt">← Halaman nilai (/dashboard/nilai)</span>
+    └── jadwal/
+        └── page.js    <span class="cmt">← Halaman jadwal (/dashboard/jadwal)</span></pre>
+      </div>
+
+      <h3>Metadata Export</h3>
+
+      <p>Next.js menggunakan <strong>metadata export</strong> untuk mengatur <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">&lt;title&gt;</code> dan <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">&lt;meta&gt;</code> tags di head dokumen HTML. Kamu cukup export sebuah objek bernama <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">metadata</code>:</p>
+
+      <div class="code-block">
+        <div class="filename">app/layout.js — Metadata</div>
+<pre><span class="cmt">// Metadata yang di-export di layout berlaku untuk SEMUA halaman</span>
+<span class="kw">export const</span> metadata = {
+  <span class="attr">title</span>: <span class="str">'Website Kampus'</span>,
+  <span class="attr">description</span>: <span class="str">'Portal informasi mahasiswa'</span>,
+};</pre>
+      </div>
+
+      <div class="callout tip">
+        <p>💡 Metadata di halaman (<code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">page.js</code>) akan otomatis meng-<em>override</em> metadata di layout. Jadi kamu bisa punya title berbeda untuk setiap halaman!</p>
+      </div>
+    </section>
+
+    <!-- ═══════ 4. Contoh Kode ═══════ -->
+    <section class="section-card reveal">
+      <h2>💻 Contoh Kode</h2>
+
+      <h3>1. Root Layout (Wajib Ada!)</h3>
+      <p>Ini adalah file layout paling penting. Setiap project Next.js <strong>WAJIB</strong> punya file ini di folder <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">app/</code>.</p>
+
+      <div class="code-block">
+        <div class="filename">app/layout.js</div>
+<pre><span class="cmt">// app/layout.js — Layout utama (WAJIB ada di setiap project!)</span>
+<span class="kw">import</span> <span class="str">'./globals.css'</span>         <span class="cmt">// CSS global di-import di sini</span>
+
+<span class="cmt">// Metadata untuk seluruh website</span>
+<span class="kw">export const</span> metadata = {
+  <span class="attr">title</span>: <span class="str">'Website Kampus'</span>,
+  <span class="attr">description</span>: <span class="str">'Portal mahasiswa'</span>,
+};
+
+<span class="cmt">// Fungsi layout menerima {children} sebagai prop</span>
+<span class="kw">export default function</span> <span class="fn">RootLayout</span>({ children }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="str">"id"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;nav&gt;</span>
+          <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/"</span><span class="tag">&gt;</span>Beranda<span class="tag">&lt;/a&gt;</span>
+          <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/about"</span><span class="tag">&gt;</span>Tentang<span class="tag">&lt;/a&gt;</span>
+          <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/contact"</span><span class="tag">&gt;</span>Kontak<span class="tag">&lt;/a&gt;</span>
+        <span class="tag">&lt;/nav&gt;</span>
+
+        {children}    <span class="cmt">{/* ← halaman aktif masuk di sini */}</span>
+
+        <span class="tag">&lt;footer&gt;</span>© 2024 Website Kampus<span class="tag">&lt;/footer&gt;</span>
+      <span class="tag">&lt;/body&gt;</span>
+    <span class="tag">&lt;/html&gt;</span>
+  );
+}</pre>
+      </div>
+
+      <h3>2. Bagaimana {children} Menerima page.js</h3>
+      <p>Ketika kamu membuka halaman <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">/</code>, Next.js otomatis mengambil konten dari <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">app/page.js</code> dan memasukkannya sebagai <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">{children}</code>.</p>
+
+      <div class="code-block">
+        <div class="filename">app/page.js</div>
+<pre><span class="cmt">// app/page.js — Halaman utama website</span>
+<span class="kw">export default function</span> <span class="fn">HomePage</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;main&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Selamat Datang!<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Ini adalah halaman utama website kampus.<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/main&gt;</span>
+  );
+}</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="filename">Alur penggabungan (ilustrasi)</div>
+<pre><span class="cmt">// layout.js membungkus → page.js</span>
+<span class="cmt">// Jadi {children} di layout menjadi:</span>
+
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="str">"id"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;nav&gt;</span>...<span class="tag">&lt;/nav&gt;</span>
+
+    <span class="cmt">&lt;!-- {children} diganti dengan isi page.js ↓ --&gt;</span>
+    <span class="tag">&lt;main&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Selamat Datang!<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Ini adalah halaman utama...<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/main&gt;</span>
+
+    <span class="tag">&lt;footer&gt;</span>...<span class="tag">&lt;/footer&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+      </div>
+
+      <h3>3. Nested Layout untuk Dashboard</h3>
+      <p>Kalau section dashboard punya tampilan khusus (misalnya sidebar), kamu bisa buat layout tambahan di folder <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">app/dashboard/</code>:</p>
+
+      <div class="code-block">
+        <div class="filename">app/dashboard/layout.js</div>
+<pre><span class="cmt">// app/dashboard/layout.js — Layout khusus dashboard</span>
+<span class="cmt">// Layout ini dibungkus LAGI oleh Root Layout!</span>
+
+<span class="kw">export default function</span> <span class="fn">DashboardLayout</span>({ children }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">style</span>={{ <span class="attr">display</span>: <span class="str">'flex'</span> }}<span class="tag">&gt;</span>
+      <span class="tag">&lt;aside&gt;</span>
+        <span class="tag">&lt;h3&gt;</span>Dashboard Menu<span class="tag">&lt;/h3&gt;</span>
+        <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/dashboard"</span><span class="tag">&gt;</span>Beranda<span class="tag">&lt;/a&gt;</span>
+        <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/dashboard/nilai"</span><span class="tag">&gt;</span>Nilai<span class="tag">&lt;/a&gt;</span>
+        <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/dashboard/jadwal"</span><span class="tag">&gt;</span>Jadwal<span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;/aside&gt;</span>
+
+      <span class="tag">&lt;main&gt;</span>
+        {children}  <span class="cmt">{/* ← halaman dashboard aktif */}</span>
+      <span class="tag">&lt;/main&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</pre>
+      </div>
+
+      <h3>4. Membuat Komponen Navbar Terpisah</h3>
+      <p>Best practice: pisahkan navbar ke file komponen sendiri agar layout tetap bersih dan rapi.</p>
+
+      <div class="code-block">
+        <div class="filename">components/Navbar.jsx</div>
+<pre><span class="cmt">// components/Navbar.jsx — Komponen navigasi</span>
+
+<span class="kw">export default function</span> <span class="fn">Navbar</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;nav</span> <span class="attr">style</span>={{
+      <span class="attr">display</span>: <span class="str">'flex'</span>,
+      <span class="attr">gap</span>: <span class="str">'16px'</span>,
+      <span class="attr">padding</span>: <span class="str">'16px'</span>,
+      <span class="attr">background</span>: <span class="str">'#f8fafc'</span>,
+    }}<span class="tag">&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/"</span><span class="tag">&gt;</span>Beranda<span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/about"</span><span class="tag">&gt;</span>Tentang<span class="tag">&lt;/a&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/contact"</span><span class="tag">&gt;</span>Kontak<span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;/nav&gt;</span>
+  );
+}</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="filename">app/layout.js — menggunakan Navbar</div>
+<pre><span class="cmt">// app/layout.js — Import dan gunakan komponen Navbar</span>
+<span class="kw">import</span> <span class="fn">Navbar</span> <span class="kw">from</span> <span class="str">'../components/Navbar'</span>;
+
+<span class="kw">export default function</span> <span class="fn">RootLayout</span>({ children }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="str">"id"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;Navbar /&gt;</span>  <span class="cmt">{/* ← komponen navbar */}</span>
+        {children}
+        <span class="tag">&lt;footer&gt;</span>© 2024<span class="tag">&lt;/footer&gt;</span>
+      <span class="tag">&lt;/body&gt;</span>
+    <span class="tag">&lt;/html&gt;</span>
+  );
+}</pre>
+      </div>
+
+      <h3>5. Metadata Per-Halaman (Override)</h3>
+      <p>Setiap halaman bisa punya metadata sendiri yang meng-<em>override</em> metadata dari layout. Sangat berguna untuk SEO!</p>
+
+      <div class="code-block">
+        <div class="filename">app/about/page.js</div>
+<pre><span class="cmt">// app/about/page.js — Halaman ini punya title sendiri</span>
+
+<span class="cmt">// Metadata ini akan MENGGANTIKAN metadata dari layout</span>
+<span class="kw">export const</span> metadata = {
+  <span class="attr">title</span>: <span class="str">'Tentang Kami — Website Kampus'</span>,
+  <span class="attr">description</span>: <span class="str">'Halaman tentang website kampus kami'</span>,
+};
+
+<span class="kw">export default function</span> <span class="fn">AboutPage</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;main&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Tentang Kami<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Kami adalah platform informasi mahasiswa.<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/main&gt;</span>
+  );
+}</pre>
+      </div>
+
+      <div class="callout tip">
+        <p>💡 Dengan cara ini, halaman <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">/about</code> akan punya title "Tentang Kami — Website Kampus" di tab browser, bukan "Website Kampus" dari layout.</p>
+      </div>
+    </section>
+
+    <!-- ═══════ 5. Perbandingan ═══════ -->
+    <section class="section-card reveal">
+      <h2>⚖️ Perbandingan: Tanpa vs Dengan Layout</h2>
+
+      <p>Lihat betapa bersihnya kode ketika kamu menggunakan layout dibanding menulis ulang navbar dan footer di setiap halaman!</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-col bad">
+          <div class="comp-header">❌ Tanpa Layout (Repetitif)</div>
+          <div class="comp-body">
+            <p style="font-size:.85rem;color:var(--rose);margin-bottom:8px;"><strong>Setiap halaman mengulang kode yang sama!</strong></p>
+
+            <div class="code-block">
+              <div class="filename">app/page.js</div>
+<pre><span class="kw">export default function</span> <span class="fn">Home</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;&gt;</span>
+      <span class="tag">&lt;nav&gt;</span>Navbar<span class="tag">&lt;/nav&gt;</span>  <span class="cmt">← duplikat!</span>
+      <span class="tag">&lt;h1&gt;</span>Beranda<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;footer&gt;</span>...<span class="tag">&lt;/footer&gt;</span> <span class="cmt">← duplikat!</span>
+    <span class="tag">&lt;/&gt;</span>
+  );
+}</pre>
+            </div>
+
+            <div class="code-block">
+              <div class="filename">app/about/page.js</div>
+<pre><span class="kw">export default function</span> <span class="fn">About</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;&gt;</span>
+      <span class="tag">&lt;nav&gt;</span>Navbar<span class="tag">&lt;/nav&gt;</span>  <span class="cmt">← duplikat!</span>
+      <span class="tag">&lt;h1&gt;</span>Tentang<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;footer&gt;</span>...<span class="tag">&lt;/footer&gt;</span> <span class="cmt">← duplikat!</span>
+    <span class="tag">&lt;/&gt;</span>
+  );
+}</pre>
+            </div>
+
+            <div class="code-block">
+              <div class="filename">app/contact/page.js</div>
+<pre><span class="kw">export default function</span> <span class="fn">Contact</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;&gt;</span>
+      <span class="tag">&lt;nav&gt;</span>Navbar<span class="tag">&lt;/nav&gt;</span>  <span class="cmt">← duplikat!</span>
+      <span class="tag">&lt;h1&gt;</span>Kontak<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;footer&gt;</span>...<span class="tag">&lt;/footer&gt;</span> <span class="cmt">← duplikat!</span>
+    <span class="tag">&lt;/&gt;</span>
+  );
+}</pre>
+            </div>
+            <p style="font-size:.82rem;color:var(--rose);">😩 Kalau navbar berubah, kamu harus edit SEMUA file!</p>
+          </div>
+        </div>
+
+        <div class="comparison-col good">
+          <div class="comp-header">✅ Dengan Layout (DRY &amp; Bersih)</div>
+          <div class="comp-body">
+            <p style="font-size:.85rem;color:var(--emerald);margin-bottom:8px;"><strong>Layout ditulis sekali, halaman fokus ke konten!</strong></p>
+
+            <div class="code-block">
+              <div class="filename">app/layout.js</div>
+<pre><span class="kw">export default function</span> <span class="fn">Layout</span>({ children }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;html&gt;</span>
+      <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;nav&gt;</span>Navbar<span class="tag">&lt;/nav&gt;</span>  <span class="cmt">← sekali saja!</span>
+        {children}
+        <span class="tag">&lt;footer&gt;</span>...<span class="tag">&lt;/footer&gt;</span> <span class="cmt">← sekali saja!</span>
+      <span class="tag">&lt;/body&gt;</span>
+    <span class="tag">&lt;/html&gt;</span>
+  );
+}</pre>
+            </div>
+
+            <div class="code-block">
+              <div class="filename">app/page.js</div>
+<pre><span class="kw">export default function</span> <span class="fn">Home</span>() {
+  <span class="kw">return</span> <span class="tag">&lt;h1&gt;</span>Beranda<span class="tag">&lt;/h1&gt;</span>;
+}</pre>
+            </div>
+
+            <div class="code-block">
+              <div class="filename">app/about/page.js</div>
+<pre><span class="kw">export default function</span> <span class="fn">About</span>() {
+  <span class="kw">return</span> <span class="tag">&lt;h1&gt;</span>Tentang<span class="tag">&lt;/h1&gt;</span>;
+}</pre>
+            </div>
+
+            <div class="code-block">
+              <div class="filename">app/contact/page.js</div>
+<pre><span class="kw">export default function</span> <span class="fn">Contact</span>() {
+  <span class="kw">return</span> <span class="tag">&lt;h1&gt;</span>Kontak<span class="tag">&lt;/h1&gt;</span>;
+}</pre>
+            </div>
+            <p style="font-size:.82rem;color:var(--emerald);">😎 Ubah navbar? Cukup edit 1 file!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ 6. Kesalahan Umum ═══════ -->
+    <section class="section-card reveal">
+      <h2>⚠️ Kesalahan Umum</h2>
+
+      <p>Berikut adalah 4 kesalahan yang sering dilakukan pemula saat bekerja dengan layout. Pastikan kamu menghindarinya!</p>
+
+      <div class="mistake-card">
+        <h4>❌ Kesalahan 1: Lupa &lt;html&gt; dan &lt;body&gt; di Root Layout</h4>
+        <p>Root layout (<code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">app/layout.js</code>) <strong>WAJIB</strong> mengembalikan tag <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">&lt;html&gt;</code> dan <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">&lt;body&gt;</code>. Tanpa keduanya, aplikasi akan crash dan menampilkan error!</p>
+        <div class="code-block">
+<pre><span class="cmt">// ❌ SALAH — tidak ada &lt;html&gt; dan &lt;body&gt;</span>
+<span class="kw">export default function</span> <span class="fn">RootLayout</span>({ children }) {
+  <span class="kw">return</span> <span class="tag">&lt;div&gt;</span>{children}<span class="tag">&lt;/div&gt;</span>;  <span class="cmt">// CRASH!</span>
+}
+
+<span class="cmt">// ✅ BENAR — wajib ada &lt;html&gt; dan &lt;body&gt;</span>
+<span class="kw">export default function</span> <span class="fn">RootLayout</span>({ children }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;html&gt;</span><span class="tag">&lt;body&gt;</span>{children}<span class="tag">&lt;/body&gt;</span><span class="tag">&lt;/html&gt;</span>
+  );
+}</pre>
+        </div>
+      </div>
+
+      <div class="mistake-card">
+        <h4>❌ Kesalahan 2: Import CSS Global di page.js</h4>
+        <p>CSS global (seperti <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">globals.css</code>) harus di-import di <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">layout.js</code>, <strong>BUKAN</strong> di <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">page.js</code>. Kalau kamu import di page, CSS-nya hanya berlaku ketika halaman itu aktif.</p>
+        <div class="code-block">
+<pre><span class="cmt">// ❌ SALAH — import CSS global di page.js</span>
+<span class="cmt">// app/page.js</span>
+<span class="kw">import</span> <span class="str">'./globals.css'</span>;  <span class="cmt">// Jangan di sini!</span>
+
+<span class="cmt">// ✅ BENAR — import CSS global di layout.js</span>
+<span class="cmt">// app/layout.js</span>
+<span class="kw">import</span> <span class="str">'./globals.css'</span>;  <span class="cmt">// Di sini, berlaku global!</span></pre>
+        </div>
+      </div>
+
+      <div class="mistake-card">
+        <h4>❌ Kesalahan 3: Tidak Paham Layout Persist Saat Navigasi</h4>
+        <p>Layout <strong>TIDAK</strong> di-render ulang ketika user berpindah halaman. Ini artinya state di dalam layout akan tetap tersimpan. Jangan simpan data yang seharusnya reset per-halaman di layout!</p>
+        <div class="callout warning" style="margin:8px 0;">
+          <p>Layout tetap "hidup" selama user berada di halaman-halaman yang dibungkusnya. Hanya <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">{children}</code> yang berubah. Ini bagus untuk performa, tapi perlu dipahami agar tidak bingung!</p>
+        </div>
+      </div>
+
+      <div class="mistake-card">
+        <h4>❌ Kesalahan 4: Layout Tanpa {children}</h4>
+        <p>Kalau kamu membuat layout tapi lupa menaruh <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">{children}</code> di dalamnya, halaman-halaman di bawah folder itu <strong>tidak akan muncul sama sekali</strong>!</p>
+        <div class="code-block">
+<pre><span class="cmt">// ❌ SALAH — lupa {children}!</span>
+<span class="kw">export default function</span> <span class="fn">Layout</span>({ children }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;html&gt;</span><span class="tag">&lt;body&gt;</span>
+      <span class="tag">&lt;nav&gt;</span>Navbar<span class="tag">&lt;/nav&gt;</span>
+      <span class="cmt">{/* Di mana {children}?! Halaman tidak muncul! */}</span>
+      <span class="tag">&lt;footer&gt;</span>Footer<span class="tag">&lt;/footer&gt;</span>
+    <span class="tag">&lt;/body&gt;</span><span class="tag">&lt;/html&gt;</span>
+  );
+}
+
+<span class="cmt">// ✅ BENAR — selalu taruh {children}!</span>
+<span class="kw">export default function</span> <span class="fn">Layout</span>({ children }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;html&gt;</span><span class="tag">&lt;body&gt;</span>
+      <span class="tag">&lt;nav&gt;</span>Navbar<span class="tag">&lt;/nav&gt;</span>
+      {children}  <span class="cmt">{/* ← WAJIB ada! */}</span>
+      <span class="tag">&lt;footer&gt;</span>Footer<span class="tag">&lt;/footer&gt;</span>
+    <span class="tag">&lt;/body&gt;</span><span class="tag">&lt;/html&gt;</span>
+  );
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ 7. Latihan ═══════ -->
+    <section class="section-card reveal">
+      <h2>✏️ Latihan</h2>
+
+      <p>Cobalah 3 latihan berikut untuk memperdalam pemahamanmu tentang layout dan children:</p>
+
+      <div class="exercise-card">
+        <h4>Latihan 1 — Root Layout Dasar</h4>
+        <p>Buat file <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">app/layout.js</code> yang berisi:</p>
+        <ul style="margin:8px 0 0 20px;color:#475569;font-size:.92rem;">
+          <li>Navbar dengan 3 link: <strong>Beranda</strong>, <strong>Tentang</strong>, <strong>Kontak</strong></li>
+          <li>Area <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">{children}</code> untuk menampilkan halaman</li>
+          <li>Footer dengan teks copyright</li>
+          <li>Jangan lupa tag <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">&lt;html&gt;</code> dan <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">&lt;body&gt;</code>!</li>
+        </ul>
+      </div>
+
+      <div class="exercise-card">
+        <h4>Latihan 2 — Dua Halaman</h4>
+        <p>Buat 2 file halaman yang menggunakan layout dari Latihan 1:</p>
+        <ul style="margin:8px 0 0 20px;color:#475569;font-size:.92rem;">
+          <li><code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">app/page.js</code> — Halaman beranda dengan judul dan paragraf sambutan</li>
+          <li><code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">app/about/page.js</code> — Halaman tentang dengan metadata <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">title</code> yang berbeda dari layout</li>
+        </ul>
+        <p style="margin-top:8px;">Pastikan kedua halaman otomatis mendapat navbar dan footer dari layout!</p>
+      </div>
+
+      <div class="exercise-card">
+        <h4>Latihan 3 — 🏆 Challenge: Nested Layout Dashboard</h4>
+        <p>Buat nested layout untuk section <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">/dashboard</code>:</p>
+        <ul style="margin:8px 0 0 20px;color:#475569;font-size:.92rem;">
+          <li>Buat file <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">app/dashboard/layout.js</code> dengan sidebar berisi 3 link</li>
+          <li>Buat 2 halaman dashboard: <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">app/dashboard/page.js</code> dan <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">app/dashboard/nilai/page.js</code></li>
+          <li>Pastikan sidebar hanya muncul di halaman /dashboard dan sub-halamannya</li>
+          <li>Halaman /about TIDAK boleh ada sidebar!</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════ 8. Ringkasan ═══════ -->
+    <section class="section-card reveal">
+      <h2>📋 Ringkasan</h2>
+
+      <p>Berikut rangkuman dari semua konsep yang sudah kamu pelajari di halaman ini:</p>
+
+      <ul class="checklist">
+        <li><span class="check">✅</span> <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">layout.js</code> membungkus semua halaman di folder yang sama dan subfolder-subfoldernya.</li>
+        <li><span class="check">✅</span> Root layout (<code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">app/layout.js</code>) <strong>WAJIB</strong> punya tag <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">&lt;html&gt;</code> dan <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">&lt;body&gt;</code>.</li>
+        <li><span class="check">✅</span> <code style="font-family:'JetBrains Mono',monospace;font-size:.85rem;">{children}</code> adalah placeholder — isinya adalah halaman yang sedang aktif saat itu.</li>
+        <li><span class="check">✅</span> Layout <strong>TIDAK</strong> di-render ulang saat navigasi antar halaman — ini membuat perpindahan halaman terasa sangat cepat dan efisien!</li>
+        <li><span class="check">✅</span> CSS yang di-import di layout berlaku secara global untuk semua halaman yang dibungkusnya.</li>
+        <li><span class="check">✅</span> Nested layout = layout di dalam layout. Cocok untuk section seperti dashboard yang punya tampilan berbeda.</li>
+        <li><span class="check">✅</span> Metadata (title, description) yang di-export di halaman akan meng-<em>override</em> metadata dari layout.</li>
+      </ul>
+    </section>
+
+    <!-- ═══════ Bottom Navigation ═══════ -->
+    <div class="bottom-nav reveal">
+      <a href="02-app-router.html" class="bottom-nav-card prev">
+        <span class="bn-label">← Sebelumnya</span>
+        <span class="bn-title">App Router</span>
+      </a>
+      <a href="04-jsx-props.html" class="bottom-nav-card next">
+        <span class="bn-label">Selanjutnya →</span>
+        <span class="bn-title">Component, Props &amp; JSX</span>
+      </a>
+    </div>
+
+  </div><!-- /.container -->
+
+  <!-- ═══════ Footer ═══════ -->
+  <footer class="site-footer">
+    <p>Pertemuan 00 — Fullstack Next.js Guide</p>
+    <p>Cloud Native &amp; DevOps CI/CD Practicum • Universitas Muhammadiyah Makassar</p>
+  </footer>
+
+  <!-- ═══════ Scroll Reveal Script ═══════ -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var reveals = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(function (el) { observer.observe(el); });
+      } else {
+        reveals.forEach(function (el) { el.classList.add('visible'); });
+      }
+    });
+  </script>
+
+</body>
+</html>

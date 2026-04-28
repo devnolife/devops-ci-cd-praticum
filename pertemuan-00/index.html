@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan 00 — Fullstack Next.js Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: rgba(100,116,139,.12);
+  --text: #1e293b;
+  --muted: #64748b;
+  --cyan: #0891b2;
+  --cyan-dim: rgba(6,182,212,.07);
+  --amber: #b45309;
+  --amber-dim: rgba(245,158,11,.07);
+  --rose: #be123c;
+  --rose-dim: rgba(244,63,94,.06);
+  --violet: #7c3aed;
+  --violet-dim: rgba(139,92,246,.06);
+  --emerald: #047857;
+  --emerald-dim: rgba(16,185,129,.06);
+  --sky: #0369a1;
+  --sky-dim: rgba(14,165,233,.06);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.07);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px 60px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(170deg, #eef6ff 0%, #f5f0ff 30%, #fafafa 70%);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 500px 300px at 25% 30%, rgba(6,182,212,.06), transparent),
+    radial-gradient(ellipse 400px 400px at 75% 60%, rgba(124,58,237,.05), transparent);
+  pointer-events: none;
+}
+
+/* Floating shapes */
+.hero-shapes { position: absolute; inset: 0; pointer-events: none; }
+.fs { position: absolute; opacity: .3; }
+.fs1 { top:10%; left:6%; animation: float1 10s ease-in-out infinite; }
+.fs2 { top:20%; right:10%; animation: float2 12s ease-in-out infinite; }
+.fs3 { bottom:18%; left:12%; animation: float1 9s ease-in-out infinite reverse; }
+.fs4 { bottom:25%; right:7%; animation: float2 11s ease-in-out infinite; }
+.fs5 { top:45%; left:3%; animation: float3 13s ease-in-out infinite; }
+.fs6 { top:60%; right:4%; animation: float3 8s ease-in-out infinite reverse; }
+
+@keyframes float1 { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-20px) rotate(10deg)} }
+@keyframes float2 { 0%,100%{transform:translateY(0) rotate(0)} 33%{transform:translateY(-15px) rotate(-7deg)} 66%{transform:translateY(8px) rotate(5deg)} }
+@keyframes float3 { 0%,100%{transform:translate(0,0) rotate(0)} 50%{transform:translate(10px,-18px) rotate(-8deg)} }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: .82rem;
+  color: var(--muted);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  background: rgba(255,255,255,.7);
+  backdrop-filter: blur(8px);
+  animation: fadeUp .8s ease both;
+}
+.hero-badge span { color: var(--violet); font-weight: 700; }
+
+.hero h1 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 400;
+  line-height: .95;
+  letter-spacing: -.04em;
+  max-width: 800px;
+  margin-bottom: 20px;
+  animation: fadeUp .8s .12s ease both;
+}
+.hero h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, #0891b2, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  max-width: 540px;
+  font-size: 1.08rem;
+  color: var(--muted);
+  margin-bottom: 36px;
+  animation: fadeUp .8s .24s ease both;
+}
+
+.hero-links {
+  display: flex;
+  gap: 12px;
+  animation: fadeUp .8s .36s ease both;
+}
+.hero-links a {
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all .25s;
+}
+.btn-primary {
+  background: var(--violet);
+  color: #fff;
+  border: 1px solid var(--violet);
+}
+.btn-primary:hover { background: #6d28d9; box-shadow: 0 4px 14px rgba(124,58,237,.25); }
+.btn-secondary {
+  background: rgba(255,255,255,.7);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { color: var(--text); border-color: #94a3b8; }
+
+/* ── SECTION ── */
+.container { max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
+
+.section-title {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.section-title h2 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 400;
+  letter-spacing: -.03em;
+  margin-bottom: 8px;
+}
+.section-title p { color: var(--muted); font-size: 1rem; }
+
+/* ── CARD GRID ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.topic-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px 26px;
+  text-decoration: none;
+  color: inherit;
+  transition: all .3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.topic-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 18px 18px 0 0;
+  transition: height .3s;
+}
+.topic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: transparent;
+}
+.topic-card:hover::before { height: 4px; }
+
+.topic-card.c1::before { background: var(--cyan); }
+.topic-card.c2::before { background: var(--amber); }
+.topic-card.c3::before { background: var(--rose); }
+.topic-card.c4::before { background: var(--violet); }
+.topic-card.c5::before { background: var(--amber); }
+.topic-card.c6::before { background: var(--emerald); }
+.topic-card.c7::before { background: var(--sky); }
+.topic-card.c8::before { background: var(--rose); }
+
+.card-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.c1 .card-num { color: var(--cyan); }
+.c2 .card-num { color: var(--amber); }
+.c3 .card-num { color: var(--rose); }
+.c4 .card-num { color: var(--violet); }
+.c5 .card-num { color: var(--amber); }
+.c6 .card-num { color: var(--emerald); }
+.c7 .card-num { color: var(--sky); }
+.c8 .card-num { color: var(--rose); }
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+}
+
+.topic-card h3 {
+  font-size: 1.12rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.topic-card p {
+  font-size: .9rem;
+  color: var(--muted);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+.card-tags span {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 600;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.card-arrow {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: var(--border);
+  transition: all .3s;
+}
+.topic-card:hover .card-arrow { color: var(--muted); right: 16px; }
+
+/* ── OVERVIEW LINK ── */
+.overview-section {
+  text-align: center;
+  padding: 40px 24px 20px;
+}
+.overview-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 600;
+  font-size: .95rem;
+  transition: all .3s;
+  box-shadow: var(--shadow-sm);
+}
+.overview-link:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--violet);
+  color: var(--violet);
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 40px 24px;
+  color: var(--muted);
+  font-size: .85rem;
+  border-top: 1px solid var(--border);
+}
+footer a { color: var(--violet); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .hero-links { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<header class="hero">
+  <div class="hero-shapes">
+    <svg class="fs fs1" width="40" height="40" viewBox="0 0 40 40"><polygon points="20,4 36,36 4,36" fill="none" stroke="#0891b2" stroke-width="1.5"/></svg>
+    <svg class="fs fs2" width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#7c3aed" stroke-width="1.5"/></svg>
+    <svg class="fs fs3" width="32" height="32" viewBox="0 0 32 32"><rect x="4" y="4" width="24" height="24" rx="4" fill="none" stroke="#b45309" stroke-width="1.5" transform="rotate(15 16 16)"/></svg>
+    <svg class="fs fs4" width="38" height="38" viewBox="0 0 38 38"><polygon points="19,3 35,35 3,35" fill="none" stroke="#be123c" stroke-width="1.5"/></svg>
+    <svg class="fs fs5" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" fill="none" stroke="#047857" stroke-width="1.5"/></svg>
+    <svg class="fs fs6" width="34" height="34" viewBox="0 0 34 34"><rect x="5" y="5" width="24" height="24" rx="6" fill="none" stroke="#0369a1" stroke-width="1.5" transform="rotate(-10 17 17)"/></svg>
+  </div>
+
+  <div class="hero-badge">Pertemuan <span>00</span> — Panduan Lengkap</div>
+  <h1>Belajar <em>Next.js</em> dari Nol</h1>
+  <p>8 materi visual interaktif yang akan membawamu dari pemula hingga siap membangun aplikasi fullstack dengan Next.js, Docker, dan CI/CD.</p>
+  <div class="hero-links">
+    <a href="#topics" class="btn-primary">Mulai Belajar ↓</a>
+    <a href="visual-guide.html" class="btn-secondary">Ringkasan 1 Halaman</a>
+  </div>
+</header>
+
+<!-- ═══════════ TOPICS ═══════════ -->
+<div class="container" id="topics">
+  <div class="section-title reveal">
+    <h2>8 Topik yang Akan Kamu Pelajari</h2>
+    <p>Klik salah satu kartu di bawah untuk membaca penjelasan lengkap + contoh kode + diagram interaktif.</p>
+  </div>
+
+  <div class="card-grid">
+
+    <!-- 01 -->
+    <a href="01-react-vs-nextjs.html" class="topic-card c1 reveal">
+      <div class="card-num">Konsep 01</div>
+      <div class="card-icon" style="background:var(--cyan-dim);color:var(--cyan)">⚛️</div>
+      <h3>React vs Next.js</h3>
+      <p>Apa bedanya library dan framework? Kenapa kita pakai Next.js, bukan React biasa? Analogi yang mudah dipahami.</p>
+      <div class="card-tags">
+        <span>Library vs Framework</span>
+        <span>SPA vs SSR</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <!-- 02 -->
+    <a href="02-app-router.html" class="topic-card c2 reveal">
+      <div class="card-num">Konsep 02</div>
+      <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">📁</div>
+      <h3>App Router</h3>
+      <p>Routing otomatis dari struktur folder. Buat folder = buat halaman. Tidak perlu konfigurasi apa-apa.</p>
+      <div class="card-tags">
+        <span>File-based Routing</span>
+        <span>page.js</span>
+        <span>route.js</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <!-- 03 -->
+    <a href="03-layout-children.html" class="topic-card c3 reveal">
+      <div class="card-num">Konsep 03</div>
+      <div class="card-icon" style="background:var(--rose-dim);color:var(--rose)">🏗️</div>
+      <h3>Layout & Children</h3>
+      <p>Bagaimana layout.js membungkus semua halaman. Seperti pigura foto — bingkainya tetap, isinya berganti.</p>
+      <div class="card-tags">
+        <span>layout.js</span>
+        <span>{children}</span>
+        <span>Nesting</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <!-- 04 -->
+    <a href="04-jsx-props.html" class="topic-card c4 reveal">
+      <div class="card-num">Konsep 04</div>
+      <div class="card-icon" style="background:var(--violet-dim);color:var(--violet)">🧩</div>
+      <h3>Component, Props & JSX</h3>
+      <p>Component = Lego. Props = cara kirim data. JSX = HTML yang bisa pakai JavaScript. Bangun UI dari potongan kecil.</p>
+      <div class="card-tags">
+        <span>Component</span>
+        <span>Props</span>
+        <span>JSX</span>
+        <span>.map()</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <!-- 05 -->
+    <a href="05-css-concepts.html" class="topic-card c5 reveal">
+      <div class="card-num">Konsep 05</div>
+      <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">🎨</div>
+      <h3>CSS — Variables, Flexbox, Grid, Responsive</h3>
+      <p>4 konsep CSS utama: variabel warna, layout horizontal, layout grid, dan desain responsif untuk semua ukuran layar.</p>
+      <div class="card-tags">
+        <span>CSS Variables</span>
+        <span>Flexbox</span>
+        <span>Grid</span>
+        <span>@media</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <!-- 06 -->
+    <a href="06-api-routes.html" class="topic-card c6 reveal">
+      <div class="card-num">Konsep 06</div>
+      <div class="card-icon" style="background:var(--emerald-dim);color:var(--emerald)">⚡</div>
+      <h3>API Routes</h3>
+      <p>Backend di dalam Next.js! Satu project untuk frontend DAN backend. Buat endpoint JSON tanpa server terpisah.</p>
+      <div class="card-tags">
+        <span>route.js</span>
+        <span>GET / POST</span>
+        <span>JSON</span>
+        <span>fetch()</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <!-- 07 -->
+    <a href="07-env-variables.html" class="topic-card c7 reveal">
+      <div class="card-num">Konsep 07</div>
+      <div class="card-icon" style="background:var(--sky-dim);color:var(--sky)">🔐</div>
+      <h3>Environment Variables</h3>
+      <p>Konfigurasi yang bisa berubah tanpa ubah kode. Satu kode, banyak environment: dev, staging, production.</p>
+      <div class="card-tags">
+        <span>.env.local</span>
+        <span>NEXT_PUBLIC_</span>
+        <span>process.env</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <!-- 08 -->
+    <a href="08-build-docker.html" class="topic-card c8 reveal">
+      <div class="card-num">Konsep 08</div>
+      <div class="card-icon" style="background:var(--rose-dim);color:var(--rose)">🐳</div>
+      <h3>Build & Docker Flow</h3>
+      <p>Dari kode mentah sampai container berjalan. Test → Build → Docker image → Container. Alur lengkap deployment.</p>
+      <div class="card-tags">
+        <span>npm run build</span>
+        <span>Dockerfile</span>
+        <span>Multi-stage</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+  </div>
+</div>
+
+<!-- ═══════════ OVERVIEW ═══════════ -->
+<div class="overview-section reveal">
+  <a href="visual-guide.html" class="overview-link">
+    📊 Lihat Ringkasan Visual (Semua Konsep dalam 1 Halaman)
+  </a>
+</div>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <p>Pertemuan 00 — Fullstack Next.js Guide</p>
+  <p style="margin-top:6px">Cloud Native & DevOps CI/CD Practicum • <a href="https://github.com/devnolife">devnolife</a> • Universitas Muhammadiyah Makassar</p>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

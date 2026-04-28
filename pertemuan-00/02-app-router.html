@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App Router — Next.js App Router</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --border: rgba(100,116,139,.12);
+      --text: #1e293b;
+      --muted: #64748b;
+      --cyan: #0891b2;
+      --cyan-dim: rgba(6,182,212,.07);
+      --amber: #b45309;
+      --amber-dim: rgba(245,158,11,.07);
+      --rose: #be123c;
+      --rose-dim: rgba(244,63,94,.06);
+      --violet: #7c3aed;
+      --violet-dim: rgba(139,92,246,.06);
+      --emerald: #047857;
+      --emerald-dim: rgba(16,185,129,.06);
+      --sky: #0369a1;
+      --sky-dim: rgba(14,165,233,.06);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.07);
+    }
+
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--amber); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Top Navigation ── */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 28px;
+      background: rgba(250,250,250,.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-home {
+      font-weight: 600;
+      font-size: .92rem;
+      color: var(--text);
+    }
+    .nav-pages { display: flex; gap: 18px; }
+    .nav-prev, .nav-next {
+      font-size: .88rem;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .nav-prev:hover, .nav-next:hover { color: var(--amber); text-decoration: none; }
+
+    /* ── Container ── */
+    .container { max-width: 820px; margin: 0 auto; padding: 0 24px 80px; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 72px 24px 56px;
+      overflow: hidden;
+      background: linear-gradient(160deg, rgba(245,158,11,.06) 0%, rgba(245,158,11,.02) 40%, transparent 70%);
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -80px;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(245,158,11,.08) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-shapes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-shapes svg {
+      position: absolute;
+      opacity: .12;
+    }
+    .hero-shapes .shape-1 { top: 18%; left: 8%; width: 60px; animation: floatShape 7s ease-in-out infinite; }
+    .hero-shapes .shape-2 { top: 60%; right: 10%; width: 48px; animation: floatShape 9s ease-in-out infinite 1s; }
+    .hero-shapes .shape-3 { bottom: 15%; left: 30%; width: 36px; animation: floatShape 6s ease-in-out infinite 2s; }
+    @keyframes floatShape {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-14px) rotate(8deg); }
+    }
+    .badge {
+      display: inline-block;
+      padding: 5px 16px;
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--amber);
+      background: var(--amber-dim);
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .hero h1 .accent {
+      background: linear-gradient(135deg, #f59e0b, #b45309);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .subtitle {
+      font-size: 1.12rem;
+      color: var(--muted);
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    /* ── Section Cards ── */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 40px 36px;
+      margin: 28px 0;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .3s;
+    }
+    .section-card:hover { box-shadow: var(--shadow-md); }
+    .section-card h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      margin-bottom: 18px;
+      line-height: 1.3;
+    }
+    .section-card h3 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.28rem;
+      font-weight: 400;
+      margin: 28px 0 12px;
+      color: var(--text);
+    }
+    .section-card p { margin-bottom: 14px; color: #475569; }
+    .section-card ul, .section-card ol { margin: 10px 0 14px 20px; color: #475569; }
+    .section-card li { margin-bottom: 6px; }
+
+    /* ── Code Block ── */
+    .code-block {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .code-block .filename {
+      padding: 10px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,.02);
+    }
+    .code-block pre {
+      padding: 18px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .84rem;
+      line-height: 1.7;
+      color: #334155;
+      margin: 0;
+    }
+    .code-block .kw { color: #be123c; }
+    .code-block .fn { color: #7c3aed; }
+    .code-block .str { color: #047857; }
+    .code-block .cmt { color: #94a3b8; font-style: italic; }
+    .code-block .tag { color: #0891b2; }
+    .code-block .attr { color: #b45309; }
+
+    /* ── Callouts ── */
+    .callout { border-left: 4px solid; padding: 16px 20px; border-radius: 0 12px 12px 0; margin: 16px 0; }
+    .callout.tip { border-color: var(--emerald); background: var(--emerald-dim); }
+    .callout.warning { border-color: var(--amber); background: var(--amber-dim); }
+    .callout.danger { border-color: var(--rose); background: var(--rose-dim); }
+    .callout strong { display: block; margin-bottom: 4px; }
+
+    /* ── Analogy Box ── */
+    .analogy-box {
+      background: var(--amber-dim);
+      border: 1px solid rgba(245,158,11,.18);
+      border-radius: 16px;
+      padding: 28px 30px;
+      margin: 18px 0;
+    }
+    .analogy-box .emoji { font-size: 2rem; margin-bottom: 10px; display: block; }
+    .analogy-box p { color: #78350f; }
+    .analogy-box strong { color: var(--amber); }
+
+    /* ── Feature Grid ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .feature-item {
+      padding: 20px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .feature-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .feature-item .fi-icon { font-size: 1.5rem; margin-bottom: 8px; display: block; }
+    .feature-item .fi-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--amber);
+      margin-bottom: 4px;
+    }
+    .feature-item .fi-desc { font-size: .88rem; color: var(--muted); }
+
+    /* ── SVG Diagram Container ── */
+    .diagram-wrap {
+      overflow-x: auto;
+      margin: 24px 0;
+      padding: 10px 0;
+    }
+    .diagram-wrap svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+
+    /* ── Comparison ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-col {
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid var(--border);
+    }
+    .compare-col.manual { background: var(--rose-dim); }
+    .compare-col.auto { background: var(--emerald-dim); }
+    .compare-col h4 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .compare-col.manual h4 { color: var(--rose); }
+    .compare-col.auto h4 { color: var(--emerald); }
+
+    /* ── Mistakes Grid ── */
+    .mistake-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+      padding: 20px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+    }
+    @media (max-width: 640px) { .mistake-card { grid-template-columns: 1fr; } }
+    .mistake-card .wrong, .mistake-card .right { padding: 12px; border-radius: 10px; }
+    .mistake-card .wrong { background: var(--rose-dim); }
+    .mistake-card .right { background: var(--emerald-dim); }
+    .mistake-label {
+      display: inline-block;
+      font-size: .78rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .mistake-label.x { color: var(--rose); }
+    .mistake-label.v { color: var(--emerald); }
+
+    /* ── Special Files Table ── */
+    .nice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: .92rem;
+    }
+    .nice-table th {
+      text-align: left;
+      padding: 12px 16px;
+      background: var(--amber-dim);
+      color: var(--amber);
+      font-weight: 600;
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .nice-table th:first-child { border-radius: 10px 0 0 0; }
+    .nice-table th:last-child { border-radius: 0 10px 0 0; }
+    .nice-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: #475569;
+    }
+    .nice-table td:first-child {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .84rem;
+      color: var(--amber);
+      font-weight: 600;
+    }
+    .nice-table tr:last-child td { border-bottom: none; }
+    .nice-table tbody tr { transition: background .15s; }
+    .nice-table tbody tr:hover { background: var(--amber-dim); }
+
+    /* ── Exercise ── */
+    .exercise {
+      padding: 22px 24px;
+      border-radius: 14px;
+      background: var(--violet-dim);
+      border: 1px solid rgba(139,92,246,.14);
+      margin: 14px 0;
+    }
+    .exercise .ex-num {
+      display: inline-block;
+      width: 28px; height: 28px;
+      line-height: 28px;
+      text-align: center;
+      border-radius: 50%;
+      background: var(--violet);
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 700;
+      margin-right: 10px;
+    }
+    .exercise p { color: #4c1d95; display: inline; }
+
+    /* ── Summary Checklist ── */
+    .checklist { list-style: none; padding: 0; margin: 16px 0; }
+    .checklist li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .95rem;
+      color: #475569;
+    }
+    .checklist li:last-child { border-bottom: none; }
+
+    /* ── Bottom Navigation ── */
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 48px 0 0;
+    }
+    @media (max-width: 520px) { .bottom-nav { grid-template-columns: 1fr; } }
+    .bottom-nav-card {
+      display: flex;
+      flex-direction: column;
+      padding: 22px 24px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: box-shadow .25s, transform .25s;
+      text-decoration: none;
+    }
+    .bottom-nav-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); text-decoration: none; }
+    .bottom-nav-card.next { text-align: right; }
+    .bn-label { font-size: .78rem; color: var(--muted); margin-bottom: 4px; }
+    .bn-title { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.15rem; color: var(--text); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 40px 24px 36px;
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    footer p { margin-bottom: 4px; }
+
+    /* ── Scroll Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .container { padding: 0 14px 60px; }
+      .section-card { padding: 28px 20px; }
+      .hero { padding: 52px 18px 40px; }
+      .top-nav { padding: 10px 16px; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ TOP NAVIGATION ═══════════ -->
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">← Beranda</a>
+  <div class="nav-pages">
+    <a href="01-react-vs-nextjs.html" class="nav-prev">← Sebelumnya</a>
+    <a href="03-layout-children.html" class="nav-next">Selanjutnya →</a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<header class="hero">
+  <div class="hero-shapes">
+    <svg class="shape-1" viewBox="0 0 60 60" fill="none"><rect x="8" y="8" width="44" height="44" rx="12" stroke="#f59e0b" stroke-width="2.5"/></svg>
+    <svg class="shape-2" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#b45309" stroke-width="2"/></svg>
+    <svg class="shape-3" viewBox="0 0 36 36" fill="none"><polygon points="18,2 34,30 2,30" stroke="#f59e0b" stroke-width="2" fill="none"/></svg>
+  </div>
+  <span class="badge">Konsep 02</span>
+  <h1>App <span class="accent">Router</span></h1>
+  <p class="subtitle">Routing otomatis dari struktur folder</p>
+</header>
+
+<div class="container">
+
+  <!-- ═══════════ 1. ANALOGI ═══════════ -->
+  <section class="section-card reveal">
+    <h2>🎯 Analogi</h2>
+    <div class="analogy-box">
+      <span class="emoji">🗄️</span>
+      <p>
+        Bayangkan App Router seperti <strong>lemari arsip</strong>. Setiap laci (folder) punya label (URL).
+        Buka laci <strong>"about"</strong> = buka halaman <strong>/about</strong>.
+        Kamu tidak perlu daftar isi — <strong>lokasi file = alamat halaman</strong>.
+      </p>
+    </div>
+    <p>
+      Setiap laci berisi dokumen tertentu bernama <code>page.js</code>. Laci yang ada di dalam laci lain
+      menjadi <em>nested route</em>. Misalnya folder <code>about/team/</code> berarti URL-nya <code>/about/team</code>.
+      Label di laci = segmen URL. Sesederhana itu!
+    </p>
+    <p>
+      Dengan analogi ini, kamu bisa memahami bahwa <strong>setiap folder di dalam direktori <code>app/</code></strong>
+      secara otomatis menjadi bagian dari URL. Tidak perlu konfigurasi, tidak perlu install package tambahan.
+      Cukup buat folder dan file — Next.js yang mengurus sisanya.
+    </p>
+  </section>
+
+  <!-- ═══════════ 2. APA ITU ROUTING? ═══════════ -->
+  <section class="section-card reveal">
+    <h2>📖 Apa Itu Routing?</h2>
+    <p>
+      <strong>Routing</strong> adalah cara browser menentukan halaman mana yang harus ditampilkan
+      ketika kamu mengetik URL tertentu. Pikirkan URL sebagai <strong>alamat rumah</strong>, dan
+      router sebagai <strong>GPS</strong> yang mengarahkan kamu ke halaman yang benar.
+    </p>
+    <p>
+      Ketika kamu mengetik <code>website.com/about</code>, router bertugas mencari halaman "about"
+      dan menampilkannya di layar kamu.
+    </p>
+
+    <h3>Routing Tradisional vs File-Based</h3>
+    <div class="compare-grid">
+      <div class="compare-col manual">
+        <h4>❌ Routing Tradisional (Manual)</h4>
+        <p style="font-size:.9rem;color:#881337;">
+          Kamu harus menulis konfigurasi sendiri: daftarkan setiap URL, pasangkan dengan komponen,
+          install package <code>react-router-dom</code>, bungkus dengan <code>BrowserRouter</code>.
+          Semakin besar aplikasi, semakin panjang file konfigurasi.
+        </p>
+      </div>
+      <div class="compare-col auto">
+        <h4>✅ File-Based Routing (Otomatis)</h4>
+        <p style="font-size:.9rem;color:#064e3b;">
+          Cukup buat folder dan file <code>page.js</code> di dalamnya. Next.js otomatis mengenali
+          struktur folder sebagai URL. Tidak perlu konfigurasi, tidak perlu package tambahan.
+          Simpel dan bersih!
+        </p>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Tips</strong>
+      Di Next.js 13+, sistem routing yang baru disebut <strong>App Router</strong>. Sistem lama
+      (Pages Router) masih bisa dipakai, tapi App Router adalah cara yang direkomendasikan.
+    </div>
+  </section>
+
+  <!-- ═══════════ 3. BAGAIMANA CARA KERJANYA? ═══════════ -->
+  <section class="section-card reveal">
+    <h2>⚙️ Bagaimana Cara Kerjanya?</h2>
+    <p>
+      App Router menggunakan prinsip sederhana: <strong>struktur folder menentukan URL</strong>.
+      Mari kita pelajari aturan-aturan dasarnya.
+    </p>
+
+    <!-- 4a: File-based routing rules -->
+    <h3>Aturan Dasar File-Based Routing</h3>
+    <p>Berikut file-file spesial yang dikenali oleh Next.js App Router:</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <span class="fi-icon">📄</span>
+        <div class="fi-name">page.js</div>
+        <div class="fi-desc">Halaman HTML yang bisa dikunjungi lewat URL</div>
+      </div>
+      <div class="feature-item">
+        <span class="fi-icon">🔗</span>
+        <div class="fi-name">route.js</div>
+        <div class="fi-desc">API endpoint yang mengembalikan data JSON</div>
+      </div>
+      <div class="feature-item">
+        <span class="fi-icon">📐</span>
+        <div class="fi-name">layout.js</div>
+        <div class="fi-desc">Pembungkus halaman (navbar, footer, dll.)</div>
+      </div>
+      <div class="feature-item">
+        <span class="fi-icon">⏳</span>
+        <div class="fi-name">loading.js</div>
+        <div class="fi-desc">Tampilan saat halaman sedang dimuat</div>
+      </div>
+      <div class="feature-item">
+        <span class="fi-icon">🚨</span>
+        <div class="fi-name">error.js</div>
+        <div class="fi-desc">Tampilan saat terjadi error</div>
+      </div>
+      <div class="feature-item">
+        <span class="fi-icon">🔍</span>
+        <div class="fi-name">not-found.js</div>
+        <div class="fi-desc">Halaman 404 — tidak ditemukan</div>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <strong>⚠️ Penting</strong>
+      Ingat: <strong>folder = path URL</strong>, dan hanya file bernama <code>page.js</code> atau
+      <code>route.js</code> yang bisa diakses lewat URL. File lain (komponen, utilitas) tidak akan
+      menjadi halaman.
+    </div>
+
+    <!-- 4b: ANIMATED SVG DIAGRAM -->
+    <h3>Peta Folder → URL</h3>
+    <p>Lihat diagram animasi berikut untuk memahami bagaimana folder berubah menjadi URL:</p>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 700 440" width="700" height="440" xmlns="http://www.w3.org/2000/svg" style="font-family:'DM Sans',system-ui,sans-serif;">
+        <!-- Background -->
+        <rect width="700" height="440" rx="18" fill="#fffbeb" stroke="#fde68a" stroke-width="1.5"/>
+
+        <!-- Title -->
+        <text x="350" y="32" text-anchor="middle" font-size="15" font-weight="700" fill="#92400e">Struktur Folder → URL Path</text>
+
+        <!-- Left side: Folder tree -->
+        <text x="40" y="64" font-family="'JetBrains Mono',monospace" font-size="13" fill="#92400e" font-weight="700">📁 app/</text>
+
+        <!-- Row 1: page.js → / -->
+        <text x="64" y="96" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">├── page.js</text>
+        <rect x="500" y="80" width="140" height="28" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2"/>
+        <text x="570" y="99" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#92400e" font-weight="600">/</text>
+        <path id="p1" d="M180,90 C340,90 400,94 498,94" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="6,4">
+          <animate attributeName="stroke-dashoffset" from="200" to="0" dur="2s" begin="0s" fill="freeze"/>
+        </path>
+        <circle r="4" fill="#f59e0b">
+          <animateMotion dur="2.5s" repeatCount="indefinite" begin="0s"><mpath href="#p1"/></animateMotion>
+        </circle>
+
+        <!-- Row 2: about/page.js → /about -->
+        <text x="64" y="134" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">├── about/</text>
+        <text x="88" y="158" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">└── page.js</text>
+        <rect x="500" y="138" width="140" height="28" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2"/>
+        <text x="570" y="157" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#92400e" font-weight="600">/about</text>
+        <path id="p2" d="M208,152 C340,150 420,152 498,152" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="6,4">
+          <animate attributeName="stroke-dashoffset" from="200" to="0" dur="2s" begin="0.6s" fill="freeze"/>
+        </path>
+        <circle r="4" fill="#f59e0b">
+          <animateMotion dur="2.5s" repeatCount="indefinite" begin="1s"><mpath href="#p2"/></animateMotion>
+        </circle>
+
+        <!-- Row 3: blog/page.js → /blog -->
+        <text x="64" y="196" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">├── blog/</text>
+        <text x="88" y="220" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">├── page.js</text>
+        <rect x="500" y="200" width="140" height="28" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2"/>
+        <text x="570" y="219" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#92400e" font-weight="600">/blog</text>
+        <path id="p3" d="M208,214 C320,214 420,214 498,214" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="6,4">
+          <animate attributeName="stroke-dashoffset" from="200" to="0" dur="2s" begin="1.2s" fill="freeze"/>
+        </path>
+        <circle r="4" fill="#f59e0b">
+          <animateMotion dur="2.5s" repeatCount="indefinite" begin="2s"><mpath href="#p3"/></animateMotion>
+        </circle>
+
+        <!-- Row 4: blog/[id]/page.js → /blog/:id -->
+        <text x="88" y="250" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">└── [id]/</text>
+        <text x="118" y="274" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">└── page.js</text>
+        <rect x="500" y="258" width="140" height="28" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2"/>
+        <text x="570" y="277" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#92400e" font-weight="600">/blog/1, /blog/2</text>
+        <path id="p4" d="M238,268 C340,268 420,272 498,272" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="6,4">
+          <animate attributeName="stroke-dashoffset" from="200" to="0" dur="2s" begin="1.8s" fill="freeze"/>
+        </path>
+        <circle r="4" fill="#d97706">
+          <animateMotion dur="3s" repeatCount="indefinite" begin="2.5s"><mpath href="#p4"/></animateMotion>
+        </circle>
+
+        <!-- Row 5: contact/page.js → /contact -->
+        <text x="64" y="312" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">├── contact/</text>
+        <text x="88" y="336" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">└── page.js</text>
+        <rect x="500" y="320" width="140" height="28" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2"/>
+        <text x="570" y="339" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#92400e" font-weight="600">/contact</text>
+        <path id="p5" d="M208,330 C340,330 420,334 498,334" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="6,4">
+          <animate attributeName="stroke-dashoffset" from="200" to="0" dur="2s" begin="2.4s" fill="freeze"/>
+        </path>
+        <circle r="4" fill="#f59e0b">
+          <animateMotion dur="2.5s" repeatCount="indefinite" begin="3s"><mpath href="#p5"/></animateMotion>
+        </circle>
+
+        <!-- Row 6: api/hello/route.js → /api/hello -->
+        <text x="64" y="374" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">└── api/</text>
+        <text x="98" y="398" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">└── hello/</text>
+        <text x="128" y="422" font-family="'JetBrains Mono',monospace" font-size="12" fill="#334155">└── route.js</text>
+        <rect x="500" y="400" width="140" height="28" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2"/>
+        <text x="570" y="419" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#92400e" font-weight="600">/api/hello</text>
+        <path id="p6" d="M248,416 C360,416 420,414 498,414" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="6,4">
+          <animate attributeName="stroke-dashoffset" from="200" to="0" dur="2s" begin="3s" fill="freeze"/>
+        </path>
+        <circle r="4" fill="#d97706">
+          <animateMotion dur="3s" repeatCount="indefinite" begin="3.5s"><mpath href="#p6"/></animateMotion>
+        </circle>
+
+        <!-- Labels -->
+        <text x="130" y="50" text-anchor="middle" font-size="11" fill="#b45309" font-weight="600">STRUKTUR FOLDER</text>
+        <text x="570" y="66" text-anchor="middle" font-size="11" fill="#b45309" font-weight="600">URL PATH</text>
+      </svg>
+    </div>
+
+    <!-- 4c: Dynamic Routes -->
+    <h3>Dynamic Routes (Rute Dinamis)</h3>
+    <p>
+      Bagaimana kalau kamu punya ratusan halaman blog? Tidak mungkin buat folder satu per satu.
+      Di sinilah <strong>dynamic routes</strong> bekerja.
+    </p>
+    <p>
+      Dengan membuat folder bernama <code>[id]</code> (pakai kurung siku), Next.js akan mencocokkan
+      URL apa pun yang ada di segmen itu. Contoh:
+    </p>
+    <ul>
+      <li><code>app/blog/[id]/page.js</code> → cocok dengan <code>/blog/1</code>, <code>/blog/2</code>, <code>/blog/hello</code></li>
+      <li>Nilai <code>id</code> bisa diakses lewat parameter <code>params</code></li>
+    </ul>
+
+    <div class="diagram-wrap reveal">
+      <svg viewBox="0 0 600 240" width="600" height="240" xmlns="http://www.w3.org/2000/svg" style="font-family:'DM Sans',system-ui,sans-serif;">
+        <rect width="600" height="240" rx="16" fill="#fffbeb" stroke="#fde68a" stroke-width="1.2"/>
+        <text x="300" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#92400e">Dynamic Route Matching</text>
+
+        <!-- Source -->
+        <rect x="30" y="55" width="220" height="40" rx="10" fill="#fff" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="140" y="80" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#92400e" font-weight="600">app/blog/[id]/page.js</text>
+
+        <!-- Arrows & targets -->
+        <path id="dp1" d="M252,66 C320,50 360,55 380,60" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+        <circle r="3.5" fill="#f59e0b"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0s"><mpath href="#dp1"/></animateMotion></circle>
+        <rect x="384" y="48" width="170" height="30" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="469" y="68" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#92400e">/blog/1 → id = "1"</text>
+
+        <path id="dp2" d="M252,78 C320,85 360,95 380,105" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+        <circle r="3.5" fill="#d97706"><animateMotion dur="2s" repeatCount="indefinite" begin="0.6s"><mpath href="#dp2"/></animateMotion></circle>
+        <rect x="384" y="92" width="170" height="30" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="469" y="112" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#92400e">/blog/42 → id = "42"</text>
+
+        <path id="dp3" d="M252,88 C320,110 360,135 380,148" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+        <circle r="3.5" fill="#f59e0b"><animateMotion dur="2.2s" repeatCount="indefinite" begin="1.2s"><mpath href="#dp3"/></animateMotion></circle>
+        <rect x="384" y="136" width="170" height="30" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+        <text x="469" y="156" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#92400e">/blog/halo → id = "halo"</text>
+
+        <!-- Explanation -->
+        <text x="300" y="205" text-anchor="middle" font-size="12" fill="#78350f">Satu file menangani semua URL yang cocok dengan pola /blog/*</text>
+        <text x="300" y="225" text-anchor="middle" font-size="11" fill="#b45309">Nilai di dalam [id] bisa diakses lewat params.id</text>
+      </svg>
+    </div>
+
+    <!-- 4d: Special Files Table -->
+    <h3>Tabel File Spesial</h3>
+    <p>Ringkasan lengkap file-file yang dikenali oleh App Router:</p>
+
+    <table class="nice-table reveal">
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Kegunaan</th>
+          <th>Contoh Penggunaan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>page.js</td>
+          <td>Halaman utama suatu route</td>
+          <td>Menampilkan konten UI ke pengguna</td>
+        </tr>
+        <tr>
+          <td>layout.js</td>
+          <td>Pembungkus halaman (layout)</td>
+          <td>Navbar + footer yang konsisten</td>
+        </tr>
+        <tr>
+          <td>loading.js</td>
+          <td>Loading state otomatis</td>
+          <td>Skeleton loader / spinner</td>
+        </tr>
+        <tr>
+          <td>error.js</td>
+          <td>Error handler otomatis</td>
+          <td>Menampilkan pesan error yang ramah</td>
+        </tr>
+        <tr>
+          <td>not-found.js</td>
+          <td>Halaman 404</td>
+          <td>"Halaman tidak ditemukan"</td>
+        </tr>
+        <tr>
+          <td>route.js</td>
+          <td>API endpoint</td>
+          <td>Mengembalikan data JSON</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════ 4. CONTOH KODE ═══════════ -->
+  <section class="section-card reveal">
+    <h2>💻 Contoh Kode</h2>
+    <p>
+      Berikut 5 contoh kode yang sering digunakan saat bekerja dengan App Router.
+      Perhatikan komentar di setiap baris untuk memahami fungsinya.
+    </p>
+
+    <!-- Example 1: Basic page.js -->
+    <h3>1. Halaman Utama (page.js)</h3>
+    <p>Ini adalah file paling dasar. Letakkan di <code>app/page.js</code> dan otomatis menjadi halaman utama.</p>
+    <div class="code-block">
+      <div class="filename">app/page.js</div>
+      <pre><span class="cmt">// app/page.js — Halaman utama yang muncul di URL "/"</span>
+<span class="cmt">// File ini WAJIB bernama page.js agar dikenali Next.js</span>
+
+<span class="kw">export default function</span> <span class="fn">Home</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;main&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Selamat Datang!<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Ini adalah halaman utama website kamu<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Dibuat dengan Next.js App Router ✨<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/main&gt;</span>
+  );
+}</pre>
+    </div>
+
+    <!-- Example 2: Nested route -->
+    <h3>2. Nested Route (Rute Bersarang)</h3>
+    <p>
+      Untuk membuat halaman <code>/about/team</code>, buat folder <code>about/team/</code> dan
+      letakkan <code>page.js</code> di dalamnya.
+    </p>
+    <div class="code-block">
+      <div class="filename">app/about/team/page.js</div>
+      <pre><span class="cmt">// app/about/team/page.js — Halaman /about/team</span>
+<span class="cmt">// Folder "about" = segmen /about</span>
+<span class="cmt">// Folder "team"  = segmen /team</span>
+<span class="cmt">// Gabungan = /about/team</span>
+
+<span class="kw">export default function</span> <span class="fn">Team</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;section&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Tim Kami<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Kenali orang-orang hebat di balik layar<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/section&gt;</span>
+  );
+}</pre>
+    </div>
+
+    <!-- Example 3: Dynamic route -->
+    <h3>3. Dynamic Route (Rute Dinamis)</h3>
+    <p>
+      Gunakan folder <code>[id]</code> untuk menangkap URL yang bervariasi. Nilai dari URL
+      bisa diakses lewat properti <code>params</code>.
+    </p>
+    <div class="code-block">
+      <div class="filename">app/blog/[id]/page.js</div>
+      <pre><span class="cmt">// app/blog/[id]/page.js — Halaman dinamis</span>
+<span class="cmt">// Cocok dengan /blog/1, /blog/2, /blog/apapun</span>
+<span class="cmt">// Nilai "id" otomatis ditangkap dari URL</span>
+
+<span class="kw">export default function</span> <span class="fn">BlogPost</span>({ <span class="attr">params</span> }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;article&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Artikel #{<span class="attr">params</span>.<span class="attr">id</span>}<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Ini adalah konten artikel dengan ID: {<span class="attr">params</span>.<span class="attr">id</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/article&gt;</span>
+  );
+}</pre>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Tips</strong>
+      Nama folder di dalam kurung siku menentukan nama parameter. <code>[id]</code> berarti
+      <code>params.id</code>. Kalau kamu buat <code>[slug]</code>, maka aksesnya
+      <code>params.slug</code>.
+    </div>
+
+    <!-- Example 4: API route -->
+    <h3>4. API Route (route.js)</h3>
+    <p>
+      File <code>route.js</code> berfungsi sebagai endpoint API. Alih-alih mengembalikan tampilan HTML,
+      file ini mengembalikan data (biasanya JSON).
+    </p>
+    <div class="code-block">
+      <div class="filename">app/api/hello/route.js</div>
+      <pre><span class="cmt">// app/api/hello/route.js — Endpoint API di /api/hello</span>
+<span class="cmt">// File ini TIDAK menampilkan halaman,</span>
+<span class="cmt">// melainkan mengembalikan data JSON</span>
+
+<span class="kw">export async function</span> <span class="fn">GET</span>() {
+  <span class="cmt">// Response.json() secara otomatis mengatur</span>
+  <span class="cmt">// header Content-Type ke application/json</span>
+  <span class="kw">return</span> <span class="fn">Response</span>.<span class="fn">json</span>({
+    <span class="attr">pesan</span>: <span class="str">"Halo dari API!"</span>,
+    <span class="attr">status</span>: <span class="str">"sukses"</span>,
+    <span class="attr">waktu</span>: <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toISOString</span>()
+  });
+}</pre>
+    </div>
+
+    <!-- Example 5: Custom 404 -->
+    <h3>5. Custom 404 (not-found.js)</h3>
+    <p>
+      File <code>not-found.js</code> akan otomatis ditampilkan ketika halaman tidak ditemukan.
+      Letakkan di <code>app/not-found.js</code> untuk menangani seluruh aplikasi.
+    </p>
+    <div class="code-block">
+      <div class="filename">app/not-found.js</div>
+      <pre><span class="cmt">// app/not-found.js — Halaman 404 kustom</span>
+<span class="cmt">// Muncul otomatis saat URL tidak cocok</span>
+<span class="cmt">// dengan route manapun</span>
+
+<span class="kw">export default function</span> <span class="fn">NotFound</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">style</span>={{ <span class="attr">textAlign</span>: <span class="str">'center'</span>, <span class="attr">padding</span>: <span class="str">'80px 20px'</span> }}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h1</span> <span class="attr">style</span>={{ <span class="attr">fontSize</span>: <span class="str">'4rem'</span> }}<span class="tag">&gt;</span>404<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Halaman yang kamu cari tidak ditemukan 😢<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"/"</span><span class="tag">&gt;</span>Kembali ke Beranda<span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</pre>
+    </div>
+  </section>
+
+  <!-- ═══════════ 5. PERBANDINGAN ═══════════ -->
+  <section class="section-card reveal">
+    <h2>⚖️ Perbandingan</h2>
+    <p>
+      Mari bandingkan bagaimana routing dilakukan di React biasa (dengan React Router) dan di
+      Next.js App Router. Perbedaannya sangat mencolok!
+    </p>
+
+    <div class="compare-grid">
+      <div class="compare-col manual">
+        <h4>❌ React Router (Manual)</h4>
+        <div class="code-block" style="background:#fff5f5;">
+          <div class="filename">src/App.jsx</div>
+          <pre><span class="cmt">// 1. Install dulu</span>
+<span class="cmt">// npm install react-router-dom</span>
+
+<span class="kw">import</span> { <span class="fn">BrowserRouter</span>,
+  <span class="fn">Routes</span>, <span class="fn">Route</span>
+} <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="kw">import</span> <span class="fn">Home</span> <span class="kw">from</span> <span class="str">'./Home'</span>;
+<span class="kw">import</span> <span class="fn">About</span> <span class="kw">from</span> <span class="str">'./About'</span>;
+<span class="kw">import</span> <span class="fn">Blog</span> <span class="kw">from</span> <span class="str">'./Blog'</span>;
+<span class="kw">import</span> <span class="fn">Contact</span> <span class="kw">from</span> <span class="str">'./Contact'</span>;
+
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;BrowserRouter&gt;</span>
+      <span class="tag">&lt;Routes&gt;</span>
+        <span class="tag">&lt;Route</span> <span class="attr">path</span>=<span class="str">"/"</span>
+          <span class="attr">element</span>={<span class="tag">&lt;Home/&gt;</span>} /&gt;
+        <span class="tag">&lt;Route</span> <span class="attr">path</span>=<span class="str">"/about"</span>
+          <span class="attr">element</span>={<span class="tag">&lt;About/&gt;</span>} /&gt;
+        <span class="tag">&lt;Route</span> <span class="attr">path</span>=<span class="str">"/blog"</span>
+          <span class="attr">element</span>={<span class="tag">&lt;Blog/&gt;</span>} /&gt;
+        <span class="tag">&lt;Route</span> <span class="attr">path</span>=<span class="str">"/contact"</span>
+          <span class="attr">element</span>={<span class="tag">&lt;Contact/&gt;</span>} /&gt;
+      <span class="tag">&lt;/Routes&gt;</span>
+    <span class="tag">&lt;/BrowserRouter&gt;</span>
+  );
+}</pre>
+        </div>
+        <p style="font-size:.85rem;color:#881337;margin-top:10px;">
+          ⚠️ Harus install package, import setiap halaman, dan daftarkan setiap route secara manual.
+          Semakin banyak halaman = semakin panjang file ini.
+        </p>
+      </div>
+
+      <div class="compare-col auto">
+        <h4>✅ Next.js App Router (Otomatis)</h4>
+        <div class="code-block" style="background:#f0fdf4;">
+          <div class="filename">Cukup buat folder & file</div>
+          <pre><span class="cmt">// Tidak perlu install apa-apa!</span>
+<span class="cmt">// Tidak perlu file konfigurasi!</span>
+<span class="cmt">// Cukup buat struktur folder:</span>
+
+📁 app/
+├── page.js         <span class="cmt">→ /</span>
+├── about/
+│   └── page.js     <span class="cmt">→ /about</span>
+├── blog/
+│   └── page.js     <span class="cmt">→ /blog</span>
+└── contact/
+    └── page.js     <span class="cmt">→ /contact</span>
+
+<span class="cmt">// Selesai! 🎉</span>
+<span class="cmt">// Setiap page.js cukup export</span>
+<span class="cmt">// satu komponen React.</span></pre>
+        </div>
+        <p style="font-size:.85rem;color:#064e3b;margin-top:10px;">
+          ✅ Tidak perlu install package, tidak perlu import, tidak perlu konfigurasi.
+          Buat folder = buat route. Sesederhana itu!
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 6. KESALAHAN UMUM ═══════════ -->
+  <section class="section-card reveal">
+    <h2>⚠️ Kesalahan Umum</h2>
+    <p>Hindari kesalahan-kesalahan berikut saat menggunakan App Router:</p>
+
+    <!-- Mistake 1 -->
+    <h3>1. Nama File Salah</h3>
+    <p>Di Next.js 13+ (App Router), nama file untuk halaman adalah <code>page.js</code>, bukan <code>index.js</code>.</p>
+    <div class="mistake-card">
+      <div class="wrong">
+        <span class="mistake-label x">✗ Salah</span>
+        <div class="code-block" style="margin:6px 0 0;">
+          <pre>app/about/<span class="kw">index.js</span>  <span class="cmt">← Tidak dikenali!</span></pre>
+        </div>
+      </div>
+      <div class="right">
+        <span class="mistake-label v">✓ Benar</span>
+        <div class="code-block" style="margin:6px 0 0;">
+          <pre>app/about/<span class="fn">page.js</span>   <span class="cmt">← Benar! ✅</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mistake 2 -->
+    <h3>2. Meletakkan Komponen di Folder app/</h3>
+    <p>
+      File komponen biasa (Button, Card, dll.) sebaiknya diletakkan di folder <code>components/</code>
+      di luar <code>app/</code>, bukan langsung di dalam folder route.
+    </p>
+    <div class="mistake-card">
+      <div class="wrong">
+        <span class="mistake-label x">✗ Salah</span>
+        <div class="code-block" style="margin:6px 0 0;">
+          <pre>app/Button.js  <span class="cmt">← Bukan halaman,</span>
+               <span class="cmt">   jangan taruh di sini!</span></pre>
+        </div>
+      </div>
+      <div class="right">
+        <span class="mistake-label v">✓ Benar</span>
+        <div class="code-block" style="margin:6px 0 0;">
+          <pre>components/Button.js  <span class="cmt">← Tempat</span>
+                      <span class="cmt">   yang tepat ✅</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mistake 3 -->
+    <h3>3. Bingung page.js vs route.js</h3>
+    <p>
+      <code>page.js</code> mengembalikan tampilan UI (HTML). <code>route.js</code> mengembalikan
+      data (JSON). Jangan sampai tertukar!
+    </p>
+    <div class="mistake-card">
+      <div class="wrong">
+        <span class="mistake-label x">✗ Salah</span>
+        <div class="code-block" style="margin:6px 0 0;">
+          <pre><span class="cmt">// app/api/users/page.js</span>
+<span class="cmt">// ← Harusnya route.js</span>
+<span class="cmt">//   untuk API!</span>
+<span class="kw">return</span> <span class="fn">Response</span>.<span class="fn">json</span>(...)</pre>
+        </div>
+      </div>
+      <div class="right">
+        <span class="mistake-label v">✓ Benar</span>
+        <div class="code-block" style="margin:6px 0 0;">
+          <pre><span class="cmt">// app/api/users/route.js</span>
+<span class="cmt">// ← route.js untuk API ✅</span>
+<span class="kw">export async function</span> <span class="fn">GET</span>() {
+  <span class="kw">return</span> <span class="fn">Response</span>.<span class="fn">json</span>(...)
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mistake 4 -->
+    <h3>4. Lupa Bahwa Nama Folder = URL</h3>
+    <p>
+      Nama folder bersifat <strong>case-sensitive</strong>. Folder <code>About</code> dan <code>about</code>
+      menghasilkan URL yang berbeda!
+    </p>
+    <div class="mistake-card">
+      <div class="wrong">
+        <span class="mistake-label x">✗ Tidak Konsisten</span>
+        <div class="code-block" style="margin:6px 0 0;">
+          <pre>app/<span class="kw">About</span>/page.js  <span class="cmt">→ /About</span>
+app/<span class="kw">Blog</span>/page.js   <span class="cmt">→ /Blog</span>
+<span class="cmt">← Huruf besar di URL? 🤔</span></pre>
+        </div>
+      </div>
+      <div class="right">
+        <span class="mistake-label v">✓ Konsisten</span>
+        <div class="code-block" style="margin:6px 0 0;">
+          <pre>app/<span class="fn">about</span>/page.js  <span class="cmt">→ /about</span>
+app/<span class="fn">blog</span>/page.js   <span class="cmt">→ /blog</span>
+<span class="cmt">← Huruf kecil semua ✅</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout danger">
+      <strong>🚫 Perhatian</strong>
+      Konvensi umum: gunakan <strong>huruf kecil semua</strong> (lowercase) untuk nama folder route.
+      Ini mencegah masalah di server Linux yang case-sensitive.
+    </div>
+  </section>
+
+  <!-- ═══════════ 7. LATIHAN ═══════════ -->
+  <section class="section-card reveal">
+    <h2>✏️ Latihan</h2>
+    <p>Coba kerjakan latihan-latihan berikut untuk menguji pemahamanmu:</p>
+
+    <div class="exercise">
+      <span class="ex-num">1</span>
+      <p>
+        <strong>Buat 3 halaman:</strong> Buat proyek Next.js baru dan buat tiga halaman —
+        <code>/</code> (beranda), <code>/about</code> (tentang), dan <code>/contact</code> (kontak).
+        Setiap halaman harus menampilkan judul dan deskripsi singkat. Tulis struktur folder yang kamu buat.
+      </p>
+    </div>
+
+    <div class="exercise">
+      <span class="ex-num">2</span>
+      <p>
+        <strong>Dynamic route blog:</strong> Buat dynamic route <code>/blog/[id]</code> yang menampilkan
+        nomor artikel berdasarkan ID dari URL. Misalnya, kunjungi <code>/blog/5</code> harus menampilkan
+        "Artikel #5". Gunakan <code>params.id</code> untuk mengambil nilainya.
+      </p>
+    </div>
+
+    <div class="exercise">
+      <span class="ex-num">3</span>
+      <p>
+        <strong>API endpoint:</strong> Buat API endpoint di <code>/api/mahasiswa</code> yang mengembalikan
+        daftar nama mahasiswa dalam format JSON. Gunakan <code>route.js</code> dengan fungsi <code>GET</code>.
+        Contoh response: <code>{ "mahasiswa": ["Andi", "Budi", "Citra"] }</code>.
+      </p>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Petunjuk</strong>
+      Untuk latihan 1, kamu hanya perlu membuat 3 folder (root sudah ada) dan 3 file <code>page.js</code>.
+      Untuk latihan 3, ingat: API menggunakan <code>route.js</code>, bukan <code>page.js</code>!
+    </div>
+  </section>
+
+  <!-- ═══════════ 8. RINGKASAN ═══════════ -->
+  <section class="section-card reveal">
+    <h2>📋 Ringkasan</h2>
+    <p>Berikut poin-poin penting yang telah kamu pelajari tentang App Router:</p>
+
+    <ul class="checklist">
+      <li>✅ Folder di <code>app/</code> = path URL — buat folder, otomatis jadi route</li>
+      <li>✅ <code>page.js</code> = halaman yang bisa dikunjungi pengguna lewat browser</li>
+      <li>✅ <code>route.js</code> = API endpoint yang mengembalikan data (biasanya JSON)</li>
+      <li>✅ <code>[nama]</code> = dynamic route — menangkap URL yang bervariasi</li>
+      <li>✅ <code>layout.js</code> membungkus semua halaman dalam satu folder (dan sub-folder)</li>
+      <li>✅ <code>loading.js</code> &amp; <code>error.js</code> untuk pengalaman pengguna yang lebih baik</li>
+      <li>✅ Tidak perlu install <code>react-router</code> — semuanya sudah built-in di Next.js!</li>
+    </ul>
+
+    <div class="callout warning">
+      <strong>📌 Ingat</strong>
+      Kunci utama App Router: <strong>struktur folder = struktur URL</strong>.
+      Kalau kamu bisa membuat folder dan file, kamu sudah bisa membuat routing di Next.js!
+    </div>
+  </section>
+
+  <!-- ═══════════ BOTTOM NAVIGATION ═══════════ -->
+  <div class="bottom-nav">
+    <a href="01-react-vs-nextjs.html" class="bottom-nav-card prev">
+      <span class="bn-label">← Sebelumnya</span>
+      <span class="bn-title">React vs Next.js</span>
+    </a>
+    <a href="03-layout-children.html" class="bottom-nav-card next">
+      <span class="bn-label">Selanjutnya →</span>
+      <span class="bn-title">Layout &amp; Children</span>
+    </a>
+  </div>
+
+</div><!-- /.container -->
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <p>Pertemuan 00 — Fullstack Next.js Guide</p>
+  <p>Cloud Native &amp; DevOps CI/CD Practicum • Universitas Muhammadiyah Makassar</p>
+</footer>
+
+<!-- ═══════════ SCROLL REVEAL ═══════════ -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var reveals = document.querySelectorAll('.reveal');
+    if (!reveals.length) return;
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(function (el) { observer.observe(el); });
+  });
+</script>
+</body>
+</html>

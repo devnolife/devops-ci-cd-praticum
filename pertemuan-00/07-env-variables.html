@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Environment Variables — Praktikum Cloud Native</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --border: rgba(100,116,139,.12);
+      --text: #1e293b;
+      --muted: #64748b;
+      --cyan: #0891b2;
+      --cyan-dim: rgba(6,182,212,.07);
+      --amber: #b45309;
+      --amber-dim: rgba(245,158,11,.07);
+      --rose: #be123c;
+      --rose-dim: rgba(244,63,94,.06);
+      --violet: #7c3aed;
+      --violet-dim: rgba(139,92,246,.06);
+      --emerald: #047857;
+      --emerald-dim: rgba(16,185,129,.06);
+      --sky: #0369a1;
+      --sky-dim: rgba(14,165,233,.06);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.07);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15.5px;
+    }
+
+    /* ── Top Navigation ── */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(250,250,250,.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-nav a {
+      text-decoration: none;
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .top-nav a:hover { color: var(--sky); }
+    .nav-pages { display: flex; gap: 18px; }
+
+    /* ── Container ── */
+    .container { max-width: 820px; margin: 0 auto; padding: 0 20px 80px; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(14,165,233,.06) 0%, rgba(3,105,161,.10) 50%, rgba(14,165,233,.04) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 72px 20px 64px;
+      text-align: center;
+    }
+    .hero-inner { position: relative; z-index: 2; max-width: 820px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(3,105,161,.09);
+      color: var(--sky);
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 22px;
+      border: 1px solid rgba(3,105,161,.13);
+    }
+    .hero h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(2.4rem, 5.5vw, 3.4rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--sky);
+    }
+    .hero .subtitle {
+      font-size: 1.08rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Floating SVG shapes */
+    .hero-shapes { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+    .hero-shapes .shape {
+      position: absolute;
+      opacity: .18;
+    }
+    @keyframes floatA { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-18px) rotate(8deg); } }
+    @keyframes floatB { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(14px) rotate(-6deg); } }
+    @keyframes floatC { 0%,100% { transform: translateX(0) rotate(0deg); } 50% { transform: translateX(12px) rotate(5deg); } }
+
+    /* ── Section Card ── */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 40px 36px;
+      margin-top: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .section-card h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      margin-bottom: 18px;
+      color: var(--text);
+    }
+    .section-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 22px 0 10px;
+      color: var(--text);
+    }
+    .section-card p { margin-bottom: 12px; color: var(--text); }
+    .section-card ul, .section-card ol {
+      margin: 10px 0 16px 22px;
+    }
+    .section-card li {
+      margin-bottom: 7px;
+      color: var(--text);
+    }
+    .section-card li::marker { color: var(--sky); }
+    .section-card strong { font-weight: 600; }
+
+    /* ── Code Blocks ── */
+    .code-block {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .code-block .filename {
+      padding: 10px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,.02);
+    }
+    .code-block pre {
+      padding: 18px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .84rem;
+      line-height: 1.7;
+      color: #334155;
+      margin: 0;
+    }
+    .code-block .kw { color: #be123c; }
+    .code-block .fn { color: #7c3aed; }
+    .code-block .str { color: #047857; }
+    .code-block .cmt { color: #94a3b8; font-style: italic; }
+    .code-block .tag { color: #0891b2; }
+    .code-block .attr { color: #b45309; }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .85em;
+      background: var(--sky-dim);
+      color: var(--sky);
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    /* ── Callouts ── */
+    .callout {
+      border-left: 4px solid;
+      padding: 16px 20px;
+      border-radius: 0 12px 12px 0;
+      margin: 16px 0;
+    }
+    .callout.tip { border-color: var(--emerald); background: var(--emerald-dim); }
+    .callout.warning { border-color: var(--amber); background: var(--amber-dim); }
+    .callout.danger { border-color: var(--rose); background: var(--rose-dim); }
+    .callout p { margin-bottom: 4px; }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout strong { font-weight: 600; }
+
+    /* ── Analogy Card ── */
+    .analogy-card {
+      background: var(--sky-dim);
+      border: 1px solid rgba(3,105,161,.12);
+      border-radius: 16px;
+      padding: 28px 28px;
+      margin: 16px 0;
+    }
+    .analogy-card p { color: var(--text); margin-bottom: 10px; }
+    .analogy-card p:last-child { margin-bottom: 0; }
+
+    /* ── Comparison Table ── */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: .92rem;
+    }
+    .compare-table th {
+      background: var(--sky-dim);
+      color: var(--sky);
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid rgba(3,105,161,.15);
+    }
+    .compare-table th:first-child { border-radius: 12px 0 0 0; }
+    .compare-table th:last-child { border-radius: 0 12px 0 0; }
+    .compare-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:hover td { background: var(--surface-2); }
+
+    /* ── Mistakes ── */
+    .mistake-item {
+      background: var(--surface-2);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin: 14px 0;
+      border: 1px solid var(--border);
+    }
+    .mistake-item .label-wrong {
+      display: inline-block;
+      background: var(--rose-dim);
+      color: var(--rose);
+      font-size: .76rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .mistake-item .label-correct {
+      display: inline-block;
+      background: var(--emerald-dim);
+      color: var(--emerald);
+      font-size: .76rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      margin-top: 10px;
+    }
+
+    /* ── Exercise ── */
+    .exercise-item {
+      background: var(--sky-dim);
+      border: 1px solid rgba(3,105,161,.1);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin: 12px 0;
+    }
+    .exercise-item .ex-number {
+      display: inline-block;
+      background: var(--sky);
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 700;
+      width: 26px;
+      height: 26px;
+      line-height: 26px;
+      text-align: center;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .exercise-item p { margin-top: 8px; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; margin-left: 0 !important; padding: 0; }
+    .checklist li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .95rem;
+    }
+    .checklist li:last-child { border-bottom: none; }
+
+    /* ── Diagram Container ── */
+    .diagram-wrap {
+      margin: 24px 0;
+      text-align: center;
+    }
+    .diagram-wrap svg { max-width: 100%; height: auto; }
+
+    /* ── Bottom Navigation ── */
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 40px;
+    }
+    .bottom-nav-card {
+      display: flex;
+      flex-direction: column;
+      padding: 22px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      text-decoration: none;
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .bottom-nav-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(3,105,161,.25);
+    }
+    .bottom-nav-card.prev { text-align: left; }
+    .bottom-nav-card.next { text-align: right; }
+    .bn-label { font-size: .8rem; color: var(--muted); margin-bottom: 4px; }
+    .bn-title {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+
+    /* ── Scroll Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .section-card { padding: 28px 20px; }
+      .hero { padding: 52px 16px 44px; }
+      .bottom-nav { grid-template-columns: 1fr; }
+      .compare-table { font-size: .82rem; }
+      .compare-table th, .compare-table td { padding: 9px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ TOP NAV ═══════════════════════════ -->
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">← Beranda</a>
+  <div class="nav-pages">
+    <a href="06-api-routes.html" class="nav-prev">← Sebelumnya</a>
+    <a href="08-build-docker.html" class="nav-next">Selanjutnya →</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<header class="hero">
+  <div class="hero-shapes">
+    <svg class="shape" style="top:12%;left:8%;animation:floatA 6s ease-in-out infinite" width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="#0ea5e9" stroke-width="2.5" opacity=".5"/></svg>
+    <svg class="shape" style="top:58%;left:4%;animation:floatB 7s ease-in-out infinite" width="38" height="38" viewBox="0 0 38 38"><rect x="5" y="5" width="28" height="28" rx="7" fill="none" stroke="#0369a1" stroke-width="2" opacity=".45"/></svg>
+    <svg class="shape" style="top:18%;right:10%;animation:floatC 5.5s ease-in-out infinite" width="44" height="44" viewBox="0 0 44 44"><polygon points="22,4 40,38 4,38" fill="none" stroke="#0ea5e9" stroke-width="2" opacity=".4"/></svg>
+    <svg class="shape" style="bottom:20%;right:6%;animation:floatA 8s ease-in-out infinite" width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="#0369a1" stroke-width="2" stroke-dasharray="6 4" opacity=".35"/></svg>
+    <svg class="shape" style="top:45%;left:50%;animation:floatB 6.5s ease-in-out infinite" width="32" height="32" viewBox="0 0 32 32"><rect x="4" y="4" width="24" height="24" rx="6" fill="#0ea5e9" opacity=".08"/></svg>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-badge">PERTEMUAN 00 · BAGIAN 07</div>
+    <h1>Environment <em>Variables</em></h1>
+    <p class="subtitle">Satu kode, banyak pengaturan — rahasia konfigurasi yang bikin aplikasi kamu fleksibel di mana pun dijalankan.</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ═══════════════════════════ 1. ANALOGI ═══════════════════════════ -->
+  <section class="section-card reveal">
+    <h2>🎯 Analogi Sederhana</h2>
+
+    <div class="analogy-card">
+      <p><strong>🏢 AC di Gedung Kampus</strong></p>
+      <p>Bayangkan AC di gedung kampus kamu. Mesin AC-nya (kode program) sama persis di semua lantai. Tapi suhu yang diatur di setiap lantai <strong>beda</strong>:</p>
+      <ul style="margin:10px 0 10px 22px">
+        <li>Lantai 1 (Development) → 24°C — nyaman buat ngoding</li>
+        <li>Lantai 2 (Staging) → 22°C — agak dingin buat testing</li>
+        <li>Lantai 3 (Production) → 20°C — stabil dan terkontrol</li>
+      </ul>
+      <p>Kamu mengubah <strong>pengaturan suhu</strong> (environment variable), <strong>BUKAN</strong> mesin AC-nya (kode). Itulah inti dari env var!</p>
+    </div>
+
+    <div class="analogy-card" style="margin-top:14px">
+      <p><strong>🧁 Resep Kue</strong></p>
+      <p>Atau bayangkan resep kue: resepnya sama persis, tapi bahan yang dipakai bisa berbeda — coklat lokal vs coklat impor, gula pasir vs gula aren. Hasilnya mirip, tapi disesuaikan dengan "lingkungan" (bahan yang tersedia). Environment variable = bahan-bahannya.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ 2. APA ITU ENV VAR ═══════════════════════════ -->
+  <section class="section-card reveal">
+    <h2>📖 Apa itu Environment Variable?</h2>
+
+    <p>Environment variable (atau <em>env var</em>) adalah <strong>nilai konfigurasi</strong> yang disimpan di <strong>luar</strong> kode program. Kenapa di luar? Karena kamu ingin mengubah perilaku aplikasi <em>tanpa</em> harus mengedit kode sumbernya.</p>
+
+    <ul>
+      <li><strong>Konfigurasi fleksibel</strong> — bisa berubah tanpa mengubah kode</li>
+      <li><strong>Disimpan terpisah</strong> — di file <code>.env</code>, Docker, Kubernetes, atau server</li>
+      <li><strong>Dibaca saat runtime</strong> — aplikasi baca nilainya saat dijalankan: <code>process.env.NAMA</code></li>
+      <li><strong>Contoh umum</strong> — URL database, API key, port, mode aplikasi (dev/prod)</li>
+    </ul>
+
+    <div class="code-block">
+      <div class="filename">contoh-dasar.js</div>
+      <pre><span class="cmt">// Membaca env var dengan fallback (nilai default)</span>
+<span class="kw">const</span> port = <span class="fn">process</span>.env.<span class="attr">PORT</span> || <span class="str">3000</span>
+<span class="kw">const</span> mode = <span class="fn">process</span>.env.<span class="attr">NODE_ENV</span> || <span class="str">'development'</span>
+
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`Server jalan di port ${</span>port<span class="str">} (mode: ${</span>mode<span class="str">})`</span>)</pre>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>💡 Tips:</strong> Operator <code>||</code> artinya "kalau env var-nya kosong atau tidak ada, pakai nilai default setelahnya." Jadi aplikasi kamu tetap jalan meskipun env var belum diset!</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ 3. DI NEXT.JS ═══════════════════════════ -->
+  <section class="section-card reveal">
+    <h2>⚙️ Environment Variables di Next.js</h2>
+
+    <p>Di Next.js, ada aturan khusus soal env var yang wajib kamu pahami:</p>
+
+    <h3>📁 File .env.local</h3>
+    <p>Next.js otomatis membaca file <code>.env.local</code> di root project kamu. File ini untuk development dan <strong>TIDAK</strong> boleh di-commit ke Git!</p>
+
+    <h3>🌐 Prefix NEXT_PUBLIC_</h3>
+    <p>Variabel dengan prefix <code>NEXT_PUBLIC_</code> bisa dibaca di <strong>browser</strong> (client-side). Tanpa prefix, variabel <strong>hanya</strong> bisa dibaca di server — ini untuk menjaga keamanan data sensitif.</p>
+
+    <ul>
+      <li><code>NEXT_PUBLIC_APP_NAME</code> → ✅ bisa di browser DAN server</li>
+      <li><code>DATABASE_URL</code> → ✅ hanya di server, ❌ tidak di browser</li>
+      <li><code>API_SECRET_KEY</code> → ✅ hanya di server, ❌ tidak di browser</li>
+    </ul>
+
+    <!-- ── ANIMATED SVG DIAGRAM ── -->
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 380" width="700" height="380" xmlns="http://www.w3.org/2000/svg" style="font-family:'DM Sans',system-ui,sans-serif">
+        <!-- Definitions -->
+        <defs>
+          <marker id="dot-marker" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="6" markerHeight="6">
+            <circle cx="3" cy="3" r="3" fill="#0369a1"/>
+          </marker>
+          <!-- Curved paths -->
+          <path id="pathLeft" d="M350,105 C350,140 160,150 140,210" fill="none"/>
+          <path id="pathCenter" d="M350,105 C350,145 350,165 350,210" fill="none"/>
+          <path id="pathRight" d="M350,105 C350,140 540,150 560,210" fill="none"/>
+        </defs>
+
+        <!-- Center code box -->
+        <rect x="210" y="30" width="280" height="75" rx="14" fill="#ffffff" stroke="#0369a1" stroke-width="2"/>
+        <text x="350" y="58" text-anchor="middle" font-size="12" font-family="'JetBrains Mono',monospace" fill="#64748b">process.env</text>
+        <text x="350" y="82" text-anchor="middle" font-size="15" font-weight="600" font-family="'JetBrains Mono',monospace" fill="#0369a1">APP_MESSAGE</text>
+
+        <!-- Curved lines -->
+        <path d="M350,105 C350,145 160,155 140,210" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="6 3" opacity=".5"/>
+        <path d="M350,105 C350,150 350,170 350,210" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="6 3" opacity=".5"/>
+        <path d="M350,105 C350,145 540,155 560,210" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="6 3" opacity=".5"/>
+
+        <!-- LEFT: Development -->
+        <rect x="50" y="210" width="180" height="130" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.5">
+          <animate attributeName="stroke-opacity" values="1;.4;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <text x="140" y="240" text-anchor="middle" font-size="22">🖥️</text>
+        <text x="140" y="264" text-anchor="middle" font-size="13" font-weight="600" fill="#0369a1">Development</text>
+        <text x="140" y="282" text-anchor="middle" font-size="11" fill="#64748b">localhost:3000</text>
+        <rect x="75" y="296" width="130" height="30" rx="8" fill="#f0f9ff"/>
+        <text x="140" y="316" text-anchor="middle" font-size="11" font-family="'JetBrains Mono',monospace" fill="#047857">"Hello Dev!"</text>
+
+        <!-- CENTER: Docker -->
+        <rect x="260" y="210" width="180" height="130" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.5">
+          <animate attributeName="stroke-opacity" values="1;.4;1" dur="3s" begin="1s" repeatCount="indefinite"/>
+        </rect>
+        <text x="350" y="240" text-anchor="middle" font-size="22">🐳</text>
+        <text x="350" y="264" text-anchor="middle" font-size="13" font-weight="600" fill="#0369a1">Docker</text>
+        <text x="350" y="282" text-anchor="middle" font-size="11" fill="#64748b">container:3000</text>
+        <rect x="285" y="296" width="130" height="30" rx="8" fill="#f0f9ff"/>
+        <text x="350" y="316" text-anchor="middle" font-size="11" font-family="'JetBrains Mono',monospace" fill="#047857">"Hello Container!"</text>
+
+        <!-- RIGHT: Production -->
+        <rect x="470" y="210" width="180" height="130" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.5">
+          <animate attributeName="stroke-opacity" values="1;.4;1" dur="3s" begin="2s" repeatCount="indefinite"/>
+        </rect>
+        <text x="560" y="240" text-anchor="middle" font-size="22">☁️</text>
+        <text x="560" y="264" text-anchor="middle" font-size="13" font-weight="600" fill="#0369a1">Production</text>
+        <text x="560" y="282" text-anchor="middle" font-size="11" fill="#64748b">cloud server</text>
+        <rect x="495" y="296" width="130" height="30" rx="8" fill="#f0f9ff"/>
+        <text x="560" y="316" text-anchor="middle" font-size="11" font-family="'JetBrains Mono',monospace" fill="#047857">"Hello World!"</text>
+
+        <!-- Animated flowing dots -->
+        <circle r="5" fill="#0369a1" opacity=".85">
+          <animateMotion dur="3s" repeatCount="indefinite" begin="0s">
+            <mpath href="#pathLeft"/>
+          </animateMotion>
+        </circle>
+        <circle r="5" fill="#0369a1" opacity=".85">
+          <animateMotion dur="3s" repeatCount="indefinite" begin="1.5s">
+            <mpath href="#pathCenter"/>
+          </animateMotion>
+        </circle>
+        <circle r="5" fill="#0369a1" opacity=".85">
+          <animateMotion dur="3s" repeatCount="indefinite" begin="3s">
+            <mpath href="#pathRight"/>
+          </animateMotion>
+        </circle>
+
+        <!-- Extra subtle dots staggered -->
+        <circle r="3.5" fill="#0ea5e9" opacity=".5">
+          <animateMotion dur="3s" repeatCount="indefinite" begin="0.7s">
+            <mpath href="#pathLeft"/>
+          </animateMotion>
+        </circle>
+        <circle r="3.5" fill="#0ea5e9" opacity=".5">
+          <animateMotion dur="3s" repeatCount="indefinite" begin="2.2s">
+            <mpath href="#pathCenter"/>
+          </animateMotion>
+        </circle>
+        <circle r="3.5" fill="#0ea5e9" opacity=".5">
+          <animateMotion dur="3s" repeatCount="indefinite" begin="3.7s">
+            <mpath href="#pathRight"/>
+          </animateMotion>
+        </circle>
+
+        <!-- Caption -->
+        <text x="350" y="370" text-anchor="middle" font-size="12" fill="#64748b" font-style="italic">Satu kode, tiga lingkungan, nilai berbeda!</text>
+      </svg>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>💡 Inti konsepnya:</strong> Kode <code>process.env.APP_MESSAGE</code> itu sama di mana-mana. Yang berubah adalah <em>nilainya</em> — tergantung lingkungan tempat aplikasi dijalankan.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ 4. KENAPA PENTING ═══════════════════════════ -->
+  <section class="section-card reveal">
+    <h2>🔐 Kenapa Environment Variables Penting?</h2>
+
+    <h3>1. Security (Keamanan)</h3>
+    <p>Jangan pernah tulis password, API key, atau secret langsung di kode. Kalau kode di-push ke GitHub dan repo-nya public, semua orang bisa lihat secret kamu!</p>
+
+    <h3>2. Flexibility (Fleksibilitas)</h3>
+    <p>Satu codebase, banyak environment. Mau deploy ke server lokal, Docker, atau cloud — kode tetap sama, yang berubah cuma env var.</p>
+
+    <h3>3. Docker</h3>
+    <p>Di Docker, kamu bisa pass env var pakai flag <code>-e</code> atau file <code>.env</code>. Ini bikin container kamu bisa dikonfigurasi tanpa rebuild image.</p>
+
+    <h3>4. CI/CD</h3>
+    <p>Di GitHub Actions, kamu bisa simpan secret di Settings → Secrets. Di Kubernetes, pakai ConfigMap atau Secret. Semua pakai konsep yang sama: env var.</p>
+
+    <div class="callout danger">
+      <p><strong>⚠️ JANGAN PERNAH</strong> commit file <code>.env</code> atau <code>.env.local</code> ke Git! Selalu tambahkan ke file <code>.gitignore</code> supaya tidak ikut ter-upload.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ 5. CONTOH KODE ═══════════════════════════ -->
+  <section class="section-card reveal">
+    <h2>💻 Contoh Kode</h2>
+
+    <h3>1. File .env.local</h3>
+    <p>Buat file ini di root project Next.js kamu:</p>
+
+    <div class="code-block">
+      <div class="filename">.env.local</div>
+      <pre><span class="cmt"># Variabel publik (bisa dibaca browser)</span>
+<span class="attr">NEXT_PUBLIC_APP_NAME</span>=<span class="str">Praktikum Cloud Native</span>
+<span class="attr">NEXT_PUBLIC_APP_MESSAGE</span>=<span class="str">Selamat datang!</span>
+
+<span class="cmt"># Variabel privat (HANYA server — jangan pakai NEXT_PUBLIC_)</span>
+<span class="attr">DATABASE_URL</span>=<span class="str">postgresql://user:pass@localhost/db</span>
+<span class="attr">API_SECRET_KEY</span>=<span class="str">rahasia-super-aman-123</span></pre>
+    </div>
+
+    <h3>2. Membaca di Server Component</h3>
+    <p>Di Server Component, kamu bisa baca <strong>semua</strong> env var — baik yang public maupun private:</p>
+
+    <div class="code-block">
+      <div class="filename">app/page.js — Server Component</div>
+      <pre><span class="cmt">// Server Component — bisa baca SEMUA env var</span>
+<span class="kw">export default</span> <span class="kw">function</span> <span class="fn">Home</span>() {
+  <span class="cmt">// ✅ Variabel private — bisa dibaca di server</span>
+  <span class="kw">const</span> dbUrl = <span class="fn">process</span>.env.<span class="attr">DATABASE_URL</span>
+
+  <span class="cmt">// ✅ Variabel public — juga bisa dibaca di server</span>
+  <span class="kw">const</span> appName = <span class="fn">process</span>.env.<span class="attr">NEXT_PUBLIC_APP_NAME</span>
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span>&gt;
+      &lt;<span class="tag">h1</span>&gt;{appName}&lt;/<span class="tag">h1</span>&gt;
+      &lt;<span class="tag">p</span>&gt;Database terhubung!&lt;/<span class="tag">p</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  )
+}</pre>
+    </div>
+
+    <h3>3. Membaca di Client Component</h3>
+    <p>Di Client Component (browser), kamu <strong>hanya</strong> bisa baca variabel dengan prefix <code>NEXT_PUBLIC_</code>:</p>
+
+    <div class="code-block">
+      <div class="filename">components/Header.js — Client Component</div>
+      <pre><span class="str">'use client'</span>
+
+<span class="kw">export default</span> <span class="kw">function</span> <span class="fn">Header</span>() {
+  <span class="cmt">// ✅ NEXT_PUBLIC_ bisa dibaca di browser</span>
+  <span class="kw">const</span> appName = <span class="fn">process</span>.env.<span class="attr">NEXT_PUBLIC_APP_NAME</span>
+
+  <span class="cmt">// ❌ Ini akan undefined di browser!</span>
+  <span class="kw">const</span> secret = <span class="fn">process</span>.env.<span class="attr">API_SECRET_KEY</span>
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">header</span>&gt;
+      &lt;<span class="tag">h1</span>&gt;{appName}&lt;/<span class="tag">h1</span>&gt;
+      <span class="cmt">{/* secret akan undefined — ini AMAN! */}</span>
+    &lt;/<span class="tag">header</span>&gt;
+  )
+}</pre>
+    </div>
+
+    <div class="callout warning">
+      <p><strong>⚠️ Ingat:</strong> <code>process.env.API_SECRET_KEY</code> akan mengembalikan <code>undefined</code> di browser. Ini memang SENGAJA oleh Next.js — supaya secret kamu tidak bocor ke client!</p>
+    </div>
+
+    <h3>4. Di API Route</h3>
+    <p>API Route jalan di server, jadi bisa baca semua env var dengan aman:</p>
+
+    <div class="code-block">
+      <div class="filename">app/api/info/route.js</div>
+      <pre><span class="kw">import</span> { <span class="fn">NextResponse</span> } <span class="kw">from</span> <span class="str">'next/server'</span>
+
+<span class="kw">export async</span> <span class="kw">function</span> <span class="fn">GET</span>() {
+  <span class="cmt">// ✅ API Route = server-side, aman baca secret</span>
+  <span class="kw">const</span> secret = <span class="fn">process</span>.env.<span class="attr">API_SECRET_KEY</span>
+
+  <span class="cmt">// Gunakan secret untuk autentikasi, dll</span>
+  <span class="kw">return</span> <span class="fn">NextResponse</span>.<span class="fn">json</span>({
+    <span class="attr">message</span>: <span class="fn">process</span>.env.<span class="attr">NEXT_PUBLIC_APP_MESSAGE</span>,
+    <span class="attr">status</span>: <span class="str">'ok'</span>
+  })
+}</pre>
+    </div>
+
+    <h3>5. Default Values (Nilai Bawaan)</h3>
+    <p>Selalu sediakan nilai default supaya aplikasi tetap jalan meskipun env var belum diset:</p>
+
+    <div class="code-block">
+      <div class="filename">config.js</div>
+      <pre><span class="cmt">// Jika PORT tidak diset, pakai 3000</span>
+<span class="kw">const</span> port = <span class="fn">process</span>.env.<span class="attr">PORT</span> || <span class="str">3000</span>
+
+<span class="cmt">// Jika NODE_ENV tidak diset, pakai 'development'</span>
+<span class="kw">const</span> mode = <span class="fn">process</span>.env.<span class="attr">NODE_ENV</span> || <span class="str">'development'</span>
+
+<span class="cmt">// Jika APP_NAME tidak diset, pakai nama default</span>
+<span class="kw">const</span> appName = <span class="fn">process</span>.env.<span class="attr">NEXT_PUBLIC_APP_NAME</span> || <span class="str">'My App'</span></pre>
+    </div>
+
+    <h3>6. Docker dengan Environment Variables</h3>
+    <p>Saat menjalankan container Docker, kamu bisa pass env var tanpa rebuild image:</p>
+
+    <div class="code-block">
+      <div class="filename">Terminal</div>
+      <pre><span class="cmt"># Cara 1: Langsung pakai flag -e</span>
+<span class="fn">docker</span> run <span class="attr">-e</span> <span class="attr">APP_MESSAGE</span>=<span class="str">"Hello Docker!"</span> <span class="attr">-p</span> 3000:3000 myapp
+
+<span class="cmt"># Cara 2: Pakai file .env</span>
+<span class="fn">docker</span> run <span class="attr">--env-file</span> .env.production <span class="attr">-p</span> 3000:3000 myapp
+
+<span class="cmt"># Cara 3: Beberapa env var sekaligus</span>
+<span class="fn">docker</span> run \
+  <span class="attr">-e</span> <span class="attr">DATABASE_URL</span>=<span class="str">"postgresql://prod-server/db"</span> \
+  <span class="attr">-e</span> <span class="attr">API_SECRET_KEY</span>=<span class="str">"super-secret"</span> \
+  <span class="attr">-e</span> <span class="attr">NODE_ENV</span>=<span class="str">"production"</span> \
+  <span class="attr">-p</span> 3000:3000 myapp</pre>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ 6. PERBANDINGAN ═══════════════════════════ -->
+  <section class="section-card reveal">
+    <h2>⚖️ Perbandingan — Public vs Private</h2>
+
+    <p>Ini tabel perbandingan yang wajib kamu hafal saat bekerja dengan env var di Next.js:</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Aspek</th>
+          <th>NEXT_PUBLIC_*</th>
+          <th>Tanpa prefix</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Dibaca di browser</td>
+          <td>✅ Ya</td>
+          <td>❌ Tidak</td>
+        </tr>
+        <tr>
+          <td>Dibaca di server</td>
+          <td>✅ Ya</td>
+          <td>✅ Ya</td>
+        </tr>
+        <tr>
+          <td>Aman untuk secret</td>
+          <td>❌ Tidak aman</td>
+          <td>✅ Aman</td>
+        </tr>
+        <tr>
+          <td>Contoh nama</td>
+          <td><code>NEXT_PUBLIC_APP_NAME</code></td>
+          <td><code>DATABASE_URL</code></td>
+        </tr>
+        <tr>
+          <td>Contoh isi</td>
+          <td><code>"Nama Aplikasi"</code></td>
+          <td><code>"postgresql://..."</code></td>
+        </tr>
+        <tr>
+          <td>Kapan pakai</td>
+          <td>Data non-sensitif yang perlu ditampilkan di UI</td>
+          <td>API key, password, connection string</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <p><strong>💡 Aturan mudahnya:</strong> Kalau datanya boleh dilihat siapa saja → pakai <code>NEXT_PUBLIC_</code>. Kalau rahasia → jangan pakai prefix, biarkan hanya server yang bisa baca.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ 7. KESALAHAN UMUM ═══════════════════════════ -->
+  <section class="section-card reveal">
+    <h2>⚠️ Kesalahan Umum</h2>
+    <p>Empat kesalahan yang sering dilakukan mahasiswa saat bekerja dengan env var:</p>
+
+    <!-- Mistake 1 -->
+    <div class="mistake-item">
+      <span class="label-wrong">❌ Salah</span>
+      <p><strong>1. Commit <code>.env.local</code> ke Git</strong></p>
+      <div class="code-block">
+        <div class="filename">Terminal — file .env ikut ter-commit</div>
+        <pre><span class="fn">git</span> add .
+<span class="fn">git</span> commit -m <span class="str">"push semua file"</span>
+<span class="cmt"># File .env.local ikut ter-push ke GitHub! 😱</span></pre>
+      </div>
+      <span class="label-correct">✅ Benar</span>
+      <p>Tambahkan <code>.env.local</code> ke <code>.gitignore</code>:</p>
+      <div class="code-block">
+        <div class="filename">.gitignore</div>
+        <pre><span class="cmt"># Environment variables</span>
+.env
+.env.local
+.env.production
+.env*.local</pre>
+      </div>
+    </div>
+
+    <!-- Mistake 2 -->
+    <div class="mistake-item">
+      <span class="label-wrong">❌ Salah</span>
+      <p><strong>2. Menggunakan <code>NEXT_PUBLIC_</code> untuk secret</strong></p>
+      <div class="code-block">
+        <div class="filename">.env.local — JANGAN begini!</div>
+        <pre><span class="cmt"># ❌ Password bisa dilihat di browser!</span>
+<span class="attr">NEXT_PUBLIC_DATABASE_PASSWORD</span>=<span class="str">rahasia123</span>
+<span class="attr">NEXT_PUBLIC_API_SECRET</span>=<span class="str">super-secret-key</span></pre>
+      </div>
+      <span class="label-correct">✅ Benar</span>
+      <div class="code-block">
+        <div class="filename">.env.local — yang benar</div>
+        <pre><span class="cmt"># ✅ Tanpa prefix = hanya server yang bisa baca</span>
+<span class="attr">DATABASE_PASSWORD</span>=<span class="str">rahasia123</span>
+<span class="attr">API_SECRET</span>=<span class="str">super-secret-key</span></pre>
+      </div>
+    </div>
+
+    <!-- Mistake 3 -->
+    <div class="mistake-item">
+      <span class="label-wrong">❌ Salah</span>
+      <p><strong>3. Lupa restart dev server setelah ubah <code>.env</code></strong></p>
+      <p>Kamu sudah ubah isi <code>.env.local</code>, tapi kok nilainya tidak berubah? Itu karena Next.js hanya baca file <code>.env</code> saat pertama kali dijalankan!</p>
+      <span class="label-correct">✅ Benar</span>
+      <p>Setelah mengubah file <code>.env.local</code>, selalu restart dev server:</p>
+      <div class="code-block">
+        <div class="filename">Terminal</div>
+        <pre><span class="cmt"># Hentikan dev server (Ctrl+C), lalu jalankan lagi</span>
+<span class="fn">npm</span> run dev</pre>
+      </div>
+    </div>
+
+    <!-- Mistake 4 -->
+    <div class="mistake-item">
+      <span class="label-wrong">❌ Salah</span>
+      <p><strong>4. Tidak set env vars di Docker/production</strong></p>
+      <p>Kamu sudah deploy ke Docker tapi lupa set env var. Aplikasi crash karena <code>DATABASE_URL</code> bernilai <code>undefined</code>!</p>
+      <span class="label-correct">✅ Benar</span>
+      <p>Selalu pastikan env var sudah diset di setiap environment:</p>
+      <div class="code-block">
+        <div class="filename">Terminal — set env var di Docker</div>
+        <pre><span class="fn">docker</span> run \
+  <span class="attr">-e</span> <span class="attr">DATABASE_URL</span>=<span class="str">"postgresql://prod/db"</span> \
+  <span class="attr">-e</span> <span class="attr">API_SECRET_KEY</span>=<span class="str">"production-secret"</span> \
+  <span class="attr">-p</span> 3000:3000 myapp</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ 8. LATIHAN ═══════════════════════════ -->
+  <section class="section-card reveal">
+    <h2>✏️ Latihan</h2>
+    <p>Coba kerjakan latihan berikut di project Next.js kamu:</p>
+
+    <div class="exercise-item">
+      <span class="ex-number">1</span><strong>Buat file .env.local</strong>
+      <p>Buat file <code>.env.local</code> di root project dengan 3 variabel: satu <code>NEXT_PUBLIC_STUDENT_NAME</code> (isi nama kamu), satu <code>NEXT_PUBLIC_CAMPUS</code> (isi nama kampus kamu), dan satu <code>SECRET_NIM</code> (isi NIM kamu — ini private!).</p>
+    </div>
+
+    <div class="exercise-item">
+      <span class="ex-number">2</span><strong>Tampilkan di Halaman</strong>
+      <p>Di <code>app/page.js</code>, tampilkan <code>NEXT_PUBLIC_STUDENT_NAME</code> dan <code>NEXT_PUBLIC_CAMPUS</code> di halaman. Pastikan data muncul di browser!</p>
+    </div>
+
+    <div class="exercise-item">
+      <span class="ex-number">3</span><strong>Buat API Route dengan Variabel Private</strong>
+      <p>Buat file <code>app/api/student/route.js</code> yang membaca <code>SECRET_NIM</code> dan mengembalikannya sebagai JSON response. Cek hasilnya di <code>/api/student</code>. Verifikasi bahwa NIM <strong>tidak</strong> bisa dibaca langsung di browser console.</p>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>💡 Bonus:</strong> Setelah selesai, coba jalankan <code>docker run -e NEXT_PUBLIC_STUDENT_NAME="Docker Student" ...</code> dan lihat apakah nama berubah. Ini membuktikan kekuatan env var!</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ 9. RINGKASAN ═══════════════════════════ -->
+  <section class="section-card reveal">
+    <h2>📋 Ringkasan</h2>
+    <p>Checklist materi yang sudah kamu pelajari di bagian ini:</p>
+
+    <ul class="checklist">
+      <li>✅ Environment variable = konfigurasi yang disimpan di <strong>luar</strong> kode</li>
+      <li>✅ File <code>.env.local</code> digunakan untuk development di Next.js</li>
+      <li>✅ <code>NEXT_PUBLIC_*</code> = bisa dibaca di browser (client-side)</li>
+      <li>✅ Tanpa prefix = hanya bisa dibaca di server (aman untuk secret)</li>
+      <li>✅ <strong>JANGAN</strong> pernah commit file <code>.env</code> ke Git</li>
+      <li>✅ Selalu restart dev server setelah mengubah file <code>.env</code></li>
+      <li>✅ Di Docker, gunakan flag <code>-e</code> atau <code>--env-file</code> untuk set env var</li>
+      <li>✅ Selalu sediakan default value dengan operator <code>||</code></li>
+    </ul>
+
+    <div class="callout tip">
+      <p><strong>🎉 Selamat!</strong> Kamu sudah paham konsep Environment Variables. Di bagian selanjutnya, kita akan belajar cara <strong>build aplikasi dan menjalankannya di Docker</strong> — dan env var akan sangat berguna di sana!</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ BOTTOM NAV ═══════════════════════════ -->
+  <div class="bottom-nav reveal">
+    <a href="06-api-routes.html" class="bottom-nav-card prev">
+      <span class="bn-label">← Sebelumnya</span>
+      <span class="bn-title">API Routes</span>
+    </a>
+    <a href="08-build-docker.html" class="bottom-nav-card next">
+      <span class="bn-label">Selanjutnya →</span>
+      <span class="bn-title">Build & Docker</span>
+    </a>
+  </div>
+
+</div><!-- /.container -->
+
+<!-- ═══════════════════════════ SCROLL REVEAL ═══════════════════════════ -->
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
