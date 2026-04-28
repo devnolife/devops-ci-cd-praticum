@@ -7,475 +7,504 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0e1a;
-    --surface: #111827;
-    --surface-2: #1a2235;
-    --border: rgba(148,163,184,.15);
-    --text: #e8edf5;
-    --muted: #8b9ab8;
-    --cyan: #22d3ee;
-    --cyan-dim: rgba(34,211,238,.12);
-    --amber: #fbbf24;
-    --amber-dim: rgba(251,191,36,.1);
-    --rose: #fb7185;
-    --rose-dim: rgba(251,113,133,.1);
-    --violet: #a78bfa;
-    --violet-dim: rgba(167,139,250,.1);
-    --emerald: #34d399;
-    --emerald-dim: rgba(52,211,153,.1);
-    --sky: #38bdf8;
-    --sky-dim: rgba(56,189,248,.1);
-  }
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: rgba(100,116,139,.13);
+  --text: #1e293b;
+  --muted: #64748b;
+  --cyan: #0891b2;
+  --cyan-dim: rgba(6,182,212,.07);
+  --amber: #b45309;
+  --amber-dim: rgba(245,158,11,.07);
+  --rose: #be123c;
+  --rose-dim: rgba(244,63,94,.06);
+  --violet: #7c3aed;
+  --violet-dim: rgba(139,92,246,.06);
+  --emerald: #047857;
+  --emerald-dim: rgba(16,185,129,.06);
+  --sky: #0369a1;
+  --sky-dim: rgba(14,165,233,.06);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.06), 0 2px 4px rgba(0,0,0,.04);
+}
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
 
-  html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', system-ui, sans-serif;
-    line-height: 1.65;
-    overflow-x: hidden;
-  }
+/* ── HERO ──────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 24px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f0f7ff 0%, #fafafa 60%, #fafafa 100%);
+}
 
-  /* ── HERO ──────────────────────────────── */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 60px 24px;
-    position: relative;
-    overflow: hidden;
-  }
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 30% 20%, rgba(6,182,212,.07), transparent),
+    radial-gradient(ellipse 500px 500px at 70% 80%, rgba(124,58,237,.05), transparent),
+    radial-gradient(ellipse 400px 300px at 50% 50%, rgba(245,158,11,.04), transparent);
+  pointer-events: none;
+}
 
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 600px 400px at 30% 20%, rgba(34,211,238,.08), transparent),
-      radial-gradient(ellipse 500px 500px at 70% 80%, rgba(167,139,250,.06), transparent),
-      radial-gradient(ellipse 400px 300px at 50% 50%, rgba(251,191,36,.04), transparent);
-    pointer-events: none;
-  }
+.hero-shapes { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.float-shape { position: absolute; opacity: .35; }
+.fs1 { top: 12%; left: 8%; animation: floatA 9s ease-in-out infinite; }
+.fs2 { top: 18%; right: 12%; animation: floatB 11s ease-in-out infinite; }
+.fs3 { bottom: 22%; left: 15%; animation: floatC 10s ease-in-out infinite; }
+.fs4 { bottom: 30%; right: 8%; animation: floatA 12s ease-in-out infinite reverse; }
+.fs5 { top: 40%; left: 4%; animation: floatB 8s ease-in-out infinite; }
+.fs6 { top: 55%; right: 5%; animation: floatC 13s ease-in-out infinite; }
 
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 18px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    font-size: .82rem;
-    color: var(--muted);
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    margin-bottom: 32px;
-    backdrop-filter: blur(8px);
-    animation: fadeUp .8s ease both;
-  }
+@keyframes floatA {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-18px) rotate(12deg); }
+}
+@keyframes floatB {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-14px) rotate(-8deg); }
+  66% { transform: translateY(8px) rotate(6deg); }
+}
+@keyframes floatC {
+  0%,100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  50% { transform: translateX(10px) translateY(-16px) rotate(-10deg); }
+}
 
-  .hero-badge span { color: var(--cyan); }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: .82rem;
+  color: var(--muted);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  backdrop-filter: blur(8px);
+  background: rgba(255,255,255,.7);
+  animation: fadeUp .8s ease both;
+}
 
-  .hero h1 {
-    font-family: 'Instrument Serif', Georgia, serif;
-    font-size: clamp(3rem, 8vw, 6.5rem);
-    font-weight: 400;
-    line-height: .95;
-    letter-spacing: -.04em;
-    max-width: 900px;
-    margin-bottom: 24px;
-    animation: fadeUp .8s .15s ease both;
-  }
+.hero-badge span { color: var(--cyan); }
 
-  .hero h1 em {
-    font-style: italic;
-    background: linear-gradient(135deg, var(--cyan), var(--violet));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+.hero h1 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 400;
+  line-height: .95;
+  letter-spacing: -.04em;
+  max-width: 900px;
+  margin-bottom: 24px;
+  animation: fadeUp .8s .15s ease both;
+  color: var(--text);
+}
 
-  .hero p {
-    max-width: 560px;
-    font-size: 1.1rem;
-    color: var(--muted);
-    margin-bottom: 40px;
-    animation: fadeUp .8s .3s ease both;
-  }
+.hero h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, #0891b2, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  .hero-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    animation: fadeUp .8s .45s ease both;
-  }
+.hero p {
+  max-width: 560px;
+  font-size: 1.1rem;
+  color: var(--muted);
+  margin-bottom: 40px;
+  animation: fadeUp .8s .3s ease both;
+}
 
-  .hero-nav a {
-    padding: 10px 20px;
-    border-radius: 999px;
-    font-size: .88rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all .25s ease;
-    border: 1px solid var(--border);
-    color: var(--muted);
-  }
+.hero-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  animation: fadeUp .8s .45s ease both;
+}
 
-  .hero-nav a:hover {
-    color: var(--text);
-    border-color: var(--cyan);
-    background: var(--cyan-dim);
-  }
+.hero-nav a {
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all .25s ease;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: rgba(255,255,255,.6);
+}
 
-  /* ── SECTIONS ──────────────────────────── */
-  section {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 80px 24px;
-  }
+.hero-nav a:hover {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  background: var(--cyan-dim);
+  box-shadow: 0 2px 8px rgba(6,182,212,.12);
+}
 
-  .section-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: .75rem;
-    font-weight: 700;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
+/* ── SECTIONS ──────────────────────────── */
+section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
 
-  .section-label.cyan  { color: var(--cyan); }
-  .section-label.amber { color: var(--amber); }
-  .section-label.rose  { color: var(--rose); }
-  .section-label.violet { color: var(--violet); }
-  .section-label.emerald { color: var(--emerald); }
-  .section-label.sky { color: var(--sky); }
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
 
-  section h2 {
-    font-family: 'Instrument Serif', Georgia, serif;
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    font-weight: 400;
-    letter-spacing: -.03em;
-    margin-bottom: 12px;
-  }
+.section-label.cyan  { color: var(--cyan); }
+.section-label.amber { color: var(--amber); }
+.section-label.rose  { color: var(--rose); }
+.section-label.violet { color: var(--violet); }
+.section-label.emerald { color: var(--emerald); }
+.section-label.sky { color: var(--sky); }
 
-  section > p.desc {
-    color: var(--muted);
-    max-width: 640px;
-    margin-bottom: 40px;
-    font-size: 1.05rem;
-  }
+section h2 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  letter-spacing: -.03em;
+  margin-bottom: 12px;
+  color: var(--text);
+}
 
-  /* ── DIAGRAM CARDS ─────────────────────── */
-  .diagram-card {
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: var(--surface);
-    overflow: hidden;
-    margin-bottom: 32px;
-  }
+section > p.desc {
+  color: var(--muted);
+  max-width: 640px;
+  margin-bottom: 40px;
+  font-size: 1.05rem;
+}
 
-  .diagram-card .card-header {
-    padding: 20px 28px 16px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+/* ── DIAGRAM CARDS ─────────────────────── */
+.diagram-card {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  overflow: hidden;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-md);
+}
 
-  .card-header .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
+.diagram-card .card-header {
+  padding: 20px 28px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface-2);
+}
 
-  .dot.r { background: #fb7185; }
-  .dot.y { background: #fbbf24; }
-  .dot.g { background: #34d399; }
+.card-header .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
 
-  .card-header h3 {
-    font-size: .85rem;
-    font-weight: 600;
-    color: var(--muted);
-    letter-spacing: .04em;
-    margin-left: 8px;
-  }
+.dot.r { background: #f43f5e; }
+.dot.y { background: #f59e0b; }
+.dot.g { background: #10b981; }
 
-  .diagram-body {
-    padding: 36px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 280px;
-  }
+.card-header h3 {
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: .04em;
+  margin-left: 8px;
+}
 
-  /* ── SVG DIAGRAMS ──────────────────────── */
-  svg text {
-    font-family: 'DM Sans', system-ui, sans-serif;
-  }
+.diagram-body {
+  padding: 36px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+}
 
-  svg .mono {
-    font-family: 'JetBrains Mono', monospace;
-  }
+/* ── SVG DIAGRAMS ──────────────────────── */
+svg text { font-family: 'DM Sans', system-ui, sans-serif; }
+svg .mono { font-family: 'JetBrains Mono', monospace; }
 
-  /* ── COMPARISON GRID ───────────────────── */
-  .compare-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
+/* ── COMPARISON GRID ───────────────────── */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
 
-  @media (max-width: 700px) {
-    .compare-grid { grid-template-columns: 1fr; }
-  }
+@media (max-width: 700px) {
+  .compare-grid { grid-template-columns: 1fr; }
+}
 
-  .compare-card {
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: var(--surface);
-    padding: 28px;
-    position: relative;
-    overflow: hidden;
-  }
+.compare-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
 
-  .compare-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-  }
+.compare-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
 
-  .compare-card.react::before { background: var(--cyan); }
-  .compare-card.nextjs::before { background: var(--violet); }
-  .compare-card.flex::before { background: var(--amber); }
-  .compare-card.grid::before { background: var(--emerald); }
+.compare-card.react::before { background: var(--cyan); }
+.compare-card.nextjs::before { background: var(--violet); }
+.compare-card.flex::before { background: var(--amber); }
+.compare-card.grid::before { background: var(--emerald); }
 
-  .compare-card h3 {
-    font-size: 1.15rem;
-    margin-bottom: 6px;
-  }
+.compare-card h3 { font-size: 1.15rem; margin-bottom: 6px; }
+.compare-card .subtitle { font-size: .85rem; color: var(--muted); margin-bottom: 20px; }
 
-  .compare-card .subtitle {
-    font-size: .85rem;
-    color: var(--muted);
-    margin-bottom: 20px;
-  }
+/* ── VISUAL BOXES ──────────────────────── */
+.box-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
-  /* ── VISUAL BOXES ──────────────────────── */
-  .box-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
+.box {
+  width: 56px; height: 56px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .9rem;
+}
 
-  .box {
-    width: 56px;
-    height: 56px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: .9rem;
-  }
+.grid-demo { display: grid; grid-template-columns: repeat(3, 56px); gap: 8px; }
 
-  .grid-demo {
-    display: grid;
-    grid-template-columns: repeat(3, 56px);
-    gap: 8px;
-  }
+.box.cyan   { background: var(--cyan-dim);   color: var(--cyan);   border: 1px solid rgba(6,182,212,.2); }
+.box.amber  { background: var(--amber-dim);  color: var(--amber);  border: 1px solid rgba(245,158,11,.2); }
+.box.rose   { background: var(--rose-dim);   color: var(--rose);   border: 1px solid rgba(244,63,94,.2); }
+.box.violet { background: var(--violet-dim); color: var(--violet); border: 1px solid rgba(139,92,246,.2); }
+.box.emerald{ background: var(--emerald-dim);color: var(--emerald);border: 1px solid rgba(16,185,129,.2); }
+.box.sky    { background: var(--sky-dim);    color: var(--sky);    border: 1px solid rgba(14,165,233,.2); }
 
-  .box.cyan   { background: var(--cyan-dim);   color: var(--cyan);   border: 1px solid rgba(34,211,238,.25); }
-  .box.amber  { background: var(--amber-dim);  color: var(--amber);  border: 1px solid rgba(251,191,36,.25); }
-  .box.rose   { background: var(--rose-dim);   color: var(--rose);   border: 1px solid rgba(251,113,133,.25); }
-  .box.violet { background: var(--violet-dim); color: var(--violet); border: 1px solid rgba(167,139,250,.25); }
-  .box.emerald{ background: var(--emerald-dim);color: var(--emerald);border: 1px solid rgba(52,211,153,.25); }
-  .box.sky    { background: var(--sky-dim);    color: var(--sky);    border: 1px solid rgba(56,189,248,.25); }
+/* ── CONCEPT CARDS ─────────────────────── */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
 
-  /* ── CONCEPT CARDS ─────────────────────── */
-  .concept-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-  }
+.concept-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 28px;
+  transition: border-color .3s, transform .3s, box-shadow .3s;
+  box-shadow: var(--shadow-sm);
+}
 
-  .concept-card {
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: var(--surface);
-    padding: 28px;
-    transition: border-color .3s, transform .3s;
-  }
+.concept-card:hover {
+  border-color: rgba(100,116,139,.2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
 
-  .concept-card:hover {
-    border-color: rgba(148,163,184,.3);
-    transform: translateY(-2px);
-  }
+.concept-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 16px;
+}
 
-  .concept-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    margin-bottom: 16px;
-  }
+.concept-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.concept-card p { font-size: .9rem; color: var(--muted); line-height: 1.6; }
 
-  .concept-card h3 {
-    font-size: 1.05rem;
-    margin-bottom: 8px;
-  }
+.concept-card code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .82rem; padding: 2px 7px; border-radius: 5px;
+  background: var(--surface-2); color: var(--cyan);
+}
 
-  .concept-card p {
-    font-size: .9rem;
-    color: var(--muted);
-    line-height: 1.6;
-  }
+/* ── CODE BLOCK ────────────────────────── */
+.code-block {
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 16px 0;
+}
 
-  .concept-card code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: .82rem;
-    padding: 2px 7px;
-    border-radius: 5px;
-    background: rgba(255,255,255,.06);
-    color: var(--cyan);
-  }
+.code-block .filename {
+  padding: 10px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .78rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: #e8eef5;
+}
 
-  /* ── CODE BLOCK ────────────────────────── */
-  .code-block {
-    background: #0d1117;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    margin: 16px 0;
-  }
+.code-block pre {
+  padding: 18px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .84rem;
+  line-height: 1.7;
+  color: #334155;
+}
 
-  .code-block .filename {
-    padding: 10px 18px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: .78rem;
-    color: var(--muted);
-    border-bottom: 1px solid var(--border);
-    background: rgba(255,255,255,.02);
-  }
+.code-block .kw { color: #be123c; }
+.code-block .fn { color: #7c3aed; }
+.code-block .str { color: #0369a1; }
+.code-block .cmt { color: #94a3b8; font-style: italic; }
+.code-block .tag { color: #059669; }
+.code-block .attr { color: #0891b2; }
 
-  .code-block pre {
-    padding: 18px;
-    overflow-x: auto;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: .84rem;
-    line-height: 1.7;
-    color: #c9d1d9;
-  }
+/* ── FLOW DIAGRAM ──────────────────────── */
+.flow-row {
+  display: flex; align-items: center; gap: 0;
+  flex-wrap: wrap; justify-content: center;
+}
 
-  .code-block .kw { color: #ff7b72; }
-  .code-block .fn { color: #d2a8ff; }
-  .code-block .str { color: #a5d6ff; }
-  .code-block .cmt { color: #6e7681; font-style: italic; }
-  .code-block .tag { color: #7ee787; }
-  .code-block .attr { color: #79c0ff; }
+.flow-step {
+  padding: 14px 22px; border-radius: 12px;
+  font-weight: 600; font-size: .88rem; white-space: nowrap;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: transform .2s;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
 
-  /* ── FLOW DIAGRAM ──────────────────────── */
-  .flow-row {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+.flow-step:hover { transform: scale(1.05); }
 
-  .flow-step {
-    padding: 14px 22px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: .88rem;
-    white-space: nowrap;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    transition: transform .2s;
-  }
+.flow-step::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+  animation: progress-sweep 4s ease-in-out infinite;
+}
 
-  .flow-step:hover { transform: scale(1.05); }
+.flow-arrow { font-size: 1.4rem; color: var(--muted); padding: 0 6px; }
 
-  .flow-arrow {
-    font-size: 1.4rem;
-    color: var(--muted);
-    padding: 0 6px;
-  }
+.flow-step.highlight {
+  border-color: var(--cyan);
+  background: var(--cyan-dim);
+  color: var(--cyan);
+}
 
-  .flow-step.highlight {
-    border-color: var(--cyan);
-    background: var(--cyan-dim);
-    color: var(--cyan);
-  }
+/* ── FOOTER ────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--muted);
+  font-size: .85rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
 
-  /* ── FOOTER ────────────────────────────── */
-  footer {
-    text-align: center;
-    padding: 48px 24px;
-    color: var(--muted);
-    font-size: .85rem;
-    border-top: 1px solid var(--border);
-  }
+footer a { color: var(--cyan); text-decoration: none; }
 
-  footer a {
-    color: var(--cyan);
-    text-decoration: none;
-  }
+/* ── ANIMATIONS ────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  /* ── ANIMATIONS ────────────────────────── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+@keyframes progress-sweep {
+  0%   { left: -50%; }
+  100% { left: 150%; }
+}
 
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity .6s ease, transform .6s ease;
-  }
+@keyframes childrenBreathe {
+  0%, 100% { stroke-width: 2; stroke-opacity: .4; }
+  50% { stroke-width: 3; stroke-opacity: .9; }
+}
 
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.children-rect {
+  animation: childrenBreathe 4s ease-in-out infinite;
+}
 
-  /* ── DIVIDER ───────────────────────────── */
-  .divider {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
+@keyframes stagePulse {
+  0%, 100% { opacity: 1; transform-origin: center; }
+  50% { opacity: .85; }
+}
 
-  .divider hr {
-    border: none;
-    border-top: 1px solid var(--border);
-  }
+.stage-box { transform-box: fill-box; transform-origin: center; }
+.stage-1 { animation: stagePulse 5s ease-in-out infinite; }
+.stage-2 { animation: stagePulse 5s ease-in-out .8s infinite; }
+.stage-3 { animation: stagePulse 5s ease-in-out 1.6s infinite; }
+.stage-4 { animation: stagePulse 5s ease-in-out 2.4s infinite; }
 
-  /* ── RESPONSIVE ────────────────────────── */
-  @media (max-width: 600px) {
-    .flow-row { gap: 4px; }
-    .flow-step { padding: 10px 14px; font-size: .78rem; }
-    .flow-arrow { font-size: 1rem; padding: 0 2px; }
-    .diagram-body { padding: 20px 12px; }
-    .diagram-body svg { width: 100%; height: auto; }
-  }
+@keyframes gearSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.gear { transform-box: fill-box; transform-origin: center; animation: gearSpin 6s linear infinite; }
+
+@keyframes serverPulse {
+  0%, 100% { r: 5; opacity: .6; }
+  50% { r: 8; opacity: 1; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── DIVIDER ───────────────────────────── */
+.divider { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+.divider hr { border: none; border-top: 1px solid var(--border); }
+
+/* ── RESPONSIVE ────────────────────────── */
+@media (max-width: 600px) {
+  .flow-row { gap: 4px; }
+  .flow-step { padding: 10px 14px; font-size: .78rem; }
+  .flow-arrow { font-size: 1rem; padding: 0 2px; }
+  .diagram-body { padding: 20px 12px; }
+  .diagram-body svg { width: 100%; height: auto; }
+  .hero-shapes { display: none; }
+}
 </style>
 </head>
 <body>
 
 <!-- ═══════════════════════ HERO ═══════════════════════ -->
 <header class="hero">
+  <div class="hero-shapes">
+    <svg class="float-shape fs1" width="44" height="44" viewBox="0 0 44 44"><polygon points="22,4 40,38 4,38" fill="none" stroke="rgba(6,182,212,.35)" stroke-width="1.5"/></svg>
+    <svg class="float-shape fs2" width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(124,58,237,.3)" stroke-width="1.5"/></svg>
+    <svg class="float-shape fs3" width="30" height="30" viewBox="0 0 30 30"><rect x="4" y="4" width="22" height="22" rx="4" fill="none" stroke="rgba(245,158,11,.3)" stroke-width="1.5" transform="rotate(15 15 15)"/></svg>
+    <svg class="float-shape fs4" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" fill="none" stroke="rgba(244,63,94,.25)" stroke-width="1.5"/></svg>
+    <svg class="float-shape fs5" width="38" height="38" viewBox="0 0 38 38"><polygon points="19,3 35,35 3,35" fill="none" stroke="rgba(16,185,129,.3)" stroke-width="1.5"/></svg>
+    <svg class="float-shape fs6" width="24" height="24" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="rgba(14,165,233,.3)" stroke-width="1.5" transform="rotate(20 12 12)"/></svg>
+  </div>
   <div class="hero-badge">Pertemuan <span>00</span> — Visual Guide</div>
   <h1>Fullstack <em>Next.js</em></h1>
   <p>Panduan visual interaktif untuk memahami konsep-konsep dasar Next.js, React, CSS, dan API Routes sebelum masuk ke Docker &amp; CI/CD.</p>
@@ -545,55 +574,64 @@ app/about/page.js → <span class="str">/about</span></pre>
     <div class="diagram-body">
       <svg width="700" height="340" viewBox="0 0 700 340">
         <!-- Folder tree -->
-        <text x="40" y="30" fill="#8b9ab8" font-size="13" class="mono">app/</text>
+        <text x="40" y="30" fill="#64748b" font-size="13" class="mono">app/</text>
 
-        <line x1="50" y1="40" x2="50" y2="80" stroke="#334155" stroke-width="1.5"/>
-        <line x1="50" y1="80" x2="75" y2="80" stroke="#334155" stroke-width="1.5"/>
-        <rect x="80" y="65" width="130" height="30" rx="8" fill="rgba(34,211,238,.12)" stroke="rgba(34,211,238,.3)" stroke-width="1"/>
-        <text x="145" y="85" fill="#22d3ee" font-size="13" text-anchor="middle" class="mono">page.js</text>
+        <line x1="50" y1="40" x2="50" y2="80" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="50" y1="80" x2="75" y2="80" stroke="#cbd5e1" stroke-width="1.5"/>
+        <rect x="80" y="65" width="130" height="30" rx="8" fill="rgba(6,182,212,.08)" stroke="rgba(6,182,212,.25)" stroke-width="1"/>
+        <text x="145" y="85" fill="#0891b2" font-size="13" text-anchor="middle" class="mono">page.js</text>
 
-        <line x1="50" y1="80" x2="50" y2="140" stroke="#334155" stroke-width="1.5"/>
-        <line x1="50" y1="140" x2="75" y2="140" stroke="#334155" stroke-width="1.5"/>
-        <text x="80" y="145" fill="#8b9ab8" font-size="13" class="mono">about/</text>
+        <line x1="50" y1="80" x2="50" y2="140" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="50" y1="140" x2="75" y2="140" stroke="#cbd5e1" stroke-width="1.5"/>
+        <text x="80" y="145" fill="#64748b" font-size="13" class="mono">about/</text>
 
-        <line x1="110" y1="155" x2="110" y2="195" stroke="#334155" stroke-width="1.5"/>
-        <line x1="110" y1="195" x2="135" y2="195" stroke="#334155" stroke-width="1.5"/>
-        <rect x="140" y="180" width="130" height="30" rx="8" fill="rgba(167,139,250,.12)" stroke="rgba(167,139,250,.3)" stroke-width="1"/>
-        <text x="205" y="200" fill="#a78bfa" font-size="13" text-anchor="middle" class="mono">page.js</text>
+        <line x1="110" y1="155" x2="110" y2="195" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="110" y1="195" x2="135" y2="195" stroke="#cbd5e1" stroke-width="1.5"/>
+        <rect x="140" y="180" width="130" height="30" rx="8" fill="rgba(139,92,246,.08)" stroke="rgba(139,92,246,.25)" stroke-width="1"/>
+        <text x="205" y="200" fill="#7c3aed" font-size="13" text-anchor="middle" class="mono">page.js</text>
 
-        <line x1="50" y1="140" x2="50" y2="250" stroke="#334155" stroke-width="1.5"/>
-        <line x1="50" y1="250" x2="75" y2="250" stroke="#334155" stroke-width="1.5"/>
-        <text x="80" y="255" fill="#8b9ab8" font-size="13" class="mono">api/health/</text>
+        <line x1="50" y1="140" x2="50" y2="250" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="50" y1="250" x2="75" y2="250" stroke="#cbd5e1" stroke-width="1.5"/>
+        <text x="80" y="255" fill="#64748b" font-size="13" class="mono">api/health/</text>
 
-        <line x1="160" y1="265" x2="160" y2="305" stroke="#334155" stroke-width="1.5"/>
-        <line x1="160" y1="305" x2="185" y2="305" stroke="#334155" stroke-width="1.5"/>
-        <rect x="190" y="290" width="130" height="30" rx="8" fill="rgba(251,191,36,.12)" stroke="rgba(251,191,36,.3)" stroke-width="1"/>
-        <text x="255" y="310" fill="#fbbf24" font-size="13" text-anchor="middle" class="mono">route.js</text>
+        <line x1="160" y1="265" x2="160" y2="305" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="160" y1="305" x2="185" y2="305" stroke="#cbd5e1" stroke-width="1.5"/>
+        <rect x="190" y="290" width="130" height="30" rx="8" fill="rgba(245,158,11,.08)" stroke="rgba(245,158,11,.25)" stroke-width="1"/>
+        <text x="255" y="310" fill="#b45309" font-size="13" text-anchor="middle" class="mono">route.js</text>
 
-        <!-- Arrows -->
-        <line x1="230" y1="80" x2="390" y2="80" stroke="#334155" stroke-width="1" stroke-dasharray="6,4"/>
-        <polygon points="390,76 400,80 390,84" fill="#334155"/>
+        <!-- Dashed arrows with flowing dots -->
+        <line x1="230" y1="80" x2="390" y2="80" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6,4"/>
+        <polygon points="390,76 400,80 390,84" fill="#94a3b8"/>
+        <circle r="3.5" fill="#0891b2" opacity=".85">
+          <animateMotion dur="3s" repeatCount="indefinite" path="M230,80 L400,80"/>
+        </circle>
 
-        <line x1="290" y1="195" x2="390" y2="195" stroke="#334155" stroke-width="1" stroke-dasharray="6,4"/>
-        <polygon points="390,191 400,195 390,199" fill="#334155"/>
+        <line x1="290" y1="195" x2="390" y2="195" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6,4"/>
+        <polygon points="390,191 400,195 390,199" fill="#94a3b8"/>
+        <circle r="3.5" fill="#7c3aed" opacity=".85">
+          <animateMotion dur="3s" repeatCount="indefinite" path="M290,195 L400,195" begin="0.6s"/>
+        </circle>
 
-        <line x1="340" y1="305" x2="390" y2="305" stroke="#334155" stroke-width="1" stroke-dasharray="6,4"/>
-        <polygon points="390,301 400,305 390,309" fill="#334155"/>
+        <line x1="340" y1="305" x2="390" y2="305" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6,4"/>
+        <polygon points="390,301 400,305 390,309" fill="#94a3b8"/>
+        <circle r="3.5" fill="#b45309" opacity=".85">
+          <animateMotion dur="3s" repeatCount="indefinite" path="M340,305 L400,305" begin="1.2s"/>
+        </circle>
 
         <!-- URLs -->
-        <rect x="405" y="62" width="260" height="36" rx="10" fill="rgba(34,211,238,.08)" stroke="rgba(34,211,238,.2)" stroke-width="1"/>
-        <text x="535" y="85" fill="#22d3ee" font-size="14" text-anchor="middle" font-weight="600" class="mono">localhost:3000/</text>
+        <rect x="405" y="62" width="260" height="36" rx="10" fill="rgba(6,182,212,.06)" stroke="rgba(6,182,212,.18)" stroke-width="1"/>
+        <text x="535" y="85" fill="#0891b2" font-size="14" text-anchor="middle" font-weight="600" class="mono">localhost:3000/</text>
 
-        <rect x="405" y="177" width="260" height="36" rx="10" fill="rgba(167,139,250,.08)" stroke="rgba(167,139,250,.2)" stroke-width="1"/>
-        <text x="535" y="200" fill="#a78bfa" font-size="14" text-anchor="middle" font-weight="600" class="mono">localhost:3000/about</text>
+        <rect x="405" y="177" width="260" height="36" rx="10" fill="rgba(139,92,246,.06)" stroke="rgba(139,92,246,.18)" stroke-width="1"/>
+        <text x="535" y="200" fill="#7c3aed" font-size="14" text-anchor="middle" font-weight="600" class="mono">localhost:3000/about</text>
 
-        <rect x="405" y="287" width="260" height="36" rx="10" fill="rgba(251,191,36,.08)" stroke="rgba(251,191,36,.2)" stroke-width="1"/>
-        <text x="535" y="310" fill="#fbbf24" font-size="14" text-anchor="middle" font-weight="600" class="mono">localhost:3000/api/health</text>
+        <rect x="405" y="287" width="260" height="36" rx="10" fill="rgba(245,158,11,.06)" stroke="rgba(245,158,11,.18)" stroke-width="1"/>
+        <text x="535" y="310" fill="#b45309" font-size="14" text-anchor="middle" font-weight="600" class="mono">localhost:3000/api/health</text>
 
         <!-- Labels -->
-        <text x="420" y="55" fill="#6e7681" font-size="11">page.js = halaman HTML</text>
-        <text x="420" y="170" fill="#6e7681" font-size="11">folder = path URL</text>
-        <text x="420" y="280" fill="#6e7681" font-size="11">route.js = API endpoint (JSON)</text>
+        <text x="420" y="55" fill="#94a3b8" font-size="11">page.js = halaman HTML</text>
+        <text x="420" y="170" fill="#94a3b8" font-size="11">folder = path URL</text>
+        <text x="420" y="280" fill="#94a3b8" font-size="11">route.js = API endpoint (JSON)</text>
       </svg>
     </div>
   </div>
@@ -615,28 +653,28 @@ app/about/page.js → <span class="str">/about</span></pre>
     <div class="diagram-body">
       <svg width="600" height="320" viewBox="0 0 600 320">
         <!-- Outer: layout.js -->
-        <rect x="30" y="20" width="540" height="280" rx="16" fill="none" stroke="rgba(251,113,133,.4)" stroke-width="2" stroke-dasharray="8,4"/>
-        <text x="50" y="50" fill="#fb7185" font-size="14" font-weight="700">layout.js</text>
+        <rect x="30" y="20" width="540" height="280" rx="16" fill="none" stroke="rgba(244,63,94,.35)" stroke-width="2" stroke-dasharray="8,4"/>
+        <text x="50" y="50" fill="#be123c" font-size="14" font-weight="700">layout.js</text>
 
         <!-- html tag -->
-        <rect x="60" y="65" width="480" height="220" rx="12" fill="rgba(251,113,133,.05)" stroke="rgba(251,113,133,.15)" stroke-width="1"/>
-        <text x="80" y="90" fill="#6e7681" font-size="12" class="mono">&lt;html lang="id"&gt;</text>
+        <rect x="60" y="65" width="480" height="220" rx="12" fill="rgba(244,63,94,.03)" stroke="rgba(244,63,94,.12)" stroke-width="1"/>
+        <text x="80" y="90" fill="#94a3b8" font-size="12" class="mono">&lt;html lang="id"&gt;</text>
 
         <!-- body tag -->
-        <rect x="90" y="100" width="420" height="170" rx="10" fill="rgba(251,113,133,.04)" stroke="rgba(251,113,133,.1)" stroke-width="1"/>
-        <text x="110" y="125" fill="#6e7681" font-size="12" class="mono">&lt;body&gt;</text>
+        <rect x="90" y="100" width="420" height="170" rx="10" fill="rgba(244,63,94,.02)" stroke="rgba(244,63,94,.08)" stroke-width="1"/>
+        <text x="110" y="125" fill="#94a3b8" font-size="12" class="mono">&lt;body&gt;</text>
 
-        <!-- {children} - page aktif -->
-        <rect x="120" y="138" width="360" height="110" rx="10" fill="rgba(34,211,238,.08)" stroke="rgba(34,211,238,.3)" stroke-width="2"/>
-        <text x="300" y="175" fill="#22d3ee" font-size="16" text-anchor="middle" font-weight="700">{children}</text>
-        <text x="300" y="200" fill="#8b9ab8" font-size="12" text-anchor="middle">= halaman yang sedang dibuka</text>
-        <text x="300" y="222" fill="#6e7681" font-size="11" text-anchor="middle">Buka "/" → children = page.js</text>
-        <text x="300" y="238" fill="#6e7681" font-size="11" text-anchor="middle">Buka "/about" → children = about/page.js</text>
+        <!-- {children} - page aktif with pulse animation -->
+        <rect class="children-rect" x="120" y="138" width="360" height="110" rx="10" fill="rgba(6,182,212,.06)" stroke="rgba(6,182,212,.35)" stroke-width="2"/>
+        <text x="300" y="175" fill="#0891b2" font-size="16" text-anchor="middle" font-weight="700">{children}</text>
+        <text x="300" y="200" fill="#64748b" font-size="12" text-anchor="middle">= halaman yang sedang dibuka</text>
+        <text x="300" y="222" fill="#94a3b8" font-size="11" text-anchor="middle">Buka "/" → children = page.js</text>
+        <text x="300" y="238" fill="#94a3b8" font-size="11" text-anchor="middle">Buka "/about" → children = about/page.js</text>
 
         <!-- CSS import note -->
-        <rect x="320" y="28" width="240" height="30" rx="8" fill="rgba(251,191,36,.1)" stroke="rgba(251,191,36,.2)" stroke-width="1"/>
-        <text x="340" y="48" fill="#fbbf24" font-size="12" class="mono">import "./globals.css"</text>
-        <text x="320" y="72" fill="#6e7681" font-size="10">↑ CSS di-import di sini = berlaku global</text>
+        <rect x="320" y="28" width="240" height="30" rx="8" fill="rgba(245,158,11,.07)" stroke="rgba(245,158,11,.18)" stroke-width="1"/>
+        <text x="340" y="48" fill="#b45309" font-size="12" class="mono">import "./globals.css"</text>
+        <text x="320" y="72" fill="#94a3b8" font-size="10">↑ CSS di-import di sini = berlaku global</text>
       </svg>
     </div>
   </div>
@@ -658,51 +696,58 @@ app/about/page.js → <span class="str">/about</span></pre>
     <div class="diagram-body">
       <svg width="660" height="360" viewBox="0 0 660 360">
         <!-- page.js (root) -->
-        <rect x="220" y="15" width="220" height="50" rx="12" fill="rgba(167,139,250,.12)" stroke="rgba(167,139,250,.4)" stroke-width="2"/>
-        <text x="330" y="45" fill="#a78bfa" font-size="15" text-anchor="middle" font-weight="700" class="mono">page.js</text>
-        <text x="330" y="85" fill="#6e7681" font-size="11" text-anchor="middle">import data dari lib/ + component dari components/</text>
+        <rect x="220" y="15" width="220" height="50" rx="12" fill="rgba(139,92,246,.08)" stroke="rgba(139,92,246,.35)" stroke-width="2"/>
+        <text x="330" y="45" fill="#7c3aed" font-size="15" text-anchor="middle" font-weight="700" class="mono">page.js</text>
+        <text x="330" y="85" fill="#94a3b8" font-size="11" text-anchor="middle">import data dari lib/ + component dari components/</text>
 
-        <!-- Arrow down left -->
-        <line x1="270" y1="65" x2="140" y2="130" stroke="#334155" stroke-width="1.5"/>
-        <polygon points="137,126 143,134 148,125" fill="#334155"/>
+        <!-- Arrows with flowing dots -->
+        <line x1="270" y1="65" x2="140" y2="130" stroke="#94a3b8" stroke-width="1.5"/>
+        <polygon points="137,126 143,134 148,125" fill="#94a3b8"/>
+        <circle r="3" fill="#0891b2" opacity=".8">
+          <animateMotion dur="2.5s" repeatCount="indefinite" path="M270,65 L140,130"/>
+        </circle>
 
-        <!-- Arrow down center -->
-        <line x1="330" y1="65" x2="330" y2="130" stroke="#334155" stroke-width="1.5"/>
-        <polygon points="326,128 330,138 334,128" fill="#334155"/>
+        <line x1="330" y1="65" x2="330" y2="130" stroke="#94a3b8" stroke-width="1.5"/>
+        <polygon points="326,128 330,138 334,128" fill="#94a3b8"/>
+        <circle r="3" fill="#b45309" opacity=".8">
+          <animateMotion dur="2.5s" repeatCount="indefinite" path="M330,65 L330,130" begin="0.5s"/>
+        </circle>
 
-        <!-- Arrow down right -->
-        <line x1="390" y1="65" x2="520" y2="130" stroke="#334155" stroke-width="1.5"/>
-        <polygon points="517,126 523,134 526,124" fill="#334155"/>
+        <line x1="390" y1="65" x2="520" y2="130" stroke="#94a3b8" stroke-width="1.5"/>
+        <polygon points="517,126 523,134 526,124" fill="#94a3b8"/>
+        <circle r="3" fill="#059669" opacity=".8">
+          <animateMotion dur="2.5s" repeatCount="indefinite" path="M390,65 L520,130" begin="1s"/>
+        </circle>
 
         <!-- MetricCard -->
-        <rect x="50" y="130" width="190" height="50" rx="12" fill="rgba(34,211,238,.1)" stroke="rgba(34,211,238,.3)" stroke-width="1.5"/>
-        <text x="145" y="160" fill="#22d3ee" font-size="13" text-anchor="middle" font-weight="600" class="mono">MetricCard</text>
+        <rect x="50" y="130" width="190" height="50" rx="12" fill="rgba(6,182,212,.07)" stroke="rgba(6,182,212,.25)" stroke-width="1.5"/>
+        <text x="145" y="160" fill="#0891b2" font-size="13" text-anchor="middle" font-weight="600" class="mono">MetricCard</text>
 
         <!-- .map() loop -->
-        <rect x="240" y="130" width="180" height="50" rx="12" fill="rgba(251,191,36,.1)" stroke="rgba(251,191,36,.3)" stroke-width="1.5"/>
-        <text x="330" y="160" fill="#fbbf24" font-size="13" text-anchor="middle" font-weight="600">.map() loop</text>
+        <rect x="240" y="130" width="180" height="50" rx="12" fill="rgba(245,158,11,.07)" stroke="rgba(245,158,11,.25)" stroke-width="1.5"/>
+        <text x="330" y="160" fill="#b45309" font-size="13" text-anchor="middle" font-weight="600">.map() loop</text>
 
         <!-- DeploymentStep -->
-        <rect x="440" y="130" width="190" height="50" rx="12" fill="rgba(52,211,153,.1)" stroke="rgba(52,211,153,.3)" stroke-width="1.5"/>
-        <text x="535" y="160" fill="#34d399" font-size="13" text-anchor="middle" font-weight="600" class="mono">DeploymentStep</text>
+        <rect x="440" y="130" width="190" height="50" rx="12" fill="rgba(16,185,129,.07)" stroke="rgba(16,185,129,.25)" stroke-width="1.5"/>
+        <text x="535" y="160" fill="#059669" font-size="13" text-anchor="middle" font-weight="600" class="mono">DeploymentStep</text>
 
         <!-- Props detail: MetricCard -->
-        <rect x="30" y="210" width="230" height="100" rx="10" fill="rgba(34,211,238,.05)" stroke="rgba(34,211,238,.15)" stroke-width="1"/>
-        <text x="50" y="237" fill="#8b9ab8" font-size="12" font-weight="600">Props yang diterima:</text>
-        <text x="50" y="260" fill="#22d3ee" font-size="12" class="mono">{ value, label }</text>
-        <text x="50" y="282" fill="#6e7681" font-size="11">Contoh: value="UI" label="Halaman"</text>
-        <line x1="145" y1="180" x2="145" y2="210" stroke="rgba(34,211,238,.3)" stroke-width="1" stroke-dasharray="4,3"/>
+        <rect x="30" y="210" width="230" height="100" rx="10" fill="rgba(6,182,212,.04)" stroke="rgba(6,182,212,.12)" stroke-width="1"/>
+        <text x="50" y="237" fill="#64748b" font-size="12" font-weight="600">Props yang diterima:</text>
+        <text x="50" y="260" fill="#0891b2" font-size="12" class="mono">{ value, label }</text>
+        <text x="50" y="282" fill="#94a3b8" font-size="11">Contoh: value="UI" label="Halaman"</text>
+        <line x1="145" y1="180" x2="145" y2="210" stroke="rgba(6,182,212,.25)" stroke-width="1" stroke-dasharray="4,3"/>
 
         <!-- Props detail: DeploymentStep -->
-        <rect x="410" y="210" width="240" height="100" rx="10" fill="rgba(52,211,153,.05)" stroke="rgba(52,211,153,.15)" stroke-width="1"/>
-        <text x="430" y="237" fill="#8b9ab8" font-size="12" font-weight="600">Props yang diterima:</text>
-        <text x="430" y="260" fill="#34d399" font-size="12" class="mono">{ step }</text>
-        <text x="430" y="282" fill="#6e7681" font-size="11">step = { number, title, command }</text>
-        <line x1="535" y1="180" x2="535" y2="210" stroke="rgba(52,211,153,.3)" stroke-width="1" stroke-dasharray="4,3"/>
+        <rect x="410" y="210" width="240" height="100" rx="10" fill="rgba(16,185,129,.04)" stroke="rgba(16,185,129,.12)" stroke-width="1"/>
+        <text x="430" y="237" fill="#64748b" font-size="12" font-weight="600">Props yang diterima:</text>
+        <text x="430" y="260" fill="#059669" font-size="12" class="mono">{ step }</text>
+        <text x="430" y="282" fill="#94a3b8" font-size="11">step = { number, title, command }</text>
+        <line x1="535" y1="180" x2="535" y2="210" stroke="rgba(16,185,129,.25)" stroke-width="1" stroke-dasharray="4,3"/>
 
         <!-- Key concept -->
-        <rect x="170" y="330" width="320" height="28" rx="8" fill="rgba(167,139,250,.08)" stroke="rgba(167,139,250,.2)" stroke-width="1"/>
-        <text x="330" y="349" fill="#a78bfa" font-size="12" text-anchor="middle" font-weight="600">Data mengalir SATU ARAH: Parent → Child via Props</text>
+        <rect x="170" y="330" width="320" height="28" rx="8" fill="rgba(139,92,246,.06)" stroke="rgba(139,92,246,.18)" stroke-width="1"/>
+        <text x="330" y="349" fill="#7c3aed" font-size="12" text-anchor="middle" font-weight="600">Data mengalir SATU ARAH: Parent → Child via Props</text>
       </svg>
     </div>
   </div>
@@ -825,38 +870,52 @@ app/about/page.js → <span class="str">/about</span></pre>
     <div class="diagram-body">
       <svg width="660" height="240" viewBox="0 0 660 240">
         <!-- Browser -->
-        <rect x="30" y="40" width="200" height="160" rx="14" fill="rgba(34,211,238,.06)" stroke="rgba(34,211,238,.3)" stroke-width="1.5"/>
-        <text x="130" y="30" fill="#22d3ee" font-size="13" text-anchor="middle" font-weight="700">🌐 BROWSER</text>
-        <text x="130" y="75" fill="#e8edf5" font-size="13" text-anchor="middle" font-weight="600">page.js</text>
-        <text x="130" y="100" fill="#8b9ab8" font-size="11" text-anchor="middle">Halaman HTML/JSX</text>
-        <text x="130" y="125" fill="#8b9ab8" font-size="11" text-anchor="middle">Yang user lihat</text>
-        <rect x="65" y="145" width="130" height="35" rx="8" fill="rgba(34,211,238,.12)" stroke="rgba(34,211,238,.2)" stroke-width="1"/>
-        <text x="130" y="167" fill="#22d3ee" font-size="12" text-anchor="middle" class="mono">localhost:3000/</text>
+        <rect x="30" y="40" width="200" height="160" rx="14" fill="rgba(6,182,212,.05)" stroke="rgba(6,182,212,.25)" stroke-width="1.5"/>
+        <text x="130" y="30" fill="#0891b2" font-size="13" text-anchor="middle" font-weight="700">🌐 BROWSER</text>
+        <text x="130" y="75" fill="#1e293b" font-size="13" text-anchor="middle" font-weight="600">page.js</text>
+        <text x="130" y="100" fill="#64748b" font-size="11" text-anchor="middle">Halaman HTML/JSX</text>
+        <text x="130" y="125" fill="#64748b" font-size="11" text-anchor="middle">Yang user lihat</text>
+        <rect x="65" y="145" width="130" height="35" rx="8" fill="rgba(6,182,212,.08)" stroke="rgba(6,182,212,.18)" stroke-width="1"/>
+        <text x="130" y="167" fill="#0891b2" font-size="12" text-anchor="middle" class="mono">localhost:3000/</text>
 
-        <!-- Arrow -->
-        <line x1="230" y1="100" x2="290" y2="100" stroke="#fbbf24" stroke-width="2"/>
-        <polygon points="288,95 300,100 288,105" fill="#fbbf24"/>
-        <text x="260" y="90" fill="#fbbf24" font-size="10" text-anchor="middle">fetch()</text>
-        <line x1="290" y1="140" x2="230" y2="140" stroke="#34d399" stroke-width="2"/>
-        <polygon points="232,135 220,140 232,145" fill="#34d399"/>
-        <text x="260" y="155" fill="#34d399" font-size="10" text-anchor="middle">JSON</text>
+        <!-- Animated fetch() arrow (right) -->
+        <line x1="230" y1="100" x2="290" y2="100" stroke="#b45309" stroke-width="2"/>
+        <polygon points="288,95 300,100 288,105" fill="#b45309"/>
+        <text x="260" y="90" fill="#b45309" font-size="10" text-anchor="middle">fetch()</text>
+        <circle r="3.5" fill="#b45309" opacity=".85">
+          <animateMotion dur="2s" repeatCount="indefinite" path="M230,100 L300,100"/>
+        </circle>
+
+        <!-- Animated JSON arrow (left) -->
+        <line x1="290" y1="140" x2="230" y2="140" stroke="#059669" stroke-width="2"/>
+        <polygon points="232,135 220,140 232,145" fill="#059669"/>
+        <text x="260" y="155" fill="#059669" font-size="10" text-anchor="middle">JSON</text>
+        <circle r="3.5" fill="#059669" opacity=".85">
+          <animateMotion dur="2s" repeatCount="indefinite" path="M290,140 L220,140" begin="0.5s"/>
+        </circle>
 
         <!-- Server -->
-        <rect x="300" y="40" width="330" height="160" rx="14" fill="rgba(251,191,36,.04)" stroke="rgba(251,191,36,.2)" stroke-width="1.5"/>
-        <text x="465" y="30" fill="#fbbf24" font-size="13" text-anchor="middle" font-weight="700">⚡ SERVER (Node.js)</text>
+        <rect x="300" y="40" width="330" height="160" rx="14" fill="rgba(245,158,11,.03)" stroke="rgba(245,158,11,.18)" stroke-width="1.5"/>
+        <text x="465" y="30" fill="#b45309" font-size="13" text-anchor="middle" font-weight="700">⚡ SERVER (Node.js)</text>
+
+        <!-- Server pulse indicator -->
+        <circle cx="625" cy="30" fill="#059669" opacity=".6">
+          <animate attributeName="r" values="4;7;4" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".6;1;.6" dur="3s" repeatCount="indefinite"/>
+        </circle>
 
         <!-- API Health -->
-        <rect x="320" y="60" width="290" height="55" rx="10" fill="rgba(34,211,238,.06)" stroke="rgba(34,211,238,.15)" stroke-width="1"/>
-        <text x="340" y="82" fill="#22d3ee" font-size="12" class="mono" font-weight="600">GET /api/health</text>
-        <text x="340" y="102" fill="#6e7681" font-size="11">→ { status: "ok", uptime, timestamp }</text>
+        <rect x="320" y="60" width="290" height="55" rx="10" fill="rgba(6,182,212,.04)" stroke="rgba(6,182,212,.12)" stroke-width="1"/>
+        <text x="340" y="82" fill="#0891b2" font-size="12" class="mono" font-weight="600">GET /api/health</text>
+        <text x="340" y="102" fill="#94a3b8" font-size="11">→ { status: "ok", uptime, timestamp }</text>
 
         <!-- API Deployments -->
-        <rect x="320" y="125" width="290" height="55" rx="10" fill="rgba(167,139,250,.06)" stroke="rgba(167,139,250,.15)" stroke-width="1"/>
-        <text x="340" y="147" fill="#a78bfa" font-size="12" class="mono" font-weight="600">GET /api/deployments</text>
-        <text x="340" y="167" fill="#6e7681" font-size="11">→ { steps: [...], checks: [...] }</text>
+        <rect x="320" y="125" width="290" height="55" rx="10" fill="rgba(139,92,246,.04)" stroke="rgba(139,92,246,.12)" stroke-width="1"/>
+        <text x="340" y="147" fill="#7c3aed" font-size="12" class="mono" font-weight="600">GET /api/deployments</text>
+        <text x="340" y="167" fill="#94a3b8" font-size="11">→ { steps: [...], checks: [...] }</text>
 
         <!-- Label -->
-        <text x="465" y="225" fill="#6e7681" font-size="11" text-anchor="middle">route.js = handler HTTP (GET, POST, PUT, DELETE)</text>
+        <text x="465" y="225" fill="#94a3b8" font-size="11" text-anchor="middle">route.js = handler HTTP (GET, POST, PUT, DELETE)</text>
       </svg>
     </div>
   </div>
@@ -878,34 +937,45 @@ app/about/page.js → <span class="str">/about</span></pre>
     <div class="diagram-body" style="flex-direction:column;gap:20px">
       <svg width="660" height="220" viewBox="0 0 660 220">
         <!-- Code box -->
-        <rect x="200" y="10" width="260" height="50" rx="12" fill="rgba(167,139,250,.1)" stroke="rgba(167,139,250,.3)" stroke-width="1.5"/>
-        <text x="330" y="40" fill="#a78bfa" font-size="13" text-anchor="middle" class="mono" font-weight="600">process.env.APP_MESSAGE</text>
+        <rect x="200" y="10" width="260" height="50" rx="12" fill="rgba(139,92,246,.07)" stroke="rgba(139,92,246,.25)" stroke-width="1.5"/>
+        <text x="330" y="40" fill="#7c3aed" font-size="13" text-anchor="middle" class="mono" font-weight="600">process.env.APP_MESSAGE</text>
 
-        <!-- Arrows -->
-        <line x1="240" y1="60" x2="110" y2="100" stroke="#334155" stroke-width="1.5"/>
-        <line x1="330" y1="60" x2="330" y2="100" stroke="#334155" stroke-width="1.5"/>
-        <line x1="420" y1="60" x2="550" y2="100" stroke="#334155" stroke-width="1.5"/>
+        <!-- Animated arrows with staggered dots -->
+        <line x1="240" y1="60" x2="110" y2="100" stroke="#94a3b8" stroke-width="1.5"/>
+        <circle r="3" fill="#0891b2" opacity=".8">
+          <animateMotion dur="2.5s" repeatCount="indefinite" path="M240,60 L110,100"/>
+        </circle>
+
+        <line x1="330" y1="60" x2="330" y2="100" stroke="#94a3b8" stroke-width="1.5"/>
+        <circle r="3" fill="#b45309" opacity=".8">
+          <animateMotion dur="2.5s" repeatCount="indefinite" path="M330,60 L330,100" begin="0.6s"/>
+        </circle>
+
+        <line x1="420" y1="60" x2="550" y2="100" stroke="#94a3b8" stroke-width="1.5"/>
+        <circle r="3" fill="#059669" opacity=".8">
+          <animateMotion dur="2.5s" repeatCount="indefinite" path="M420,60 L550,100" begin="1.2s"/>
+        </circle>
 
         <!-- Dev -->
-        <rect x="20" y="100" width="190" height="105" rx="12" fill="rgba(34,211,238,.06)" stroke="rgba(34,211,238,.25)" stroke-width="1.5"/>
-        <text x="115" y="125" fill="#22d3ee" font-size="13" text-anchor="middle" font-weight="700">💻 Development</text>
-        <text x="115" y="150" fill="#8b9ab8" font-size="11" text-anchor="middle">.env.local</text>
-        <rect x="40" y="162" width="150" height="28" rx="6" fill="rgba(34,211,238,.08)"/>
-        <text x="115" y="181" fill="#22d3ee" font-size="11" text-anchor="middle" class="mono">"Halo Dev!"</text>
+        <rect x="20" y="100" width="190" height="105" rx="12" fill="rgba(6,182,212,.04)" stroke="rgba(6,182,212,.2)" stroke-width="1.5"/>
+        <text x="115" y="125" fill="#0891b2" font-size="13" text-anchor="middle" font-weight="700">💻 Development</text>
+        <text x="115" y="150" fill="#64748b" font-size="11" text-anchor="middle">.env.local</text>
+        <rect x="40" y="162" width="150" height="28" rx="6" fill="rgba(6,182,212,.06)"/>
+        <text x="115" y="181" fill="#0891b2" font-size="11" text-anchor="middle" class="mono">"Halo Dev!"</text>
 
         <!-- Docker -->
-        <rect x="235" y="100" width="190" height="105" rx="12" fill="rgba(251,191,36,.06)" stroke="rgba(251,191,36,.25)" stroke-width="1.5"/>
-        <text x="330" y="125" fill="#fbbf24" font-size="13" text-anchor="middle" font-weight="700">🐳 Docker</text>
-        <text x="330" y="150" fill="#8b9ab8" font-size="11" text-anchor="middle">docker run -e</text>
-        <rect x="255" y="162" width="150" height="28" rx="6" fill="rgba(251,191,36,.08)"/>
-        <text x="330" y="181" fill="#fbbf24" font-size="11" text-anchor="middle" class="mono">"Halo Container!"</text>
+        <rect x="235" y="100" width="190" height="105" rx="12" fill="rgba(245,158,11,.04)" stroke="rgba(245,158,11,.2)" stroke-width="1.5"/>
+        <text x="330" y="125" fill="#b45309" font-size="13" text-anchor="middle" font-weight="700">🐳 Docker</text>
+        <text x="330" y="150" fill="#64748b" font-size="11" text-anchor="middle">docker run -e</text>
+        <rect x="255" y="162" width="150" height="28" rx="6" fill="rgba(245,158,11,.06)"/>
+        <text x="330" y="181" fill="#b45309" font-size="11" text-anchor="middle" class="mono">"Halo Container!"</text>
 
         <!-- Production -->
-        <rect x="450" y="100" width="190" height="105" rx="12" fill="rgba(52,211,153,.06)" stroke="rgba(52,211,153,.25)" stroke-width="1.5"/>
-        <text x="545" y="125" fill="#34d399" font-size="13" text-anchor="middle" font-weight="700">🚀 Production</text>
-        <text x="545" y="150" fill="#8b9ab8" font-size="11" text-anchor="middle">Kubernetes ConfigMap</text>
-        <rect x="470" y="162" width="150" height="28" rx="6" fill="rgba(52,211,153,.08)"/>
-        <text x="545" y="181" fill="#34d399" font-size="11" text-anchor="middle" class="mono">"Selamat Datang"</text>
+        <rect x="450" y="100" width="190" height="105" rx="12" fill="rgba(16,185,129,.04)" stroke="rgba(16,185,129,.2)" stroke-width="1.5"/>
+        <text x="545" y="125" fill="#059669" font-size="13" text-anchor="middle" font-weight="700">🚀 Production</text>
+        <text x="545" y="150" fill="#64748b" font-size="11" text-anchor="middle">Kubernetes ConfigMap</text>
+        <rect x="470" y="162" width="150" height="28" rx="6" fill="rgba(16,185,129,.06)"/>
+        <text x="545" y="181" fill="#059669" font-size="11" text-anchor="middle" class="mono">"Selamat Datang"</text>
       </svg>
     </div>
   </div>
@@ -963,55 +1033,84 @@ app/about/page.js → <span class="str">/about</span></pre>
     <div class="diagram-body">
       <svg width="660" height="300" viewBox="0 0 660 300">
         <!-- Stage 1: base -->
-        <rect x="20" y="20" width="140" height="90" rx="12" fill="rgba(56,189,248,.08)" stroke="rgba(56,189,248,.3)" stroke-width="1.5"/>
-        <text x="90" y="48" fill="#38bdf8" font-size="14" text-anchor="middle" font-weight="700">1. BASE</text>
-        <text x="90" y="70" fill="#8b9ab8" font-size="10" text-anchor="middle">node:20-alpine</text>
-        <text x="90" y="88" fill="#6e7681" font-size="10" text-anchor="middle">Image dasar (~50MB)</text>
+        <rect class="stage-box stage-1" x="20" y="20" width="140" height="90" rx="12" fill="rgba(14,165,233,.06)" stroke="rgba(14,165,233,.25)" stroke-width="1.5"/>
+        <text x="90" y="48" fill="#0284c7" font-size="14" text-anchor="middle" font-weight="700">1. BASE</text>
+        <text x="90" y="70" fill="#64748b" font-size="10" text-anchor="middle">node:20-alpine</text>
+        <text x="90" y="88" fill="#94a3b8" font-size="10" text-anchor="middle">Image dasar (~50MB)</text>
+        <!-- Gear icon -->
+        <g class="gear" transform="translate(20,20)">
+          <circle cx="12" cy="12" r="4" fill="none" stroke="rgba(14,165,233,.4)" stroke-width="1.2"/>
+          <line x1="12" y1="5" x2="12" y2="8" stroke="rgba(14,165,233,.4)" stroke-width="1.2"/>
+          <line x1="12" y1="16" x2="12" y2="19" stroke="rgba(14,165,233,.4)" stroke-width="1.2"/>
+          <line x1="5" y1="12" x2="8" y2="12" stroke="rgba(14,165,233,.4)" stroke-width="1.2"/>
+          <line x1="16" y1="12" x2="19" y2="12" stroke="rgba(14,165,233,.4)" stroke-width="1.2"/>
+        </g>
 
         <!-- Arrow -->
-        <line x1="160" y1="65" x2="180" y2="65" stroke="#334155" stroke-width="1.5"/>
-        <polygon points="178,60 188,65 178,70" fill="#334155"/>
+        <line x1="160" y1="65" x2="180" y2="65" stroke="#94a3b8" stroke-width="1.5"/>
+        <polygon points="178,60 188,65 178,70" fill="#94a3b8"/>
 
         <!-- Stage 2: deps -->
-        <rect x="190" y="20" width="140" height="90" rx="12" fill="rgba(251,191,36,.08)" stroke="rgba(251,191,36,.3)" stroke-width="1.5"/>
-        <text x="260" y="48" fill="#fbbf24" font-size="14" text-anchor="middle" font-weight="700">2. DEPS</text>
-        <text x="260" y="70" fill="#8b9ab8" font-size="10" text-anchor="middle" class="mono">npm ci</text>
-        <text x="260" y="88" fill="#6e7681" font-size="10" text-anchor="middle">Install dependencies</text>
+        <rect class="stage-box stage-2" x="190" y="20" width="140" height="90" rx="12" fill="rgba(245,158,11,.06)" stroke="rgba(245,158,11,.25)" stroke-width="1.5"/>
+        <text x="260" y="48" fill="#b45309" font-size="14" text-anchor="middle" font-weight="700">2. DEPS</text>
+        <text x="260" y="70" fill="#64748b" font-size="10" text-anchor="middle" class="mono">npm ci</text>
+        <text x="260" y="88" fill="#94a3b8" font-size="10" text-anchor="middle">Install dependencies</text>
+        <g class="gear" transform="translate(190,20)" style="animation-direction:reverse">
+          <circle cx="12" cy="12" r="4" fill="none" stroke="rgba(245,158,11,.4)" stroke-width="1.2"/>
+          <line x1="12" y1="5" x2="12" y2="8" stroke="rgba(245,158,11,.4)" stroke-width="1.2"/>
+          <line x1="12" y1="16" x2="12" y2="19" stroke="rgba(245,158,11,.4)" stroke-width="1.2"/>
+          <line x1="5" y1="12" x2="8" y2="12" stroke="rgba(245,158,11,.4)" stroke-width="1.2"/>
+          <line x1="16" y1="12" x2="19" y2="12" stroke="rgba(245,158,11,.4)" stroke-width="1.2"/>
+        </g>
 
         <!-- Arrow -->
-        <line x1="330" y1="65" x2="350" y2="65" stroke="#334155" stroke-width="1.5"/>
-        <polygon points="348,60 358,65 348,70" fill="#334155"/>
+        <line x1="330" y1="65" x2="350" y2="65" stroke="#94a3b8" stroke-width="1.5"/>
+        <polygon points="348,60 358,65 348,70" fill="#94a3b8"/>
 
         <!-- Stage 3: builder -->
-        <rect x="360" y="20" width="140" height="90" rx="12" fill="rgba(167,139,250,.08)" stroke="rgba(167,139,250,.3)" stroke-width="1.5"/>
-        <text x="430" y="48" fill="#a78bfa" font-size="14" text-anchor="middle" font-weight="700">3. BUILDER</text>
-        <text x="430" y="70" fill="#8b9ab8" font-size="10" text-anchor="middle" class="mono">test + build</text>
-        <text x="430" y="88" fill="#6e7681" font-size="10" text-anchor="middle">Test gagal? STOP ❌</text>
+        <rect class="stage-box stage-3" x="360" y="20" width="140" height="90" rx="12" fill="rgba(139,92,246,.06)" stroke="rgba(139,92,246,.25)" stroke-width="1.5"/>
+        <text x="430" y="48" fill="#7c3aed" font-size="14" text-anchor="middle" font-weight="700">3. BUILDER</text>
+        <text x="430" y="70" fill="#64748b" font-size="10" text-anchor="middle" class="mono">test + build</text>
+        <text x="430" y="88" fill="#94a3b8" font-size="10" text-anchor="middle">Test gagal? STOP ❌</text>
+        <g class="gear" transform="translate(360,20)">
+          <circle cx="12" cy="12" r="4" fill="none" stroke="rgba(139,92,246,.4)" stroke-width="1.2"/>
+          <line x1="12" y1="5" x2="12" y2="8" stroke="rgba(139,92,246,.4)" stroke-width="1.2"/>
+          <line x1="12" y1="16" x2="12" y2="19" stroke="rgba(139,92,246,.4)" stroke-width="1.2"/>
+          <line x1="5" y1="12" x2="8" y2="12" stroke="rgba(139,92,246,.4)" stroke-width="1.2"/>
+          <line x1="16" y1="12" x2="19" y2="12" stroke="rgba(139,92,246,.4)" stroke-width="1.2"/>
+        </g>
 
         <!-- Arrow -->
-        <line x1="500" y1="65" x2="520" y2="65" stroke="#334155" stroke-width="1.5"/>
-        <polygon points="518,60 528,65 518,70" fill="#334155"/>
+        <line x1="500" y1="65" x2="520" y2="65" stroke="#94a3b8" stroke-width="1.5"/>
+        <polygon points="518,60 528,65 518,70" fill="#94a3b8"/>
 
         <!-- Stage 4: runner -->
-        <rect x="530" y="20" width="120" height="90" rx="12" fill="rgba(52,211,153,.12)" stroke="rgba(52,211,153,.4)" stroke-width="2"/>
-        <text x="590" y="48" fill="#34d399" font-size="14" text-anchor="middle" font-weight="700">4. RUNNER</text>
-        <text x="590" y="70" fill="#8b9ab8" font-size="10" text-anchor="middle">server.js only</text>
-        <text x="590" y="88" fill="#34d399" font-size="10" text-anchor="middle">IMAGE FINAL ✅</text>
+        <rect class="stage-box stage-4" x="530" y="20" width="120" height="90" rx="12" fill="rgba(16,185,129,.08)" stroke="rgba(16,185,129,.35)" stroke-width="2"/>
+        <text x="590" y="48" fill="#059669" font-size="14" text-anchor="middle" font-weight="700">4. RUNNER</text>
+        <text x="590" y="70" fill="#64748b" font-size="10" text-anchor="middle">server.js only</text>
+        <text x="590" y="88" fill="#059669" font-size="10" text-anchor="middle">IMAGE FINAL ✅</text>
+        <g class="gear" transform="translate(530,20)" style="animation-direction:reverse">
+          <circle cx="12" cy="12" r="4" fill="none" stroke="rgba(16,185,129,.4)" stroke-width="1.2"/>
+          <line x1="12" y1="5" x2="12" y2="8" stroke="rgba(16,185,129,.4)" stroke-width="1.2"/>
+          <line x1="12" y1="16" x2="12" y2="19" stroke="rgba(16,185,129,.4)" stroke-width="1.2"/>
+          <line x1="5" y1="12" x2="8" y2="12" stroke="rgba(16,185,129,.4)" stroke-width="1.2"/>
+          <line x1="16" y1="12" x2="19" y2="12" stroke="rgba(16,185,129,.4)" stroke-width="1.2"/>
+        </g>
 
         <!-- What's included -->
-        <rect x="30" y="140" width="600" height="140" rx="14" fill="rgba(52,211,153,.04)" stroke="rgba(52,211,153,.12)" stroke-width="1"/>
-        <text x="330" y="168" fill="#34d399" font-size="13" text-anchor="middle" font-weight="700">📦 Yang MASUK ke image final (stage RUNNER):</text>
+        <rect x="30" y="140" width="600" height="140" rx="14" fill="rgba(16,185,129,.03)" stroke="rgba(16,185,129,.1)" stroke-width="1"/>
+        <text x="330" y="168" fill="#059669" font-size="13" text-anchor="middle" font-weight="700">📦 Yang MASUK ke image final (stage RUNNER):</text>
 
-        <rect x="60" y="185" width="165" height="36" rx="8" fill="rgba(52,211,153,.08)"/>
-        <text x="142" y="208" fill="#34d399" font-size="12" text-anchor="middle" class="mono">.next/standalone/</text>
+        <rect x="60" y="185" width="165" height="36" rx="8" fill="rgba(16,185,129,.06)"/>
+        <text x="142" y="208" fill="#059669" font-size="12" text-anchor="middle" class="mono">.next/standalone/</text>
 
-        <rect x="245" y="185" width="140" height="36" rx="8" fill="rgba(52,211,153,.08)"/>
-        <text x="315" y="208" fill="#34d399" font-size="12" text-anchor="middle" class="mono">.next/static/</text>
+        <rect x="245" y="185" width="140" height="36" rx="8" fill="rgba(16,185,129,.06)"/>
+        <text x="315" y="208" fill="#059669" font-size="12" text-anchor="middle" class="mono">.next/static/</text>
 
-        <rect x="405" y="185" width="100" height="36" rx="8" fill="rgba(52,211,153,.08)"/>
-        <text x="455" y="208" fill="#34d399" font-size="12" text-anchor="middle" class="mono">public/</text>
+        <rect x="405" y="185" width="100" height="36" rx="8" fill="rgba(16,185,129,.06)"/>
+        <text x="455" y="208" fill="#059669" font-size="12" text-anchor="middle" class="mono">public/</text>
 
-        <text x="330" y="255" fill="#6e7681" font-size="11" text-anchor="middle">❌ node_modules, source code, devDependencies → TIDAK masuk → image kecil!</text>
+        <text x="330" y="255" fill="#94a3b8" font-size="11" text-anchor="middle">❌ node_modules, source code, devDependencies → TIDAK masuk → image kecil!</text>
       </svg>
     </div>
   </div>
@@ -1095,10 +1194,13 @@ app/about/page.js → <span class="str">/about</span></pre>
 </footer>
 
 <script>
-  // Scroll reveal animation
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.15 });
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
