@@ -1,6 +1,8 @@
 # Pertemuan 0: Fullstack Next.js — Fondasi Sebelum CI/CD
 
-> 📖 **Buka juga [visual-guide.html](./visual-guide.html) di browser** untuk melihat ilustrasi visual interaktif dari semua konsep di bawah ini.
+> 📖 **Buka [index.html](./index.html) di browser** untuk panduan visual interaktif 8 halaman dengan penjelasan lengkap, animasi SVG, dan contoh kode.
+>
+> 📊 Atau buka [visual-guide.html](./visual-guide.html) untuk ringkasan semua konsep dalam 1 halaman.
 
 ## 🎯 Tujuan Pembelajaran
 
