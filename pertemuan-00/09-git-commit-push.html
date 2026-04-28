@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git Commit & Push — Fullstack Next.js Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: rgba(100,116,139,.12);
+  --text: #1e293b;
+  --muted: #64748b;
+  --cyan: #0891b2;
+  --cyan-dim: rgba(6,182,212,.07);
+  --amber: #b45309;
+  --amber-dim: rgba(245,158,11,.07);
+  --rose: #be123c;
+  --rose-dim: rgba(244,63,94,.06);
+  --violet: #7c3aed;
+  --violet-dim: rgba(139,92,246,.06);
+  --emerald: #047857;
+  --emerald-dim: rgba(16,185,129,.06);
+  --sky: #0369a1;
+  --sky-dim: rgba(14,165,233,.06);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.07);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ── TOP NAV ── */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: rgba(250,250,250,.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.top-nav a {
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: color .2s;
+}
+.top-nav a:hover { color: var(--violet); }
+.nav-pages { display: flex; gap: 20px; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 52vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px 60px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(170deg, #f5f3ff 0%, #ede9fe 20%, #fafafa 70%);
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 500px 300px at 25% 30%, rgba(124,58,237,.07), transparent),
+    radial-gradient(ellipse 400px 400px at 75% 60%, rgba(139,92,246,.05), transparent);
+  pointer-events: none;
+}
+
+.hero-shapes { position: absolute; inset: 0; pointer-events: none; }
+.fs { position: absolute; opacity: .25; }
+.fs1 { top:10%; left:6%; animation: float1 10s ease-in-out infinite; }
+.fs2 { top:20%; right:10%; animation: float2 12s ease-in-out infinite; }
+.fs3 { bottom:18%; left:12%; animation: float1 9s ease-in-out infinite reverse; }
+.fs4 { bottom:25%; right:7%; animation: float2 11s ease-in-out infinite; }
+.fs5 { top:45%; left:3%; animation: float3 13s ease-in-out infinite; }
+.fs6 { top:60%; right:4%; animation: float3 8s ease-in-out infinite reverse; }
+
+@keyframes float1 { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-20px) rotate(10deg)} }
+@keyframes float2 { 0%,100%{transform:translateY(0) rotate(0)} 33%{transform:translateY(-15px) rotate(-7deg)} 66%{transform:translateY(8px) rotate(5deg)} }
+@keyframes float3 { 0%,100%{transform:translate(0,0) rotate(0)} 50%{transform:translate(10px,-18px) rotate(-8deg)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: .82rem;
+  color: var(--muted);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  background: rgba(255,255,255,.7);
+  backdrop-filter: blur(8px);
+  animation: fadeUp .8s ease both;
+}
+.hero-badge span { color: var(--violet); font-weight: 700; }
+
+.hero h1 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  font-weight: 400;
+  line-height: .95;
+  letter-spacing: -.04em;
+  max-width: 800px;
+  margin-bottom: 20px;
+  animation: fadeUp .8s .12s ease both;
+}
+.hero h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  max-width: 540px;
+  font-size: 1.08rem;
+  color: var(--muted);
+  margin-bottom: 36px;
+  animation: fadeUp .8s .24s ease both;
+}
+
+/* ── CONTAINER & SECTIONS ── */
+.container { max-width: 820px; margin: 0 auto; padding: 60px 24px 40px; }
+
+.section-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 32px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s ease, box-shadow .3s;
+}
+.section-card.visible { opacity: 1; transform: translateY(0); }
+.section-card:hover { box-shadow: var(--shadow-md); }
+
+.section-card h2 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -.02em;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 22px 0 10px;
+  color: var(--text);
+}
+.section-card p, .section-card li { font-size: .95rem; color: var(--text); line-height: 1.7; }
+.section-card ul, .section-card ol { padding-left: 22px; margin: 10px 0; }
+.section-card li { margin-bottom: 6px; }
+
+/* ── CODE BLOCKS ── */
+.code-block {
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 16px 0;
+  position: relative;
+}
+.code-block .filename {
+  padding: 10px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .78rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.code-block pre {
+  padding: 18px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .84rem;
+  line-height: 1.7;
+  color: #334155;
+  margin: 0;
+}
+.code-block .kw { color: #be123c; }
+.code-block .fn { color: #7c3aed; }
+.code-block .str { color: #047857; }
+.code-block .cmt { color: #94a3b8; font-style: italic; }
+.code-block .tag { color: #0891b2; }
+.code-block .attr { color: #b45309; }
+
+/* ── COPY BUTTON ── */
+.copy-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: .75rem;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.copy-btn:hover { color: var(--violet); border-color: var(--violet); background: var(--violet-dim); }
+.copy-btn.copied { color: var(--emerald); border-color: var(--emerald); }
+
+/* ── CALLOUTS ── */
+.callout { border-left: 4px solid; padding: 16px 20px; border-radius: 0 12px 12px 0; margin: 16px 0; font-size: .93rem; }
+.callout.tip { border-color: var(--emerald); background: var(--emerald-dim); }
+.callout.warning { border-color: var(--amber); background: var(--amber-dim); }
+.callout.danger { border-color: var(--rose); background: var(--rose-dim); }
+.callout strong { display: block; margin-bottom: 4px; }
+
+/* ── ANALOGY CARD ── */
+.analogy-card {
+  background: linear-gradient(135deg, var(--violet-dim), rgba(139,92,246,.08));
+  border: 1px solid rgba(124,58,237,.15);
+  border-radius: 16px;
+  padding: 28px 26px;
+  margin: 16px 0;
+}
+.analogy-card .emoji { font-size: 2.4rem; margin-bottom: 12px; display: block; }
+
+/* ── GIT FLOW DIAGRAM ── */
+.diagram-wrapper { display: flex; justify-content: center; margin: 24px 0; overflow-x: auto; }
+.diagram-wrapper svg { max-width: 100%; height: auto; }
+
+/* ── STEP CARDS ── */
+.step-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 22px;
+  margin: 18px 0;
+  background: var(--surface);
+  position: relative;
+  transition: border-color .3s;
+}
+.step-card:hover { border-color: rgba(124,58,237,.3); }
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  color: #fff;
+  font-weight: 700;
+  font-size: .95rem;
+  margin-bottom: 12px;
+}
+.step-card h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.step-card p { font-size: .9rem; color: var(--muted); }
+
+/* ── COMPARE TABLE ── */
+.compare-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 16px 0;
+  font-size: .9rem;
+}
+.compare-table th {
+  background: var(--surface-2);
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-size: .82rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--muted);
+}
+.compare-table td {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  vertical-align: top;
+}
+.compare-table tr:hover td { background: rgba(124,58,237,.03); }
+.compare-table code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .82rem;
+  background: var(--surface-2);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+/* ── COMMIT EXAMPLE ── */
+.commit-example { margin: 10px 0; padding: 10px 16px; border-radius: 10px; font-size: .9rem; }
+.commit-bad { background: var(--rose-dim); border: 1px solid rgba(190,18,60,.12); }
+.commit-good { background: var(--emerald-dim); border: 1px solid rgba(4,120,87,.12); }
+.commit-example code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .82rem;
+}
+
+/* ── QUICK REF GRID ── */
+.quick-ref-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+.quick-ref-item {
+  border-radius: 14px;
+  padding: 18px 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+}
+.quick-ref-item:hover { border-color: rgba(124,58,237,.3); box-shadow: var(--shadow-sm); }
+.quick-ref-item code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem;
+  color: var(--violet);
+  display: block;
+  margin-bottom: 6px;
+}
+.quick-ref-item p { font-size: .84rem; color: var(--muted); margin: 0; }
+.quick-ref-item .mini-copy {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: .7rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .2s;
+  color: var(--muted);
+}
+.quick-ref-item:hover .mini-copy { opacity: 1; }
+.quick-ref-item .mini-copy:hover { color: var(--violet); border-color: var(--violet); }
+
+/* ── TROUBLESHOOT ── */
+.trouble-item {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin: 14px 0;
+  background: var(--surface);
+}
+.trouble-item .error-msg {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .84rem;
+  color: var(--rose);
+  background: var(--rose-dim);
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: block;
+}
+.trouble-item .solution { font-size: .9rem; color: var(--text); }
+.trouble-item .solution code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .82rem;
+  background: var(--surface-2);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+/* ── TEMPLATE SWITCHER ── */
+.template-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+.template-tab {
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  color: var(--muted);
+}
+.template-tab:hover { border-color: var(--violet); color: var(--violet); }
+.template-tab.active {
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  color: #fff;
+  border-color: transparent;
+}
+.template-content {
+  display: none;
+  animation: fadeUp .3s ease both;
+}
+.template-content.active { display: block; }
+.template-copy-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  margin-top: 12px;
+}
+.template-copy-all:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.template-copy-all:active { transform: translateY(0); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--text);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-size: .9rem;
+  font-weight: 600;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: all .35s ease;
+  box-shadow: var(--shadow-lg);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── CHECKLIST ── */
+.checklist { list-style: none; padding: 0; }
+.checklist li { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: .93rem; }
+.checklist li:last-child { border-bottom: none; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 820px;
+  margin: 0 auto 60px;
+  padding: 0 24px;
+}
+.bottom-nav-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--text);
+  transition: box-shadow .3s, border-color .3s;
+}
+.bottom-nav-card:hover { box-shadow: var(--shadow-md); border-color: var(--violet); }
+.bottom-nav-card.next { text-align: right; }
+.bn-label { font-size: .78rem; color: var(--muted); margin-bottom: 4px; }
+.bn-title { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.15rem; }
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 30px 24px 40px;
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .section-card { padding: 26px 20px; }
+  .quick-ref-grid { grid-template-columns: 1fr; }
+  .bottom-nav { grid-template-columns: 1fr; }
+  .template-tabs { gap: 6px; }
+  .template-tab { padding: 6px 12px; font-size: .76rem; }
+  .step-card { padding: 18px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ────── TOP NAV ────── -->
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">← Beranda</a>
+  <div class="nav-pages">
+    <a href="08-build-docker.html" class="nav-prev">← Sebelumnya</a>
+    <a href="index.html" class="nav-next">Beranda →</a>
+  </div>
+</nav>
+
+<!-- ────── HERO ────── -->
+<section class="hero">
+  <div class="hero-shapes">
+    <!-- Git branch -->
+    <svg class="fs fs1" width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="10" r="5" fill="none" stroke="#7c3aed" stroke-width="2"/><circle cx="26" cy="42" r="5" fill="none" stroke="#7c3aed" stroke-width="2"/><circle cx="40" cy="26" r="5" fill="none" stroke="#a78bfa" stroke-width="2"/><line x1="26" y1="15" x2="26" y2="37" stroke="#7c3aed" stroke-width="1.5"/><path d="M26 26c0-6 14-6 14 0" fill="none" stroke="#a78bfa" stroke-width="1.5"/></svg>
+    <!-- Commit node -->
+    <svg class="fs fs2" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="10" fill="none" stroke="#7c3aed" stroke-width="2"/><circle cx="24" cy="24" r="4" fill="#a78bfa" opacity=".5"/><line x1="24" y1="4" x2="24" y2="14" stroke="#7c3aed" stroke-width="1.5"/><line x1="24" y1="34" x2="24" y2="44" stroke="#7c3aed" stroke-width="1.5"/></svg>
+    <!-- Cloud/push -->
+    <svg class="fs fs3" width="56" height="40" viewBox="0 0 56 40"><path d="M14 28a10 10 0 0118-6 8 8 0 0114 6H14z" fill="none" stroke="#7c3aed" stroke-width="1.5"/><path d="M28 32v-14m-4 4l4-4 4 4" fill="none" stroke="#a78bfa" stroke-width="2"/></svg>
+    <!-- Terminal -->
+    <svg class="fs fs4" width="44" height="44" viewBox="0 0 44 44"><rect x="4" y="8" width="36" height="28" rx="4" fill="none" stroke="#7c3aed" stroke-width="1.5"/><path d="M12 20l6 4-6 4" fill="none" stroke="#a78bfa" stroke-width="2"/><line x1="22" y1="28" x2="32" y2="28" stroke="#a78bfa" stroke-width="1.5"/></svg>
+    <!-- Checkmark -->
+    <svg class="fs fs5" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="none" stroke="#7c3aed" stroke-width="1.5"/><path d="M12 20l6 6 10-12" fill="none" stroke="#a78bfa" stroke-width="2.5"/></svg>
+    <!-- File diff -->
+    <svg class="fs fs6" width="42" height="46" viewBox="0 0 42 46"><rect x="6" y="4" width="30" height="38" rx="4" fill="none" stroke="#7c3aed" stroke-width="1.5"/><line x1="14" y1="16" x2="28" y2="16" stroke="#a78bfa" stroke-width="1.5"/><line x1="14" y1="22" x2="24" y2="22" stroke="#a78bfa" stroke-width="1.5"/><line x1="14" y1="28" x2="26" y2="28" stroke="#a78bfa" stroke-width="1.5"/></svg>
+  </div>
+
+  <div class="hero-badge"><span>Panduan Git</span></div>
+  <h1>Commit & <em>Push</em> Tugas</h1>
+  <p>Panduan lengkap cara menyimpan dan mengirim pekerjaan kamu ke GitHub. Gunakan halaman ini setiap kali selesai mengerjakan tugas.</p>
+</section>
+
+<!-- ────── CONTENT ────── -->
+<div class="container">
+
+  <!-- ══ SECTION 1: KENAPA GIT ══ -->
+  <div class="section-card">
+    <h2>🤔 Kenapa Harus Git?</h2>
+    <div class="analogy-card">
+      <span class="emoji">⏪</span>
+      <p><strong>Git itu seperti CTRL+Z tapi lebih canggih.</strong> Bisa simpan versi kode, lihat perubahan, dan kembali ke versi lama kapan saja. Setiap "snapshot" disimpan selamanya, jadi kamu tidak akan pernah kehilangan kode.</p>
+    </div>
+
+    <h3>Alur Kerja Git</h3>
+    <p>Git bekerja dalam 4 area utama. Pahami alur ini, dan kamu akan paham Git selamanya:</p>
+
+    <div class="diagram-wrapper">
+      <svg width="720" height="140" viewBox="0 0 720 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Working Directory -->
+        <rect x="10" y="30" width="140" height="80" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+        <text x="80" y="62" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#7c3aed">Working</text>
+        <text x="80" y="80" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#7c3aed">Directory</text>
+        <text x="80" y="98" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#64748b">📁 File kamu</text>
+
+        <!-- Arrow 1 -->
+        <line x1="155" y1="70" x2="195" y2="70" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4 3"/>
+        <polygon points="195,65 205,70 195,75" fill="#7c3aed"/>
+        <text x="180" y="58" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#7c3aed">git add</text>
+
+        <!-- Staging Area -->
+        <rect x="210" y="30" width="140" height="80" rx="12" fill="#f0fdf4" stroke="#047857" stroke-width="2"/>
+        <text x="280" y="62" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#047857">Staging</text>
+        <text x="280" y="80" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#047857">Area</text>
+        <text x="280" y="98" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#64748b">📦 Siap disimpan</text>
+
+        <!-- Arrow 2 -->
+        <line x1="355" y1="70" x2="395" y2="70" stroke="#047857" stroke-width="2" stroke-dasharray="4 3"/>
+        <polygon points="395,65 405,70 395,75" fill="#047857"/>
+        <text x="380" y="58" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#047857">git commit</text>
+
+        <!-- Local Repo -->
+        <rect x="410" y="30" width="140" height="80" rx="12" fill="#eff6ff" stroke="#0369a1" stroke-width="2"/>
+        <text x="480" y="62" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#0369a1">Local</text>
+        <text x="480" y="80" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#0369a1">Repository</text>
+        <text x="480" y="98" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#64748b">💾 Tersimpan lokal</text>
+
+        <!-- Arrow 3 -->
+        <line x1="555" y1="70" x2="595" y2="70" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 3"/>
+        <polygon points="595,65 605,70 595,75" fill="#0369a1"/>
+        <text x="580" y="58" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#0369a1">git push</text>
+
+        <!-- Remote -->
+        <rect x="610" y="30" width="100" height="80" rx="12" fill="#fdf4ff" stroke="#be123c" stroke-width="2"/>
+        <text x="660" y="62" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#be123c">Remote</text>
+        <text x="660" y="80" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#be123c">(GitHub)</text>
+        <text x="660" y="98" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#64748b">☁️ Online</text>
+      </svg>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Ingat Alur Ini</strong>
+      <code>git add</code> → <code>git commit</code> → <code>git push</code>. Tiga perintah ini yang akan kamu gunakan setiap hari. Mudah!
+    </div>
+  </div>
+
+  <!-- ══ SECTION 2: SETUP GIT ══ -->
+  <div class="section-card">
+    <h2>⚙️ Setup Git (Pertama Kali Saja)</h2>
+    <p>Langkah ini hanya perlu dilakukan <strong>sekali saja</strong> di laptop kamu. Setelah setup, tidak perlu diulang lagi.</p>
+
+    <h3>1. Cek apakah Git sudah terinstall</h3>
+    <div class="code-block">
+      <div class="filename"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+      <pre>git --version</pre>
+    </div>
+    <p>Jika muncul versi (misal <code>git version 2.43.0</code>), berarti Git sudah terinstall. Jika belum, download dari <strong>git-scm.com</strong>.</p>
+
+    <h3>2. Setup nama dan email</h3>
+    <div class="code-block">
+      <div class="filename"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+      <pre><span class="fn">git</span> config --global user.name <span class="str">"Nama Kamu"</span>
+<span class="fn">git</span> config --global user.email <span class="str">"email@mahasiswa.ac.id"</span></pre>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Gunakan email yang terdaftar di GitHub</strong>
+      Email ini akan muncul di setiap commit kamu. Pastikan sama dengan email akun GitHub kamu agar commit tercatat dengan benar.
+    </div>
+
+    <h3>3. Verifikasi konfigurasi</h3>
+    <div class="code-block">
+      <div class="filename"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+      <pre><span class="fn">git</span> config --global --list</pre>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 3: ALUR KERJA GIT ══ -->
+  <div class="section-card">
+    <h2>📝 Alur Kerja Git (Setiap Kali Selesai Tugas)</h2>
+    <p>Ini adalah bagian <strong>paling penting</strong>. Ikuti 4 langkah ini setiap kali kamu selesai mengerjakan tugas:</p>
+
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h4>Cek Status</h4>
+      <p>Lihat file apa saja yang berubah sejak commit terakhir.</p>
+      <div class="code-block">
+        <div class="filename"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre><span class="fn">git</span> status</pre>
+      </div>
+      <p>File berwarna <span style="color:var(--rose);font-weight:600;">merah</span> = belum di-add. File berwarna <span style="color:var(--emerald);font-weight:600;">hijau</span> = sudah di-staging.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h4>Tambahkan File ke Staging</h4>
+      <p>Tambahkan <strong>semua</strong> file yang berubah ke staging area.</p>
+      <div class="code-block">
+        <div class="filename"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre><span class="fn">git</span> add .</pre>
+      </div>
+      <p>Tanda titik (<code>.</code>) artinya "semua file". Kamu juga bisa menambahkan file tertentu saja: <code>git add nama-file.js</code></p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h4>Commit (Simpan Perubahan)</h4>
+      <p>Simpan snapshot perubahan kamu dengan pesan yang deskriptif.</p>
+      <div class="code-block">
+        <div class="filename"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre><span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"pesan commit kamu di sini"</span></pre>
+      </div>
+      <p>Pesan commit harus menjelaskan <strong>apa yang berubah</strong>. Lihat contoh pesan commit di bagian selanjutnya.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <h4>Push (Kirim ke GitHub)</h4>
+      <p>Kirim semua commit kamu ke GitHub agar dosen bisa melihat pekerjaan kamu.</p>
+      <div class="code-block">
+        <div class="filename"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre><span class="fn">git</span> push origin main</pre>
+      </div>
+      <p>Setelah push berhasil, buka GitHub di browser untuk memastikan file kamu sudah muncul.</p>
+    </div>
+
+    <div class="callout warning">
+      <strong>⚠️ Jangan Lupa Push!</strong>
+      Commit saja TIDAK cukup. Kalau hanya commit tanpa push, kode kamu hanya tersimpan di laptop — dosen tidak bisa melihatnya di GitHub.
+    </div>
+  </div>
+
+  <!-- ══ SECTION 4: FORMAT PESAN COMMIT ══ -->
+  <div class="section-card">
+    <h2>💬 Format Pesan Commit yang Baik</h2>
+    <p>Pesan commit yang baik membantu kamu dan dosen memahami apa yang berubah. Gunakan format ini:</p>
+
+    <h3>Template per Pertemuan</h3>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Pertemuan</th>
+          <th>Contoh Pesan Commit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Pertemuan 00</strong></td><td><code>feat: setup proyek nextjs</code></td></tr>
+        <tr><td><strong>Pertemuan 01</strong></td><td><code>feat: tambah halaman about dan contact</code></td></tr>
+        <tr><td><strong>Pertemuan 02</strong></td><td><code>feat: implementasi dynamic routing products</code></td></tr>
+        <tr><td><strong>Pertemuan 03</strong></td><td><code>feat: buat layout dengan navbar dan footer</code></td></tr>
+        <tr><td><strong>Pertemuan 04</strong></td><td><code>feat: buat komponen KartuMahasiswa dengan props</code></td></tr>
+        <tr><td><strong>Pertemuan 05</strong></td><td><code>style: tambah CSS module untuk halaman utama</code></td></tr>
+        <tr><td><strong>Pertemuan 06</strong></td><td><code>feat: buat API route /api/mahasiswa</code></td></tr>
+        <tr><td><strong>Pertemuan 07</strong></td><td><code>feat: setup environment variables</code></td></tr>
+        <tr><td><strong>Pertemuan 08</strong></td><td><code>feat: buat Dockerfile untuk deployment</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Contoh Baik vs Buruk</h3>
+
+    <div class="commit-bad">❌ <code>"update"</code> — terlalu vague, update apa?</div>
+    <div class="commit-bad">❌ <code>"fix"</code> — fix apa? Di mana?</div>
+    <div class="commit-bad">❌ <code>"asdfgh"</code> — ini bukan pesan commit</div>
+
+    <div class="commit-good">✅ <code>"feat: tambah halaman profil mahasiswa"</code></div>
+    <div class="commit-good">✅ <code>"fix: perbaiki error di API route users"</code></div>
+    <div class="commit-good">✅ <code>"style: update warna navbar menjadi biru"</code></div>
+
+    <div class="callout tip">
+      <strong>💡 Format Commit Message</strong>
+      Gunakan pola: <code>tipe: deskripsi singkat</code>. Tipe yang umum: <strong>feat</strong> (fitur baru), <strong>fix</strong> (perbaikan bug), <strong>style</strong> (perubahan tampilan), <strong>docs</strong> (dokumentasi).
+    </div>
+  </div>
+
+  <!-- ══ SECTION 5: GITHUB CLASSROOM ══ -->
+  <div class="section-card">
+    <h2>🎓 Cara Submit Tugas di GitHub Classroom</h2>
+    <p>Dosen menggunakan GitHub Classroom untuk membagikan dan mengumpulkan tugas. Ikuti langkah berikut:</p>
+
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h4>Buka Link dari Dosen</h4>
+      <p>Dosen akan membagikan link GitHub Classroom untuk setiap tugas. Klik link tersebut.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h4>Accept Assignment</h4>
+      <p>Klik tombol <strong>"Accept this assignment"</strong>. GitHub otomatis membuat repository khusus untuk kamu.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h4>Clone Repository</h4>
+      <p>Copy URL repository lalu jalankan:</p>
+      <div class="code-block">
+        <div class="filename"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre><span class="fn">git</span> clone <span class="str">&lt;url-dari-classroom&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <h4>Kerjakan Tugas</h4>
+      <p>Masuk ke folder yang sudah di-clone, lalu kerjakan tugas di dalamnya.</p>
+      <div class="code-block">
+        <div class="filename"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre><span class="fn">cd</span> <span class="str">nama-folder-tugas</span></pre>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">5</div>
+      <h4>Add, Commit, Push</h4>
+      <p>Setelah selesai, jalankan tiga perintah ajaib:</p>
+      <div class="code-block">
+        <div class="filename"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre><span class="fn">git</span> add .
+<span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"feat: selesaikan tugas pertemuan X"</span>
+<span class="fn">git</span> push origin main</pre>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">6</div>
+      <h4>Verifikasi di GitHub</h4>
+      <p>Buka repository di browser GitHub. Pastikan semua file kamu sudah muncul dan commit terlihat.</p>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Tips Penting</strong>
+      Setelah push, cek di browser GitHub bahwa file kamu sudah muncul. Kalau belum, coba <code>git push</code> lagi. Pastikan juga kamu berada di folder yang benar saat menjalankan perintah Git.
+    </div>
+  </div>
+
+  <!-- ══ SECTION 6: PERINTAH SERING DIPAKAI ══ -->
+  <div class="section-card">
+    <h2>🔥 Perintah Git yang Sering Dipakai</h2>
+    <p>Referensi cepat — klik kartu untuk menyalin perintah:</p>
+
+    <div class="quick-ref-grid">
+      <div class="quick-ref-item" onclick="copyQuickRef(this, 'git status')">
+        <button class="mini-copy">📋</button>
+        <code>git status</code>
+        <p>Cek file yang berubah</p>
+      </div>
+      <div class="quick-ref-item" onclick="copyQuickRef(this, 'git add .')">
+        <button class="mini-copy">📋</button>
+        <code>git add .</code>
+        <p>Tambah semua file</p>
+      </div>
+      <div class="quick-ref-item" onclick="copyQuickRef(this, 'git add ')">
+        <button class="mini-copy">📋</button>
+        <code>git add &lt;file&gt;</code>
+        <p>Tambah file tertentu</p>
+      </div>
+      <div class="quick-ref-item" onclick="copyQuickRef(this, 'git commit -m &quot;&quot;')">
+        <button class="mini-copy">📋</button>
+        <code>git commit -m "..."</code>
+        <p>Simpan perubahan</p>
+      </div>
+      <div class="quick-ref-item" onclick="copyQuickRef(this, 'git push origin main')">
+        <button class="mini-copy">📋</button>
+        <code>git push</code>
+        <p>Kirim ke GitHub</p>
+      </div>
+      <div class="quick-ref-item" onclick="copyQuickRef(this, 'git pull origin main')">
+        <button class="mini-copy">📋</button>
+        <code>git pull</code>
+        <p>Ambil perubahan terbaru</p>
+      </div>
+      <div class="quick-ref-item" onclick="copyQuickRef(this, 'git log --oneline')">
+        <button class="mini-copy">📋</button>
+        <code>git log --oneline</code>
+        <p>Lihat riwayat commit</p>
+      </div>
+      <div class="quick-ref-item" onclick="copyQuickRef(this, 'git diff')">
+        <button class="mini-copy">📋</button>
+        <code>git diff</code>
+        <p>Lihat perubahan yang belum di-add</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 7: TROUBLESHOOTING ══ -->
+  <div class="section-card">
+    <h2>⚠️ Troubleshooting Git</h2>
+    <p>Masalah umum dan cara mengatasinya:</p>
+
+    <div class="trouble-item">
+      <span class="error-msg">fatal: not a git repository</span>
+      <div class="solution">
+        <strong>Penyebab:</strong> Kamu menjalankan perintah Git di luar folder proyek.<br>
+        <strong>Solusi:</strong> Pastikan kamu sudah <code>cd</code> ke folder proyek. Jika folder belum di-init, jalankan <code>git init</code>.
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <span class="error-msg">error: failed to push some refs</span>
+      <div class="solution">
+        <strong>Penyebab:</strong> Ada perubahan di GitHub yang belum kamu ambil ke lokal.<br>
+        <strong>Solusi:</strong> Jalankan <code>git pull origin main</code> dulu, lalu <code>git push origin main</code> lagi.
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <span class="error-msg">Permission denied (publickey)</span>
+      <div class="solution">
+        <strong>Penyebab:</strong> SSH key belum di-setup atau sudah expired.<br>
+        <strong>Solusi:</strong> Setup SSH key atau gunakan HTTPS URL + personal access token. Cek panduan di <strong>docs.github.com</strong>.
+      </div>
+    </div>
+
+    <div class="trouble-item">
+      <span class="error-msg">CONFLICT (content): Merge conflict in file.js</span>
+      <div class="solution">
+        <strong>Penyebab:</strong> Dua orang mengubah baris yang sama di file yang sama.<br>
+        <strong>Solusi:</strong> Buka file yang conflict, cari tanda <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, pilih versi yang benar, hapus tanda conflict, lalu <code>git add .</code> dan <code>git commit</code>.
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <strong>⚠️ Jangan Panik!</strong>
+      Error di Git itu normal. Baca pesan error-nya baik-baik — Git biasanya memberitahu apa yang harus dilakukan. Kalau masih bingung, tanya dosen atau asisten.
+    </div>
+  </div>
+
+  <!-- ══ SECTION 8: TEMPLATE CEPAT ══ -->
+  <div class="section-card">
+    <h2>📋 Template Cepat: Copy-Paste per Pertemuan</h2>
+    <p>Pilih pertemuan, lalu copy perintah yang sudah siap pakai:</p>
+
+    <div class="template-tabs">
+      <button class="template-tab active" onclick="showTemplate(0)">P00</button>
+      <button class="template-tab" onclick="showTemplate(1)">P01</button>
+      <button class="template-tab" onclick="showTemplate(2)">P02</button>
+      <button class="template-tab" onclick="showTemplate(3)">P03</button>
+      <button class="template-tab" onclick="showTemplate(4)">P04</button>
+      <button class="template-tab" onclick="showTemplate(5)">P05</button>
+      <button class="template-tab" onclick="showTemplate(6)">P06</button>
+      <button class="template-tab" onclick="showTemplate(7)">P07</button>
+      <button class="template-tab" onclick="showTemplate(8)">P08</button>
+    </div>
+
+    <div class="template-content active" data-template="0">
+      <div class="code-block">
+        <div class="filename"><span>Pertemuan 00 — Setup Proyek Next.js</span></div>
+        <pre><span class="cmt"># Pertemuan 00 — Setup Proyek Next.js</span>
+<span class="fn">git</span> add .
+<span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"feat(pertemuan-00): setup proyek nextjs"</span>
+<span class="fn">git</span> push origin main</pre>
+      </div>
+      <button class="template-copy-all" onclick="copyTemplate(0)">📋 Copy Semua</button>
+    </div>
+
+    <div class="template-content" data-template="1">
+      <div class="code-block">
+        <div class="filename"><span>Pertemuan 01 — Halaman & Routing</span></div>
+        <pre><span class="cmt"># Pertemuan 01 — Cloud-Native + Next.js Intro</span>
+<span class="fn">git</span> add .
+<span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"feat(pertemuan-01): implementasi halaman dan routing nextjs"</span>
+<span class="fn">git</span> push origin main</pre>
+      </div>
+      <button class="template-copy-all" onclick="copyTemplate(1)">📋 Copy Semua</button>
+    </div>
+
+    <div class="template-content" data-template="2">
+      <div class="code-block">
+        <div class="filename"><span>Pertemuan 02 — Dynamic Routing</span></div>
+        <pre><span class="cmt"># Pertemuan 02 — Dynamic Routing</span>
+<span class="fn">git</span> add .
+<span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"feat(pertemuan-02): implementasi dynamic routing products"</span>
+<span class="fn">git</span> push origin main</pre>
+      </div>
+      <button class="template-copy-all" onclick="copyTemplate(2)">📋 Copy Semua</button>
+    </div>
+
+    <div class="template-content" data-template="3">
+      <div class="code-block">
+        <div class="filename"><span>Pertemuan 03 — Layout</span></div>
+        <pre><span class="cmt"># Pertemuan 03 — Layout dengan Navbar dan Footer</span>
+<span class="fn">git</span> add .
+<span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"feat(pertemuan-03): buat layout dengan navbar dan footer"</span>
+<span class="fn">git</span> push origin main</pre>
+      </div>
+      <button class="template-copy-all" onclick="copyTemplate(3)">📋 Copy Semua</button>
+    </div>
+
+    <div class="template-content" data-template="4">
+      <div class="code-block">
+        <div class="filename"><span>Pertemuan 04 — Komponen & Props</span></div>
+        <pre><span class="cmt"># Pertemuan 04 — Komponen dengan Props</span>
+<span class="fn">git</span> add .
+<span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"feat(pertemuan-04): buat komponen KartuMahasiswa dengan props"</span>
+<span class="fn">git</span> push origin main</pre>
+      </div>
+      <button class="template-copy-all" onclick="copyTemplate(4)">📋 Copy Semua</button>
+    </div>
+
+    <div class="template-content" data-template="5">
+      <div class="code-block">
+        <div class="filename"><span>Pertemuan 05 — CSS Module</span></div>
+        <pre><span class="cmt"># Pertemuan 05 — CSS Module</span>
+<span class="fn">git</span> add .
+<span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"style(pertemuan-05): tambah CSS module untuk halaman utama"</span>
+<span class="fn">git</span> push origin main</pre>
+      </div>
+      <button class="template-copy-all" onclick="copyTemplate(5)">📋 Copy Semua</button>
+    </div>
+
+    <div class="template-content" data-template="6">
+      <div class="code-block">
+        <div class="filename"><span>Pertemuan 06 — API Route</span></div>
+        <pre><span class="cmt"># Pertemuan 06 — API Route</span>
+<span class="fn">git</span> add .
+<span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"feat(pertemuan-06): buat API route /api/mahasiswa"</span>
+<span class="fn">git</span> push origin main</pre>
+      </div>
+      <button class="template-copy-all" onclick="copyTemplate(6)">📋 Copy Semua</button>
+    </div>
+
+    <div class="template-content" data-template="7">
+      <div class="code-block">
+        <div class="filename"><span>Pertemuan 07 — Environment Variables</span></div>
+        <pre><span class="cmt"># Pertemuan 07 — Environment Variables</span>
+<span class="fn">git</span> add .
+<span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"feat(pertemuan-07): setup environment variables"</span>
+<span class="fn">git</span> push origin main</pre>
+      </div>
+      <button class="template-copy-all" onclick="copyTemplate(7)">📋 Copy Semua</button>
+    </div>
+
+    <div class="template-content" data-template="8">
+      <div class="code-block">
+        <div class="filename"><span>Pertemuan 08 — Docker</span></div>
+        <pre><span class="cmt"># Pertemuan 08 — Dockerfile untuk Deployment</span>
+<span class="fn">git</span> add .
+<span class="fn">git</span> commit <span class="attr">-m</span> <span class="str">"feat(pertemuan-08): buat Dockerfile untuk deployment"</span>
+<span class="fn">git</span> push origin main</pre>
+      </div>
+      <button class="template-copy-all" onclick="copyTemplate(8)">📋 Copy Semua</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ────── BOTTOM NAV ────── -->
+<div class="bottom-nav">
+  <a href="08-build-docker.html" class="bottom-nav-card prev">
+    <span class="bn-label">← Sebelumnya</span>
+    <span class="bn-title">Build & Docker</span>
+  </a>
+  <a href="index.html" class="bottom-nav-card next">
+    <span class="bn-label">Kembali ke →</span>
+    <span class="bn-title">Beranda</span>
+  </a>
+</div>
+
+<!-- ────── FOOTER ────── -->
+<footer>
+  <p>Dibuat dengan ❤️ untuk mahasiswa Cloud-Native Practicum</p>
+</footer>
+
+<!-- ────── TOAST ────── -->
+<div class="toast" id="toast">✅ Tersalin!</div>
+
+<!-- ────── SCRIPTS ────── -->
+<script>
+// ── SCROLL REVEAL ──
+document.addEventListener('DOMContentLoaded', () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.section-card').forEach(card => observer.observe(card));
+});
+
+// ── TOAST ──
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message || '✅ Tersalin!';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// ── COPY CODE BLOCK ──
+function copyCode(btn) {
+  const codeBlock = btn.closest('.code-block');
+  const pre = codeBlock.querySelector('pre');
+  const text = pre.textContent;
+
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    const originalText = btn.textContent;
+    btn.textContent = '✅ Tersalin!';
+    showToast();
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // Fallback for file:// protocol
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    btn.textContent = '✅ Tersalin!';
+    showToast();
+    setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
+  });
+}
+
+// ── COPY QUICK REF ──
+function copyQuickRef(el, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('✅ Tersalin: ' + text);
+  }).catch(() => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    showToast('✅ Tersalin: ' + text);
+  });
+}
+
+// ── TEMPLATE SWITCHER ──
+const templates = [
+  '# Pertemuan 00 — Setup Proyek Next.js\ngit add .\ngit commit -m "feat(pertemuan-00): setup proyek nextjs"\ngit push origin main',
+  '# Pertemuan 01 — Cloud-Native + Next.js Intro\ngit add .\ngit commit -m "feat(pertemuan-01): implementasi halaman dan routing nextjs"\ngit push origin main',
+  '# Pertemuan 02 — Dynamic Routing\ngit add .\ngit commit -m "feat(pertemuan-02): implementasi dynamic routing products"\ngit push origin main',
+  '# Pertemuan 03 — Layout dengan Navbar dan Footer\ngit add .\ngit commit -m "feat(pertemuan-03): buat layout dengan navbar dan footer"\ngit push origin main',
+  '# Pertemuan 04 — Komponen dengan Props\ngit add .\ngit commit -m "feat(pertemuan-04): buat komponen KartuMahasiswa dengan props"\ngit push origin main',
+  '# Pertemuan 05 — CSS Module\ngit add .\ngit commit -m "style(pertemuan-05): tambah CSS module untuk halaman utama"\ngit push origin main',
+  '# Pertemuan 06 — API Route\ngit add .\ngit commit -m "feat(pertemuan-06): buat API route /api/mahasiswa"\ngit push origin main',
+  '# Pertemuan 07 — Environment Variables\ngit add .\ngit commit -m "feat(pertemuan-07): setup environment variables"\ngit push origin main',
+  '# Pertemuan 08 — Dockerfile untuk Deployment\ngit add .\ngit commit -m "feat(pertemuan-08): buat Dockerfile untuk deployment"\ngit push origin main'
+];
+
+function showTemplate(index) {
+  // Update tabs
+  document.querySelectorAll('.template-tab').forEach((tab, i) => {
+    tab.classList.toggle('active', i === index);
+  });
+  // Update content
+  document.querySelectorAll('.template-content').forEach((content, i) => {
+    content.classList.toggle('active', i === index);
+  });
+}
+
+function copyTemplate(index) {
+  const text = templates[index];
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('✅ Tersalin! Paste di terminal kamu.');
+  }).catch(() => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    showToast('✅ Tersalin! Paste di terminal kamu.');
+  });
+}
+</script>
+
+<!-- ────── QUIZ CONFIG ────── -->
+<script>
+window.QUIZ_CONFIG = {
+  pageId: '09-git-commit-push',
+  pageTitle: '09. Git Commit & Push',
+  questions: [
+    {
+      type: 'mc',
+      question: 'Urutan yang BENAR untuk mengirim kode ke GitHub adalah...',
+      options: ['commit → add → push', 'push → commit → add', 'add → commit → push', 'add → push → commit'],
+      correct: 2,
+      explanation: 'Urutan yang benar: git add (tambah file) → git commit (simpan) → git push (kirim). Add dulu, baru commit, baru push.'
+    },
+    {
+      type: 'mc',
+      question: 'Pesan commit yang BAIK adalah...',
+      options: ['"update"', '"fix bug"', '"feat: tambah halaman profil mahasiswa"', '"asdfgh"'],
+      correct: 2,
+      explanation: 'Pesan commit harus deskriptif dan jelas. "feat: tambah halaman profil mahasiswa" menjelaskan apa yang berubah.'
+    },
+    {
+      type: 'mc',
+      question: 'Perintah untuk melihat file apa saja yang berubah adalah...',
+      options: ['git log', 'git status', 'git show', 'git check'],
+      correct: 1,
+      explanation: 'git status menampilkan daftar file yang berubah, yang sudah di-staging, dan yang belum di-track.'
+    },
+    {
+      type: 'short',
+      question: 'Tuliskan 3 perintah Git lengkap yang kamu jalankan setelah selesai mengerjakan tugas Pertemuan 03 tentang Layout!'
+    }
+  ]
+};
+</script>
+<script src="quiz-system.js"></script>
+
+</body>
+</html>
